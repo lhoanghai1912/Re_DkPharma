@@ -10,12 +10,81 @@ import {
 } from 'react-native';
 import images from '../../component/contants';
 import styles from './login_Style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useDispatch} from 'react-redux';
+import {setUserData} from '../../redux/slice_index';
 
-const Login: React.FC = () => {
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+};
+
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
+
+const LoginScreen: React.FC = ({}) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isVisible, setIsVisible] = React.useState(true);
+  const dispatch = useDispatch();
   const isLoginEnabled = username.length > 0 && password.length > 0;
+
+  const handleLogin = async () => {
+    try {
+      const respone = await fetch(
+        'https://pos.foxai.com.vn:8123/api/Auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        },
+      );
+      const dataLogin = await respone.json();
+      if (dataLogin?.refreshToken) {
+        try {
+          await AsyncStorage.removeItem('userToken');
+        } catch (e) {
+          console.log('Erro:', e);
+        }
+        try {
+          const jsonValue = JSON.stringify(dataLogin);
+          await AsyncStorage.setItem('userToken', jsonValue);
+        } catch (e) {
+          console.log('eeeeeeee.', e);
+        }
+        try {
+          dispatch(
+            // login({
+            //   data
+            //   accessToken: dataLogin.accessToken,
+            //   refreshToken: dataLogin.refreshToken,
+            //   expiry: dataLogin.refreshTokenExpire,
+            // }),
+            setUserData({
+              userData: dataLogin,
+            }),
+          ),
+            // navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
+            console.log('Login successful:', dataLogin);
+        } catch (e) {
+          console.log('Error:', e);
+        }
+      } else {
+        Alert.alert('Error', dataLogin.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again late111r.');
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -75,7 +144,7 @@ const Login: React.FC = () => {
               styles.button,
               {backgroundColor: isLoginEnabled ? '#007BFF' : '#CCCCCC'},
             ]}
-            onPress={() => Alert.alert('Login Button Pressed')}
+            onPress={() => handleLogin()}
             disabled={!isLoginEnabled}>
             <Text style={styles.buttonText}>Đăng nhập</Text>
           </TouchableOpacity>
@@ -88,4 +157,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginScreen;

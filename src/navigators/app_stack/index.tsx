@@ -1,6 +1,8 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SCREEN_NAMES} from './../screen_names';
-const Stack = createStackNavigator();
+import HomeScreen from '../../container/Home/home_Index';
+import MenuScreen from '../../container/Menu/menu_Index';
+const Stack = createNativeStackNavigator();
 
 const AppStackScreen = () => {
   return (
@@ -8,10 +10,12 @@ const AppStackScreen = () => {
       screenOptions={{
         headerShown: false,
         animation: 'slide_from_right',
-      }}>
-      initialRouteName={SCREEN_NAMES.HOME_SCREEN}
-      {/* <Stack.Screen name={SCREEN_NAMES.HOME_SCREEN} component={HomeScreen} /> */}
+      }}
+      initialRouteName={SCREEN_NAMES.HOME_SCREEN}>
+      <Stack.Screen name={SCREEN_NAMES.HOME_SCREEN} component={HomeScreen} />
+      <Stack.Screen name={SCREEN_NAMES.MENU_SCREEN} component={MenuScreen} />
     </Stack.Navigator>
   );
 };
+
 export default AppStackScreen;
