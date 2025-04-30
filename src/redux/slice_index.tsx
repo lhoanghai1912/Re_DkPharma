@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {act} from 'react';
 
 interface UserState {
   userData: any;
@@ -49,6 +50,7 @@ const userSlice = createSlice({
     },
     setItemData(state, action: PayloadAction<any>) {
       state.itemData = action.payload;
+      // state.detailsItemSelected = action.payload.
     },
   },
 });
@@ -56,25 +58,24 @@ const userSlice = createSlice({
 // Tạo slice cho item
 
 interface ItemState {
-  batchNumber: number | null;
-  docEntry: number | null;
-  itemcode: string | null;
-  itemName: string | null;
-  proCode: string | null;
-  ProType: string | null;
-  tranferId: any;
-  whsCode: string | null;
+  getSelectedItem: any | null;
+  getDetailsItemSelected: any | null;
+  getDetailsItem: any | null;
 }
 
 const initialItemState: ItemState = {
-  batchNumber: null,
-  docEntry: null,
-  itemcode: null,
-  itemName: null,
-  proCode: null,
-  ProType: null,
-  tranferId: null,
-  whsCode: null,
+  getSelectedItem: null,
+  getDetailsItem: null,
+  getDetailsItemSelected: null,
+
+  // batchNumber: null,
+  // docEntry: null,
+  // itemcode: null,
+  // itemName: null,
+  // proCode: null,
+  // ProType: null,
+  // tranferId: null,
+  // whsCode: null,
 };
 
 const itemSlice = createSlice({
@@ -82,14 +83,20 @@ const itemSlice = createSlice({
   initialState: initialItemState,
   reducers: {
     setInfoItem(state, action: PayloadAction<any>) {
-      state.docEntry = action.payload;
-      state.tranferId = action.payload;
+      state.getSelectedItem = action.payload;
+    },
+    setDetailsItem(state, action: PayloadAction<any>) {
+      state.getDetailsItem = action.payload.items;
+    },
+    setDetailsItemSelected(state, action: PayloadAction<any>) {
+      state.getDetailsItemSelected = action.payload;
     },
   },
 });
 
 export const {login, logout, setUserData, setItemData} = userSlice.actions;
-export const {setInfoItem} = itemSlice.actions;
+export const {setInfoItem, setDetailsItem, setDetailsItemSelected} =
+  itemSlice.actions;
 
 export const userReducer = userSlice.reducer;
 export const itemReducer = itemSlice.reducer;

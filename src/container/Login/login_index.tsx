@@ -62,17 +62,10 @@ const LoginScreen: React.FC = ({}) => {
         }
         try {
           dispatch(
-            // login({
-            //   data
-            //   accessToken: dataLogin.accessToken,
-            //   refreshToken: dataLogin.refreshToken,
-            //   expiry: dataLogin.refreshTokenExpire,
-            // }),
             setUserData({
               userData: dataLogin,
             }),
           ),
-            // navigation.navigate(SCREEN_NAMES.HOME_SCREEN);
             console.log('Login successful:', dataLogin);
         } catch (e) {
           console.log('Error:', e);

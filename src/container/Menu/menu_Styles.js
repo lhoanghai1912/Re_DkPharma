@@ -39,7 +39,33 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         resizeMode: 'contain',
+    },
 
+    body:{
+        flex:1.5,
+        marginVertical:10,
+    },
+
+    normalText:{
+        fontSize: 22,
+        color: 'black',
+        fontWeight: 'bold',
+    },
+
+    button:{
+        backgroundColor:'blue',
+        width:'90%',
+        height:'15%',
+        alignItems:'center',
+        justifyContent:'center',
+        paddingVertical:10,
+        marginBottom:'5%',
+    },
+
+    bottonText:{
+        fontSize: 22,
+        color: 'white',
+        fontWeight: 'bold',
     },
 
 })

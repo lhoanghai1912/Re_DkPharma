@@ -9,19 +9,19 @@ import {
 } from 'react-native';
 import styles from './home_Style';
 import images from '../../component/contants';
-import {setItemData, logout} from '../../redux/slice_index';
+import {setItemData, logout, setInfoItem} from '../../redux/slice_index';
 import {useSelector, useDispatch} from 'react-redux';
+import {navigate} from '../../navigators/root_navigators';
+import {SCREEN_NAMES} from '../../navigators/screen_names';
 
 const HomeScreen: React.FC = () => {
   const dispatch = useDispatch();
   const {userData, itemData} = useSelector((state: any) => state.user);
-
   const [selectedItem, setSelectedItem] = useState();
   const [isSelecting, SetIsSelecting] = useState(false);
 
   const showItem = isSelecting === false && selectedItem;
   const isPressabled = selectedItem!;
-  console.log('ispressable', isPressabled);
 
   const fetchDataApi = async () => {
     try {
@@ -53,8 +53,6 @@ const HomeScreen: React.FC = () => {
     }
   }, [userData?.accessToken]);
 
-  console.log('itemDataaaaa=========>2', itemData);
-
   const renderItem = ({item}: any) => {
     return (
       <TouchableOpacity
@@ -68,8 +66,6 @@ const HomeScreen: React.FC = () => {
     );
   };
 
-  console.log('selected Itemaaaaaaaaaaaaaaaa', selectedItem);
-
   const handleLogout = () => {
     // Đặt lại trạng thái người dùng trong Redux
     try {
@@ -80,11 +76,17 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  // const handleConfirm = () =>{
-  //   try{
-  //     // dispatch(setSelectedItem)
-  //   }
-  // }
+  const handleConfirm = () => {
+    try {
+      dispatch(setInfoItem(selectedItem));
+      console.log('dispatch data');
+
+      navigate(SCREEN_NAMES.MENU_SCREEN);
+    } catch (e) {
+      console.log('erro', e);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
@@ -184,7 +186,7 @@ const HomeScreen: React.FC = () => {
             ]}
             disabled={!isPressabled}
             onPress={() => {
-              console.log('Button Pressed!');
+              handleConfirm();
             }}>
             <Text style={styles.bottonText}>Xác nhận</Text>
           </TouchableOpacity>

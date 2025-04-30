@@ -1,5 +1,4 @@
 import { Button, StyleSheet } from "react-native";
-
 const styles = StyleSheet.create({
     container:{
         flex: 1,
@@ -16,8 +15,8 @@ const styles = StyleSheet.create({
         flex: 0.15,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        height:'auto%',
-        width:'auto%',
+        height:'auto',
+        width:'auto',
         backgroundColor: 'green',
         alignContent:'center',
         alignItems: 'center',
@@ -40,54 +39,48 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         resizeMode: 'contain',
-
     },
 
     body:{
-        flex: 1.5,
+        flex:1.5,
+        marginVertical:10,
     },
-    welcomeText:{
-        textAlign: 'left', 
-        fontSize: 24, 
-        fontWeight: 'bold', 
-        margin: 20},
-    bodyContent:
-    {
-        flex:1,
-        paddingTop:'5%',
-    },
-
-    pickerBox:{
-        flex:1,        
-        justifyContent:'flex-start',
-        alignItems:'center',
-        
-    }, 
-    pickerHeader:{
-        paddingHorizontal:5,
-        width:'50%',
+    headerContent:{
+        flex:0.5,
         flexDirection:'row',
-        backgroundColor:'orange',
+        alignContent:'center',
+        paddingHorizontal:10,
         justifyContent:'space-between',
-        alignItems:'center',
-        borderWidth: 1,
-        borderRadius:5,
-        height:'15%',
+    },
+    headerContentCol:{
+        flex:1,
+        marginRight:5,
+        // backgroundColor:'red',
+        justifyContent:'space-around',
+        alignContent:'center',
+        alignItems:'flex-start',
+    },
+    headerContentItem:{
+
+    },
+    mainContent:{
+        flex:2,
+        // backgroundColor:'blue'
     },
 
-    pickerBody:{
-        borderWidth: 1,
-        flex:1,
-        width:'50%',
-        marginBottom:10,
-        borderRadius:5,
+    mainContentHeader:{
+        flexDirection:'row',
+        alignContent:'center',
+        justifyContent:'center',
+    },    
+    mainConTentText:{
+        fontSize:20,
+        borderWidth:1,
+        textAlign:'center',
+        textAlignVertical:'center',
     },
-    
-    bodyItem:{
+    mainContentBody:{
         flex:1,
-        width:'100%',
-        alignItems:'center',
-        
     },
     footer:{
         flex: 0.2, backgroundColor:'',
@@ -109,12 +102,23 @@ const styles = StyleSheet.create({
         paddingHorizontal:20,
     },
 
+
+
     normalText:{
-        fontSize: 22,
+        fontSize: 20,
         color: 'black',
         fontWeight: 'bold',
     },
 
+    button:{
+        backgroundColor:'blue',
+        width:'90%',
+        height:'15%',
+        alignItems:'center',
+        justifyContent:'center',
+        paddingVertical:10,
+        marginBottom:'5%',
+    },
 
     bottonText:{
         fontSize: 22,
@@ -122,15 +126,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    itemBox:{
-        borderWidth:1,
-        borderRadius:5,
-        flex:1,
-        alignItems:'center',
-        margin:5,
-        paddingVertical:5,
-        backgroundColor:'lightgray',
-    }
-});
+})
 
 export default styles;
