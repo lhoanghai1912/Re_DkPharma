@@ -31,7 +31,7 @@ const TransferScreen: React.FC = () => {
     (state: any) => state.item,
   );
   const {userData, itemData} = useSelector((state: any) => state.user);
-  const [isBlocked, setIsBlocked] = useState(true);
+  const [isBlocked, setIsBlocked] = useState<string | null>('');
   const [isCameraOn, setIsCameraOn] = useState(false); // State for camera activation
   const [isWeighOn, setIsWeighOn] = useState(false); // State for camera activation
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -90,22 +90,26 @@ const TransferScreen: React.FC = () => {
     } else {
       console.log('request permission denied');
     }
-    // try {
-    //   // setIsBlocked(!isBlocked);
-    // } catch (e) {
-    //   console.log('erro:', e);
-    // }
   };
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (code: any) => {
-      console.log('qrData from scan', code[0]?.value);
       setQrData(code[0]?.value);
-      console.log('qrdataaaaaaaaaaaaaaaa', qrData);
+      const formattedValue = `${getDetailsItemSelected.itemCode}''${getDetailsItemSelected.batchNumber}`;
+      if (qrData === formattedValue) {
+        console.log('QR hợp lệ');
+        setIsCameraOn(false);
+        setIsBlocked(getDetailsItemSelected.itemCode);
+      } else {
+        console.log('QR k hợp lệ');
+        setIsCameraOn(false);
+        // setIsBlocked(getDetailsItemSelected.proCode);
+      }
     },
   });
 
+  console.log('abcacwacpawdawdawd', isBlocked);
   const handleGoBack = async () => {
     setIsCameraOn(false);
     console.log('back to tranfer screen');
@@ -124,8 +128,7 @@ const TransferScreen: React.FC = () => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            setDetailsItemSelected(item);
-
+            dispatch(setDetailsItemSelected(item));
             handleQR();
           }}
           style={[
@@ -138,10 +141,14 @@ const TransferScreen: React.FC = () => {
           {item.requiredQuantity}
         </Text>
         <TextInput
-          editable={isBlocked ? false : true}
+          editable={isBlocked === item.itemCode ? false : true}
           style={[
             styles.mainConTentText,
-            {flex: 0.8, backgroundColor: isBlocked ? '#CCCCCC' : 'white'},
+            {
+              flex: 0.8,
+              backgroundColor:
+                isBlocked === item.itemCode ? '#CCCCCC' : 'white',
+            },
           ]}>
           {item.quantity}
         </TextInput>
@@ -155,17 +162,20 @@ const TransferScreen: React.FC = () => {
           {item.uomCode}
         </Text>
         <TextInput
-          editable={isBlocked ? false : true}
+          editable={isBlocked === item.itemCode ? false : true}
           style={[
             styles.mainConTentText,
-            {flex: 1, backgroundColor: isBlocked ? '#CCCCCC' : 'white'},
+            {
+              flex: 1,
+              backgroundColor:
+                isBlocked === item.itemCode ? '#CCCCCC' : 'white',
+            },
           ]}>
           {item.note}
         </TextInput>
       </View>
     );
   };
-  console.log('getDetailsItem', getDetailsItem);
 
   return (
     <View style={styles.container}>
