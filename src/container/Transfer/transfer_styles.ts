@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
     },
+    iconArrow:{width:20,height:20,resizeMode:'contain'},
 
     body:{
         flex:1.5,
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignContent:'center',
         paddingHorizontal:10,
-        justifyContent:'space-between',
     },
     headerContentCol:{
         flex:1,
@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
         // backgroundColor:'red',
         justifyContent:'space-around',
         alignContent:'center',
-        alignItems:'flex-start',
+        alignItems:'center',
     },
     headerContentItem:{
-
+        width:'100%',
     },
     mainContent:{
         flex:2,
@@ -82,6 +82,30 @@ const styles = StyleSheet.create({
     mainContentBody:{
         flex:1,
     },
+
+    pickerBody:{
+        borderWidth: 1,
+        flex:1,
+        width:'50%',
+        marginBottom:10,
+        borderRadius:5,
+    },
+
+    modal:{
+        // flex:1,
+        height:300,
+        width:500,
+        justifyContent:'center',
+        alignContent:'center',
+      },
+    wrapModal:{
+    flex:1,
+    width:'auto',
+    justifyContent:'center',
+    alignItems:'center',
+    alignContent:'center',
+    },
+
     footer:{
         flex: 0.2, backgroundColor:'',
     },

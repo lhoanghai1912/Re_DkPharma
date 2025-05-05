@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Animated,
   FlatList,
   Image,
   ImageStyle,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -23,9 +26,12 @@ import {
   useCameraPermission,
   useCodeScanner,
 } from 'react-native-vision-camera';
+import {Calendar} from 'react-native-calendars';
 
 const TransferScreen: React.FC = () => {
-  const [docDate, selectedDocDate] = useState(moment().format('YYYY-MM-DD'));
+  const [selectedDocDate, SetSelectedDocDate] = useState(
+    moment().format('YYYY-MM-DD'),
+  );
   const dispatch = useDispatch();
   const {getDetailsItem, getSelectedItem, getDetailsItemSelected} = useSelector(
     (state: any) => state.item,
@@ -36,13 +42,18 @@ const TransferScreen: React.FC = () => {
   const [isWeighOn, setIsWeighOn] = useState(false); // State for camera activation
   const {hasPermission, requestPermission} = useCameraPermission();
   const [qrData, setQrData] = useState<any>();
-
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const device = useCameraDevice('back');
+  const [selectedTranferId, setSelectedTranferId] = useState(
+    getSelectedItem?.tranferId[0],
+  );
+  const [docDate, setDocDate] = useState(selectedDocDate);
 
   const fetchItemData = async () => {
     try {
       const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${getSelectedItem.tranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`,
+        `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${selectedTranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`,
         {
           method: 'GET',
           headers: {
@@ -52,6 +63,8 @@ const TransferScreen: React.FC = () => {
         },
       );
       const details = await response.json();
+      console.log('response', response);
+
       console.log('detailsssssssssssssssssssss', details);
       if (response.ok) {
         console.log('respon ok');
@@ -60,10 +73,10 @@ const TransferScreen: React.FC = () => {
     } catch {}
   };
   useEffect(() => {
-    if (userData?.accessToken) {
+    if (userData?.accessToken && selectedTranferId) {
       fetchItemData();
     }
-  }, [docDate, itemData.tranferId, itemData.docEntry]);
+  }, [docDate, selectedTranferId, itemData.docEntry]);
 
   const handleBack = async () => {
     try {
@@ -109,11 +122,22 @@ const TransferScreen: React.FC = () => {
     },
   });
 
-  console.log('abcacwacpawdawdawd', isBlocked);
   const handleGoBack = async () => {
     setIsCameraOn(false);
     console.log('back to tranfer screen');
   };
+  const renderTranferId = ({item}: any) => (
+    <TouchableOpacity
+      style={styles.mainContentHeader}
+      onPress={() => {
+        setSelectedTranferId(item);
+        // console.log('selectedTranferId', selectedTranferId);
+        setIsSelecting(!isSelecting);
+      }}>
+      <Text style={[styles.mainConTentText, {flex: 1}]}>{item}</Text>
+    </TouchableOpacity>
+  );
+
   const renderItem = ({item, index}: any) => {
     return (
       <View style={styles.mainContentHeader}>
@@ -203,17 +227,80 @@ const TransferScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
+          <View
+            style={{
+              flex: 1,
+              zIndex: 2,
+              position: 'absolute',
+            }}></View>
           <View style={styles.headerContent}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onResponderEnd={() => {
+                Alert.alert('Modal has been closed');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={[styles.wrapModal, {marginTop: 0}]}>
+                <Calendar
+                  style={[styles.modal, {borderWidth: 1, marginTop: '7%'}]}
+                  onDayPress={day => {
+                    SetSelectedDocDate(day.dateString);
+                  }}
+                  markedDates={{
+                    [selectedDocDate]: {
+                      selected: true,
+                      disableTouchEvent: true,
+                      dotColor: 'orange',
+                    },
+                  }}></Calendar>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    justifyContent: 'space-around',
+                    width: '40%',
+                    marginTop: 15,
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    style={styles.footerButton}
+                    onPress={() => {
+                      setDocDate(moment(selectedDocDate).format('YYYY-MM-DD')),
+                        setModalVisible(!modalVisible);
+                    }}>
+                    <Text style={styles.normalText}>Xác nhận</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.footerButton}
+                    onPress={() => {
+                      setModalVisible(false), SetSelectedDocDate(docDate);
+                    }}>
+                    <Text style={styles.normalText}>Hủy bỏ</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
             <View style={styles.headerContentCol}>
               <View style={styles.headerContentItem}>
                 <Text style={styles.normalText}>{`Mã CT: ${
                   getDetailsItem?.docCode || ''
                 }`}</Text>
               </View>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>{`Ngày xuất kho: ${
-                  moment(getDetailsItem?.docDate).format('DD-MM-YYYY') || ''
-                }`}</Text>
+              <View style={[styles.headerContentItem, {flexDirection: 'row'}]}>
+                <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(true);
+                    console.log('modal press');
+                    console.log('modal visible: ', modalVisible);
+                  }}>
+                  <Text
+                    style={[styles.normalText, {backgroundColor: 'red'}]}>{`${
+                    moment(docDate).format('DD-MM-YYYY') || ''
+                  }`}</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.headerContentItem}>
                 <Text style={styles.normalText}>{`Trạng thái: ${
@@ -221,7 +308,7 @@ const TransferScreen: React.FC = () => {
                 }`}</Text>
               </View>
             </View>
-            <View style={styles.headerContentCol}>
+            <View style={[styles.headerContentCol, {flex: 1.2}]}>
               <View style={styles.headerContentItem}>
                 <Text style={styles.normalText}>{`Lệnh sản xuất: ${
                   getDetailsItem?.productionCode || ''
@@ -238,25 +325,78 @@ const TransferScreen: React.FC = () => {
                 }`}</Text>
               </View>
             </View>
-            <View style={styles.headerContentCol}>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>{`Mã yêu cầu ck: ${
-                  getDetailsItem?.tranferId || ''
-                }`}</Text>
+            <View
+              style={[
+                styles.headerContentCol,
+                {
+                  flexDirection: 'row',
+                  padding: 5,
+                },
+              ]}>
+              <View
+                style={{
+                  flex: 1,
+                  height: '100%',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}>
+                <View
+                  style={[styles.headerContentItem, {flexDirection: 'row'}]}>
+                  <Text style={styles.normalText}>{`Mã yêu cầu ck: `}</Text>
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      backgroundColor: 'red',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setIsSelecting(!isSelecting);
+                      // renderTranferId();
+                    }}>
+                    <Text style={styles.normalText}>
+                      {`${selectedTranferId || ''}`}
+                    </Text>
+                    <Image
+                      source={isSelecting ? images.up_white : images.down_white}
+                      style={[styles.iconArrow, {marginLeft: 5}]}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.headerContentItem}>
+                  <Text style={styles.normalText}>{`Mã thành phẩm: ${
+                    getDetailsItem?.itemCode || ''
+                  }`}</Text>
+                </View>
+                <View style={styles.headerContentItem}>
+                  <Text style={styles.normalText}>{`Người nhập: ${
+                    getDetailsItem?.creator || ''
+                  }`}</Text>
+                </View>
               </View>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>{`Mã thành phẩm: ${
-                  getDetailsItem?.itemCode || ''
-                }`}</Text>
-              </View>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>{`Người nhập: ${
-                  getDetailsItem?.creator || ''
-                }`}</Text>
+
+              <View
+                style={[
+                  // styles.pickerBody,
+                  {
+                    flex: 0.2,
+                    flexDirection: 'column',
+                    display: isSelecting ? 'flex' : 'none',
+                  },
+                ]}>
+                <FlatList
+                  data={getSelectedItem.tranferId}
+                  renderItem={renderTranferId}
+                  keyExtractor={item => item.tranferId}
+                  style={{
+                    flex: 1,
+                  }}
+                />
               </View>
             </View>
           </View>
-          <View style={styles.mainContent}>
+
+          <View style={[styles.mainContent]}>
             <View style={styles.mainContentHeader}>
               <Text style={[styles.mainConTentText, {flex: 0.4}]}>STT</Text>
               <Text style={[styles.mainConTentText, {flex: 1}]}>Mã NVL</Text>
