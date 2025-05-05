@@ -37,14 +37,14 @@ const HomeScreen: React.FC = () => {
       );
       console.log('response=========>', response);
 
-      const dataItem = await response.json();
       if (response.ok) {
+        const dataItem = await response.json();
         console.log('dataItem lấy từ API ', dataItem);
         dispatch(setItemData(dataItem.items)); //Lưu vào store để dùng local
         console.log('itemDataaaaa=========>1', itemData);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch (e) {
+      console.error('Error fetching data:', e);
     }
   };
   useEffect(() => {
@@ -87,6 +87,9 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  const handleSetting = async () => {
+    navigate(SCREEN_NAMES.SETTING_SCREEN);
+  };
 
   return (
     <View style={styles.container}>
@@ -97,7 +100,7 @@ const HomeScreen: React.FC = () => {
         <TouchableOpacity
           style={styles.headerButtons}
           onPress={() => {
-            console.log('Button Pressed!');
+            handleSetting();
           }}>
           <Image source={images.account} style={styles.icon as ImageStyle} />
         </TouchableOpacity>

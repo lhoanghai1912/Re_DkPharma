@@ -122,6 +122,10 @@ const TransferScreen: React.FC = () => {
     },
   });
 
+  const handleSetting = async () => {
+    navigate(SCREEN_NAMES.SETTING_SCREEN);
+  };
+
   const handleGoBack = async () => {
     setIsCameraOn(false);
     console.log('back to tranfer screen');
@@ -221,7 +225,7 @@ const TransferScreen: React.FC = () => {
           <TouchableOpacity
             style={styles.headerButtons}
             onPress={() => {
-              console.log('Button Pressed!');
+              handleSetting();
             }}>
             <Image source={images.account} style={styles.icon as ImageStyle} />
           </TouchableOpacity>

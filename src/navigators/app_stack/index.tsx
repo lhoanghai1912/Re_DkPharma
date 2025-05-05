@@ -3,6 +3,7 @@ import {SCREEN_NAMES} from './../screen_names';
 import HomeScreen from '../../container/Home/home_Index';
 import MenuScreen from '../../container/Menu/menu_Index';
 import TransferScreen from '../../container/Transfer/transfer_Index';
+import SettingScreen from '../../container/Setting/setting_index';
 const Stack = createNativeStackNavigator();
 
 const AppStackScreen = () => {
@@ -18,6 +19,10 @@ const AppStackScreen = () => {
       <Stack.Screen
         name={SCREEN_NAMES.TRANSFER_CREEN}
         component={TransferScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.SETTING_SCREEN}
+        component={SettingScreen}
       />
     </Stack.Navigator>
   );
