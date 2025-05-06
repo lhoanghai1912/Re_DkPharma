@@ -26,8 +26,8 @@ type LoginScreenNavigationProp = StackNavigationProp<
 >;
 
 const LoginScreen: React.FC = ({}) => {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = React.useState('admin');
+  const [password, setPassword] = React.useState('1234');
   const [isVisible, setIsVisible] = React.useState(true);
   const dispatch = useDispatch();
   const isLoginEnabled = username.length > 0 && password.length > 0;
@@ -78,6 +78,7 @@ const LoginScreen: React.FC = ({}) => {
       Alert.alert('Error', 'Something went wrong. Please try again late111r.');
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>

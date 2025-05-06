@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor:'white',
+    marginVertical:20,
   },
   header:{
     flex: 0.15,
@@ -41,12 +42,14 @@ icon:{
     borderTopWidth:1,
   },
   mainBody:{
-    flex:1,
+    flex:1.5,
     justifyContent:'space-around',
+    backgroundColor:'red',
   },
   mainContent:{
-    flex:1,
+    flex:1.5,
     padding:10,
+    // justifyContent:'center',
   },
   updateInfo:{
     flex:1,
@@ -56,10 +59,11 @@ icon:{
 
   //Button Group
   buttonGroup:{
+    flex:0.5,
     flexDirection:'row',
     justifyContent:'space-around',
     alignContent:'flex-start',
-    alignItems:'flex-start',
+    alignItems:'center',
   },
   radioGroup:{
     flexDirection: 'row',
@@ -69,6 +73,16 @@ icon:{
     padding: 16,
     marginTop: 10,
     shadowColor: '#000',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightblue',
+    margin: 10,
+    width: 'auto',
+    height: 60,
+    paddingHorizontal:20,
+    borderRadius: 10,
   },
 
 //password
@@ -106,7 +120,15 @@ eyeIconImage: {
       color: 'black', 
       fontWeight:400,   
     },
-footer:{flex:1},
+footer:{
+  flexDirection:'row',
+  flex:0.5,
+  alignItems:'center',
+  justifyContent:'space-around',
+  alignContent:"center",
+// backgroundColor:'red',
+
+},
 
 textInput:{
   borderWidth:1,
@@ -117,7 +139,11 @@ textInput:{
   fontSize:20,
   marginBottom:50,
 },
-
+buttonText:{
+  fontSize:26,
+  fontWeight:300,
+  textAlign:'center',
+},
 readonly:{
   borderWidth:1,
   alignItems:'center',  

@@ -21,7 +21,7 @@ const initialUserState: UserState = {
 
 // Tạo slice cho user
 const userSlice = createSlice({
-  name: 'user',
+  name: 'user_Slice',
   initialState: initialUserState,
   reducers: {
     login(
@@ -48,9 +48,11 @@ const userSlice = createSlice({
     setUserData(state, action: PayloadAction<any>) {
       state.userData = action.payload.userData;
     },
+    setUserDataInformation(state, action: PayloadAction<any>) {
+      state.userData = action.payload.user;
+    },
     setItemData(state, action: PayloadAction<any>) {
       state.itemData = action.payload;
-      // state.detailsItemSelected = action.payload.
     },
   },
 });
@@ -79,7 +81,7 @@ const initialItemState: ItemState = {
 };
 
 const itemSlice = createSlice({
-  name: 'item',
+  name: 'item_Slice',
   initialState: initialItemState,
   reducers: {
     setInfoItem(state, action: PayloadAction<any>) {
@@ -94,7 +96,8 @@ const itemSlice = createSlice({
   },
 });
 
-export const {login, logout, setUserData, setItemData} = userSlice.actions;
+export const {login, logout, setUserData, setItemData, setUserDataInformation} =
+  userSlice.actions;
 export const {setInfoItem, setDetailsItem, setDetailsItemSelected} =
   itemSlice.actions;
 

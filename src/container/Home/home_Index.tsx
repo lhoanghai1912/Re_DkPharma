@@ -9,7 +9,11 @@ import {
 } from 'react-native';
 import styles from './home_Style';
 import images from '../../component/contants';
-import {setItemData, logout, setInfoItem} from '../../redux/slice_index';
+import {
+  setItemData,
+  logout,
+  setInfoItem,
+} from '../../redux/slice_index';
 import {useSelector, useDispatch} from 'react-redux';
 import {navigate} from '../../navigators/root_navigators';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
@@ -41,6 +45,8 @@ const HomeScreen: React.FC = () => {
         const dataItem = await response.json();
         console.log('dataItem lấy từ API ', dataItem);
         dispatch(setItemData(dataItem.items)); //Lưu vào store để dùng local
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaasasdawd', userData);
+
         console.log('itemDataaaaa=========>1', itemData);
       }
     } catch (e) {
@@ -51,7 +57,7 @@ const HomeScreen: React.FC = () => {
     if (userData?.accessToken) {
       fetchDataApi();
     }
-  }, [userData?.accessToken]);
+  }, [userData]);
 
   const renderItem = ({item}: any) => {
     return (

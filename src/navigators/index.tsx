@@ -5,12 +5,10 @@ import React, {useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {navigationRef} from './root_navigators';
 import AppStackScreen from './app_stack';
-import {login, logout, setUserData} from '../redux/slice_index';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  const {refreshToken, refreshTokenExpire, isAuthenticated, userData} =
-    useSelector((state: any) => state.user);
+  const {userData} = useSelector((state: any) => state.user);
   const currentTime = Date.now();
 
   // useEffect(() => {
