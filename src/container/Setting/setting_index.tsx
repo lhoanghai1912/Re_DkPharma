@@ -146,17 +146,9 @@ const SettingScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            handleBack();
-          }}
-          style={[styles.headerButtons, styles.icon]}>
-          <Image style={styles.icon} source={images.back_white}></Image>
-        </TouchableOpacity>
+        <TouchableOpacity></TouchableOpacity>
         <Text style={styles.headerText}>Xuất kho sản xuất</Text>
-        <TouchableOpacity style={styles.headerButtons} onPress={() => {}}>
-          <Image source={images.account} style={styles.icon} />
-        </TouchableOpacity>
+        <TouchableOpacity></TouchableOpacity>
       </View>
       <View style={styles.body}>
         <View style={styles.buttonGroup}>
@@ -236,7 +228,10 @@ const SettingScreen: React.FC = () => {
                     style={styles.eyeIcon}>
                     <Image
                       source={isOldPasswordVisible ? images.hide : images.view}
-                      style={styles.eyeIconImage}
+                      style={[
+                        styles.eyeIconImage,
+                        {display: oldPassword.length > 0 ? 'flex' : 'none'},
+                      ]}
                     />
                   </TouchableOpacity>
                 </View>
@@ -257,7 +252,10 @@ const SettingScreen: React.FC = () => {
                     style={styles.eyeIcon}>
                     <Image
                       source={isNewPasswordVisible ? images.hide : images.view}
-                      style={styles.eyeIconImage}
+                      style={[
+                        styles.eyeIconImage,
+                        {display: newPassword.length > 0 ? 'flex' : 'none'},
+                      ]}
                     />
                   </TouchableOpacity>
                 </View>
@@ -278,7 +276,10 @@ const SettingScreen: React.FC = () => {
                       source={
                         isNewPasswordRefVisible ? images.hide : images.view
                       }
-                      style={styles.eyeIconImage}
+                      style={[
+                        styles.eyeIconImage,
+                        {display: newPasswordRef.length > 0 ? 'flex' : 'none'},
+                      ]}
                     />
                   </TouchableOpacity>
                 </View>

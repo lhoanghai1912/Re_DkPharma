@@ -91,7 +91,9 @@ const TransferScreen: React.FC = () => {
     requestPermission();
     if (hasPermission == true) {
       console.log('Request Permission Accecpted');
-      setIsCameraOn(true);
+      // setIsCameraOn(true);
+      navigate(SCREEN_NAMES.WEIGHT_SCREEN);
+
       if (device == null) {
         console.log('device not found');
         return (
@@ -114,6 +116,7 @@ const TransferScreen: React.FC = () => {
         console.log('QR hợp lệ');
         setIsCameraOn(false);
         setIsBlocked(getDetailsItemSelected.itemCode);
+        navigate(SCREEN_NAMES.WEIGHT_SCREEN);
       } else {
         console.log('QR k hợp lệ');
         setIsCameraOn(false);
@@ -391,7 +394,7 @@ const TransferScreen: React.FC = () => {
                 <FlatList
                   data={getSelectedItem.tranferId}
                   renderItem={renderTranferId}
-                  keyExtractor={item => item.tranferId}
+                  keyExtractor={item => item.proCode}
                   style={{
                     flex: 1,
                   }}
@@ -437,7 +440,7 @@ const TransferScreen: React.FC = () => {
               <FlatList
                 data={getDetailsItem?.apP_WTQ1 || []}
                 renderItem={renderItem}
-                keyExtractor={item => item.itemCode}
+                keyExtractor={item => item.proCode}
                 style={[
                   {
                     flex: 1,
