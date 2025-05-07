@@ -9,11 +9,7 @@ import {
 } from 'react-native';
 import styles from './home_Style';
 import images from '../../component/contants';
-import {
-  setItemData,
-  logout,
-  setInfoItem,
-} from '../../redux/slice_index';
+import {setItemData, logout, setInfoItem} from '../../redux/slice_index';
 import {useSelector, useDispatch} from 'react-redux';
 import {navigate} from '../../navigators/root_navigators';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
@@ -117,11 +113,12 @@ const HomeScreen: React.FC = () => {
         </Text>
         <View style={styles.bodyContent}>
           <View style={styles.pickerBox}>
-            <View
+            <TouchableOpacity
               style={[
                 styles.pickerHeader,
                 {marginBottom: isSelecting ? 0 : 50},
-              ]}>
+              ]}
+              onPress={() => SetIsSelecting(!isSelecting)}>
               <TouchableOpacity></TouchableOpacity>
               <Text style={styles.normalText}>
                 {selectedItem?.proCode || 'Chọn mã lệnh'}
@@ -132,7 +129,7 @@ const HomeScreen: React.FC = () => {
                   style={styles.icon as ImageStyle}
                 />
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
             <View
               style={[
                 styles.pickerBody,

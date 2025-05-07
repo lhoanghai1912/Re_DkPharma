@@ -15,5 +15,6 @@ const images = {
     un_check: require('../assets/un_check.png'),
     up_white: require('../assets/up_white.png'),
     view: require('../assets/view.png'),
+    add_list: require('../assets/add_list.png'),
     };
 export default images;

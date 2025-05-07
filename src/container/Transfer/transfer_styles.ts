@@ -45,13 +45,14 @@ const styles = StyleSheet.create({
     body:{
         flex:1.5,
         marginVertical:10,
+        // backgroundColor:'red',
     },
     headerContent:{
         flex:0.5,
         flexDirection:'row',
         alignContent:'center',
         paddingHorizontal:10,
-    },
+        },
     headerContentCol:{
         flex:1,
         marginRight:5,
@@ -90,22 +91,39 @@ const styles = StyleSheet.create({
         marginBottom:10,
         borderRadius:5,
     },
-
-    modal:{
-        // flex:1,
-        height:300,
-        width:500,
-        justifyContent:'center',
-        alignContent:'center',
-      },
-    wrapModal:{
-    flex:1,
-    width:'auto',
-    justifyContent:'center',
-    alignItems:'center',
-    alignContent:'center',
+    wrapWeightModal:{
+        backgroundColor:'white',
     },
 
+    calendar:{
+        // flex:1,
+        // backgroundColor:'red',
+        height:'auto',
+        width:500,
+        justifyContent:'center',
+        fontSize:20,
+      },
+    wrapModal:{
+        flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
+    modalHeader:{
+        flex:0.4,
+        backgroundColor:'red',
+
+    },
+    modalBody:{
+        flex:1,
+        backgroundColor:'blue',
+
+    },
+    modalFooter:{
+        flex:0.4,
+        backgroundColor:'yellow',
+
+    },
     footer:{
         flex: 0.2, backgroundColor:'',
     },
@@ -125,9 +143,37 @@ const styles = StyleSheet.create({
         paddingVertical:10,
         paddingHorizontal:20,
     },
+    weightModal:{
+        // flex:1,
+        height:'auto',
+        backgroundColor:'white',
+        alignItems:'center',
+        justifyContent:'center',
+    },
+    modalWeightWrap:{
+        flex:1,
+        backgroundColor:'white',
+        alignItems:'center',
+    },
+    modalWeightHeader:{
+        width:'100%',
+        flexDirection:'row',
+        backgroundColor:'green',
+        justifyContent:'space-between',
+        alignItems:'center',
 
-
-
+    },
+    modalWeightBody:{
+        // backgroundColor:'red',
+    },
+    modalWeightBodyConten:{
+        flexDirection:'row',
+    },
+    modalColLable:{
+        borderWidth:1,
+        textAlign:'center',
+        textAlignVertical:'center',
+    },
     normalText:{
         fontSize: 20,
         color: 'black',

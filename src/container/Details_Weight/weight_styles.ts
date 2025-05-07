@@ -11,7 +11,9 @@ container:{
 header:{
     flexDirection:'row',
     flex:0.2,
-    backgroundColor:'green',
+    paddingHorizontal:20,
+
+    // backgroundColor:'green',
     alignItems:'center',
     justifyContent:'space-between',
     borderBottomWidth:1,
@@ -23,10 +25,9 @@ headerText:{
     fontWeight:500,
 },
 icon:{
-    position:'absolute',
     resizeMode:'contain',
-    width:30,
-    height:30,
+    width:40,
+    height:40,
 },
 body:{
     borderBottomWidth:1,
@@ -44,12 +45,33 @@ bodyHeader:{
 bodyHeaderCol:{
     borderLeftWidth:1,
     textAlign:'center',
+    backgroundColor:'white',
+    borderRadius:0,
+    textAlignVertical:'center',
+    fontSize:18
+},
+bodyMain:{
+    flex:1,
+    flexDirection:'row',
+    alignContent:'center',
+    justifyContent:'center',
+    backgroundColor:'white',
 },
 footer:{
+    // flexDirection:'row'
     alignItems:'center',
     justifyContent:'center',
     backgroundColor:'yellow',
     flex:0.3,
+},
+
+footerButton:{
+    width:'auto',
+    height:'auto',
+    backgroundColor:'blue',
+    borderRadius:5,
+    paddingVertical:10,
+    paddingHorizontal:20,
 },
 
 });
