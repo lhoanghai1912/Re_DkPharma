@@ -40,7 +40,11 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
     },
-    iconArrow:{width:20,height:20,resizeMode:'contain'},
+    iconArrow:{
+        width:20,
+        height:20,
+        resizeMode:'contain'
+    },
 
     body:{
         flex:1.5,
@@ -93,6 +97,8 @@ const styles = StyleSheet.create({
     },
     wrapWeightModal:{
         backgroundColor:'white',
+        flex:1,
+        width:'100%',
     },
 
     calendar:{
@@ -155,7 +161,27 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         alignItems:'center',
     },
+    modal_HeaderBodyContent:{
+        width:'100%',
+        flexDirection:'row',
+        borderLeftWidth:1,
+        textAlign:'center',
+        backgroundColor:'white',
+        borderRadius:0,
+        textAlignVertical:'center',
+        fontSize:18
+    },
+    bodyHeaderCol:{
+        borderLeftWidth:1,
+        borderBottomWidth:1,
+        textAlign:'center',
+        backgroundColor:'white',
+        borderRadius:0,
+        textAlignVertical:'center',
+        fontSize:18
+    },
     modalWeightHeader:{
+        flex:0.1,
         width:'100%',
         flexDirection:'row',
         backgroundColor:'green',
@@ -169,8 +195,16 @@ const styles = StyleSheet.create({
     modalWeightBodyConten:{
         flexDirection:'row',
     },
+    modalWeightFooter:{
+        flexDirection:'row',
+        flex:0.3,
+        alignContent:'center',
+        alignItems:'center',
+        width:'50%',
+        justifyContent:'space-around',
+    },
     modalColLable:{
-        borderWidth:1,
+        borderLeftWidth:1,
         textAlign:'center',
         textAlignVertical:'center',
     },
@@ -179,11 +213,13 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: 'bold',
     },
-
+    modalWeightRender:{
+        flexDirection:'column',
+    },
     button:{
         backgroundColor:'blue',
-        width:'90%',
-        height:'15%',
+        width:'10%',
+        height:'auto',
         alignItems:'center',
         justifyContent:'center',
         paddingVertical:10,
