@@ -43,11 +43,14 @@ const WeightModal: React.FC<WeightModalProps> = ({
 }) => {
   const [nextId, setNextId] = useState(0);
   const {userData} = useSelector((state: any) => state.user);
+  const [dataList, setDataList] = useState(listDatas);
+  const [tempData, setTempData] = useState<any>([]); // Để lưu trữ tạm các bản ghi thêm mới
 
   const handleAddWeight = () => {
     console.log('addWeight pressed');
     console.log('apP_WTQ1_sub', selectedData[0].apP_WTQ1_Sub);
     console.log('selectedData', selectedData[0]);
+    console.log('creatorrrrrrrrrrrr', listDatas?.items?.creator);
 
     const updateData = {...selectedData};
     if (!updateData[0].apP_WTQ1_Sub) {
@@ -63,74 +66,75 @@ const WeightModal: React.FC<WeightModalProps> = ({
       uomCodeId: selectedData[0].uomCodeId,
       uomCode: selectedData[0].uomCode,
       note: '',
-      creator: selectedData[0].creator,
+      creator: listDatas?.items?.creator,
     };
+    // Cập nhật trạng thái editableMap cho bản ghi mới
 
     updateData[0].apP_WTQ1_Sub.push(newSubItem);
     setNextId(nextId + 1);
-    onSave(updateData[0]);
+    setTempData([...tempData, newSubItem]);
+    setDataList(dataList);
   };
-  console.log('data tong', listDatas);
+  console.log('data tong', dataList);
   console.log('selecteddata', selectedData);
   // console.log('data2', listDatas.items);
   // console.log('data3', listDatas.items.selectedData);
 
+  const isQuantityZero = () => {
+    return selectedData[0]?.apP_WTQ1_Sub?.some(
+      (item: SubItem) => item.quantity === 0,
+    );
+  };
+
   const handleSave = async () => {
     console.log('save pressed');
 
-    const totalQuantity = listDatas.items.selectedData[0].apP_WTQ1_Sub.reduce(
+    const totalQuantity = selectedData[0]?.apP_WTQ1_Sub.reduce(
       (sum: number, item: SubItem) =>
         sum + (parseFloat(item.quantity.toString()) || 0),
       0,
     );
 
     //update father quantity
-    const updateData = {...selectedData};
+    const updateData = selectedData;
+    updateData[0].quantity = totalQuantity;
 
-    updateData.quantity = totalQuantity;
-    console.log('totalQuantity', totalQuantity);
-
-    try {
-      const response = await fetch(
-        'https://pos.foxai.com.vn:8123/api/Production/addIssue',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData.accessToken}`,
-          },
-          body: JSON.stringify(updateData),
-        },
-      );
-      const data = await response.json();
-      console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', data);
-
-      if (response.ok) {
-        onSave(data);
-        Alert.alert('Succes');
-      } else {
-        Alert.alert('erro');
-      }
-    } catch (e) {
-      console.log('erro', e);
-    }
     //send data to TranferScreen
-    // onSave(updateData);
+    setDataList(updateData);
+    onSave(updateData);
+    setTempData([]);
     onClose();
   };
-  const validateQuantity = (value: string) => {
-    const regex = /^[0-9]+(\.[0-9]+)?$/; // Biểu thức chính quy kiểm tra số thập phân hợp lệ
-    if (regex.test(value) || value === '') {
-      return true;
-    } else {
-      Alert.alert('Error', 'Only Number');
-      return false;
+  const handleCancel = async () => {
+    const updateData = selectedData;
+    updateData[0].apP_WTQ1_Sub = updateData[0].apP_WTQ1_Sub.filter(
+      (item: SubItem) =>
+        !tempData.some((tempItem: SubItem) => tempItem.id === item.id),
+    );
+    setDataList(updateData);
+    setTempData([]);
+    onClose();
+  };
+  // const validate = (value: string) => {
+  //   const regex = /^\d*\.?\d*$/;
+  //   return regex.test(value);
+  // };
+  const validateQuantity = (text: string) => {
+    if (text.split('.').length > 2) {
+      return;
     }
+    // Kiểm tra xem chuỗi chỉ chứa số và dấu chấm
+    const regex = /^\d*\.?\d*$/;
+    return regex.test(text);
   };
   const renderWeight = ({item, index}: any) => {
     return (
       <View style={styles.modalWeightBody}>
-        <View style={styles.modal_HeaderBodyContent}>
+        <View
+          style={[
+            styles.modal_HeaderBodyContent,
+            // {backgroundColor: 'red'},
+          ]}>
           <Text style={[styles.bodyHeaderCol, {flex: 0.2}]}>{index + 1}</Text>
           <Text style={[styles.bodyHeaderCol, {flex: 0.8}]}>
             {item?.itemCode}
@@ -142,7 +146,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
             {item?.batchNumber || 'null'}
           </Text>
           <TextInput
-            style={[styles.bodyHeaderCol, {flex: 0.6}]}
+            style={[
+              styles.bodyHeaderCol,
+              {
+                flex: 0.6,
+              },
+            ]}
             value={String(item?.quantity)}
             onChangeText={text => {
               if (validateQuantity(text)) {
@@ -157,7 +166,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 if (subItem) {
                   subItem.quantity = parseFloat(text) || 0;
                 }
-                onSave(updateData);
+                setDataList(updateData);
               }
             }}
             keyboardType="numeric"
@@ -180,7 +189,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
               if (subItem) {
                 subItem.note = text;
               }
-              onSave(updateData);
+              setDataList(updateData);
             }}
           />
         </View>
@@ -191,51 +200,60 @@ const WeightModal: React.FC<WeightModalProps> = ({
 
   return (
     <Modal
-      animationType="slide"
-      transparent={true}
+      // animationType="slide"
+      transparent
       visible={visible}
       onRequestClose={onClose}>
       <View style={styles.wrapModal}>
-        <View style={styles.modalWeightHeader}>
-          <TouchableOpacity></TouchableOpacity>
-          <Text style={styles.headerText}>Phiếu cân chi tiết</Text>
-          <TouchableOpacity
-            onPress={() => {
-              handleAddWeight();
-            }}>
-            <Image source={images.add_list} style={styles.icon}></Image>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.wrapWeightModal}>
-          <View style={styles.modal_HeaderBodyContent}>
-            <Text style={[styles.bodyHeaderCol, {flex: 0.2}]}>STT</Text>
-            <Text style={[styles.bodyHeaderCol, {flex: 0.8}]}>Mã NVL</Text>
-            <Text style={[styles.bodyHeaderCol, {flex: 1}]}>Tên NVL</Text>
-            <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Số lô</Text>
-            <TextInput
-              style={[styles.bodyHeaderCol, {flex: 0.6}]}
-              editable={false}>
-              Số lượng cân
-            </TextInput>
-            <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Đơn vị tính</Text>
-            <TextInput style={[styles.bodyHeaderCol, {flex: 0.6}]}>
-              Ghi chú
-            </TextInput>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={[styles.modalWeightHeader, {backgroundColor: 'tomato'}]}>
+            <TouchableOpacity></TouchableOpacity>
+            <Text style={styles.headerText}>Phiếu cân chi tiết</Text>
+            <TouchableOpacity
+              onPress={() => {
+                handleAddWeight();
+              }}>
+              <Image source={images.add_list} style={styles.icon}></Image>
+            </TouchableOpacity>
           </View>
-          <FlatList
-            data={selectedData[0]?.apP_WTQ1_Sub || []}
-            renderItem={renderWeight}
-            keyExtractor={item => item.id}
-            // style={{backgroundColor: 'red'}}
-          />
-        </View>
-        <View style={styles.modalWeightFooter}>
-          <TouchableOpacity onPress={() => handleSave()} style={styles.button}>
-            <Text style={styles.bottonText}>Lưu</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onClose()} style={styles.button}>
-            <Text style={styles.bottonText}>Đóng</Text>
-          </TouchableOpacity>
+          <View style={styles.wrapWeightModal}>
+            <View style={styles.modal_HeaderBodyContent}>
+              <Text style={[styles.bodyHeaderCol, {flex: 0.2}]}>STT</Text>
+              <Text style={[styles.bodyHeaderCol, {flex: 0.8}]}>Mã NVL</Text>
+              <Text style={[styles.bodyHeaderCol, {flex: 1}]}>Tên NVL</Text>
+              <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Số lô</Text>
+              <TextInput
+                style={[styles.bodyHeaderCol, {flex: 0.6}]}
+                editable={false}>
+                Số lượng cân
+              </TextInput>
+              <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
+                Đơn vị tính
+              </Text>
+              <TextInput style={[styles.bodyHeaderCol, {flex: 0.6}]}>
+                Ghi chú
+              </TextInput>
+            </View>
+            <FlatList
+              data={selectedData[0]?.apP_WTQ1_Sub || []}
+              renderItem={renderWeight}
+              keyExtractor={(item, index) => index.toString()}
+              // style={{backgroundColor: 'red'}}
+            />
+          </View>
+          <View style={styles.modalWeightFooter}>
+            <TouchableOpacity
+              onPress={() => handleSave()}
+              disabled={isQuantityZero()}
+              style={[styles.button, {opacity: isQuantityZero() ? 0.5 : 1}]}>
+              <Text style={styles.bottonText}>Lưu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleCancel()}
+              style={styles.button}>
+              <Text style={styles.bottonText}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>

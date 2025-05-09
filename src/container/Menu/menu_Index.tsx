@@ -33,13 +33,16 @@ const MenuScreen: React.FC = () => {
             handleBack();
           }}
           style={[styles.headerButtons, styles.icon]}>
-          <Image source={images.back_white} style={styles.icon}></Image>
+          <Image
+            source={images.back_white}
+            style={styles.icon as ImageStyle}></Image>
         </TouchableOpacity>
         <Text style={styles.headerText}>Menu</Text>
         <TouchableOpacity
           style={styles.headerButtons}
           onPress={() => {
-            console.log('Button Pressed!');
+            console.log('Go to setting screen');
+            navigate(SCREEN_NAMES.SETTING_SCREEN);
           }}>
           <Image source={images.account} style={styles.icon as ImageStyle} />
         </TouchableOpacity>

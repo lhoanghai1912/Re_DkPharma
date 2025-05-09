@@ -12,7 +12,7 @@ import {
   setUserDataInformation,
 } from '../../redux/slice_index';
 
-const SettingScreen: React.FC = () => {
+const SettingScreen: React.FC = ({navigation}: any) => {
   const [checked, setChecked] = useState('first');
   const {userData} = useSelector((state: any) => state.user);
   const [userInfo, setUserInfo] = useState(userData.user);
@@ -29,7 +29,7 @@ const SettingScreen: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleBack = async () => {
-    navigate(SCREEN_NAMES.HOME_SCREEN);
+    navigation.goBack();
   };
 
   //hide show password

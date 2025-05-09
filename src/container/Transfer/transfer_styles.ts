@@ -70,6 +70,8 @@ const styles = StyleSheet.create({
     },
     mainContent:{
         flex:2,
+        borderTopWidth:1,
+
         // backgroundColor:'blue'
     },
 
@@ -80,7 +82,8 @@ const styles = StyleSheet.create({
     },    
     mainConTentText:{
         fontSize:20,
-        borderWidth:1,
+        borderLeftWidth:1,
+        borderBottomWidth:1,    
         textAlign:'center',
         textAlignVertical:'center',
     },
@@ -96,8 +99,8 @@ const styles = StyleSheet.create({
         borderRadius:5,
     },
     wrapWeightModal:{
-        backgroundColor:'white',
-        flex:1,
+
+flex:1,
         width:'100%',
     },
 
@@ -111,9 +114,10 @@ const styles = StyleSheet.create({
       },
     wrapModal:{
         flex: 1,
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center',
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor: 'rgba(52, 52, 52, 0.5)'
+
     },
     modalHeader:{
         flex:0.4,
@@ -173,15 +177,13 @@ const styles = StyleSheet.create({
     },
     bodyHeaderCol:{
         borderLeftWidth:1,
-        borderBottomWidth:1,
+        // borderBottomWidth:1,
         textAlign:'center',
-        backgroundColor:'white',
         borderRadius:0,
         textAlignVertical:'center',
         fontSize:18
     },
     modalWeightHeader:{
-        flex:0.1,
         width:'100%',
         flexDirection:'row',
         backgroundColor:'green',

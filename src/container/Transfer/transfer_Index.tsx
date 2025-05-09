@@ -56,6 +56,10 @@ const TransferScreen: React.FC = () => {
   const [docDate, setDocDate] = useState(selectedDocDate);
   const [listDatas, setListData] = useState<any>();
   const dispatch = useDispatch();
+  if (listDatas?.items) {
+    listDatas.items.creator = userData?.user?.fullName;
+  }
+
   const fetchItemData = async () => {
     try {
       const response = await fetch(
@@ -156,6 +160,8 @@ const TransferScreen: React.FC = () => {
   const handleSaveData = async (updateData: any) => {
     setSelectedData1(updateData);
   };
+  console.log(selectedData1, 'updateddata');
+
   const handleGoBack = async () => {
     setIsCameraOn(false);
     console.log('back to tranfer screen');
@@ -170,7 +176,45 @@ const TransferScreen: React.FC = () => {
       <Text style={[styles.mainConTentText, {flex: 1}]}>{item}</Text>
     </TouchableOpacity>
   );
+  const handleConfirm = async () => {
+    try {
+      const response = await fetch(
+        'https://pos.foxai.com.vn:8123/api/Production/addIssue',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData?.accessToken}`,
+          },
+          body: JSON.stringify(listDatas.items),
+        },
+      );
+      if (!response.ok) {
+        const errorText = await response.text(); // Đọc lỗi từ response một lần
+        console.error('Error Response:', errorText);
+        Alert.alert('Error', `Failed to save data: ${errorText}`);
+        return;
+      }
+      const data = await response.json();
+      console.log('API response', data);
 
+      if (response.ok) {
+        const errorResponse = await response.json();
+        console.log('data api back: ', data);
+        return;
+      } else {
+        if (!response.ok) {
+          // Nếu phản hồi không thành công (mã lỗi 400)
+          const errorText = await response.text(); // Đọc body dưới dạng văn bản
+          console.error('Error Response:', errorText);
+          Alert.alert('Error', `Failed to save data: ${errorText}`);
+          return;
+        }
+      }
+    } catch (e) {
+      console.log('erro11111111111111111111: ', e);
+    }
+  };
   const renderItem = ({item, index}: any) => {
     return (
       <View style={styles.mainContentHeader}>
@@ -198,8 +242,7 @@ const TransferScreen: React.FC = () => {
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
           {item.requiredQuantity}
         </Text>
-        <TextInput
-          editable={isBlocked === item.itemCode ? false : true}
+        <Text
           style={[
             styles.mainConTentText,
             {
@@ -209,7 +252,7 @@ const TransferScreen: React.FC = () => {
             },
           ]}>
           {item.quantity}
-        </TextInput>
+        </Text>
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
           {item.calculatedQuantity}
         </Text>
@@ -234,22 +277,8 @@ const TransferScreen: React.FC = () => {
       </View>
     );
   };
-
   return (
     <View style={styles.container}>
-      <CalendarModal
-        visible={modalCalendarVisible}
-        selectedDate={docDate}
-        onDateSelect={handleDateSelect}
-        onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
-      />
-      <WeightModal
-        visible={modalWeightVisible}
-        selectedData={[selectedData1]}
-        onClose={() => setModalWeightVisible(!modalWeightVisible)}
-        listDatas={listDatas} 
-        onSave={handleSaveData}
-      />
       <View
         style={[
           // {backgroundColor: 'red', display: 'none'},
@@ -279,7 +308,7 @@ const TransferScreen: React.FC = () => {
               <View style={styles.headerContentCol}>
                 <View style={styles.headerContentItem}>
                   <Text style={styles.normalText}>{`Mã CT: ${
-                    listDatas?.items?.docCode || ''
+                    listDatas?.items?.docCode || null
                   }`}</Text>
                 </View>
                 <View
@@ -293,30 +322,30 @@ const TransferScreen: React.FC = () => {
                     }}>
                     <Text
                       style={[styles.normalText, {backgroundColor: 'red'}]}>{`${
-                      moment(docDate).format('DD-MM-YYYY') || ''
+                      moment(docDate).format('DD-MM-YYYY') || null
                     }`}</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.headerContentItem}>
                   <Text style={styles.normalText}>{`Trạng thái: ${
-                    listDatas?.items?.status || ''
+                    listDatas?.items?.status || null
                   }`}</Text>
                 </View>
               </View>
               <View style={[styles.headerContentCol, {flex: 1.2}]}>
                 <View style={styles.headerContentItem}>
                   <Text style={styles.normalText}>{`Lệnh sản xuất: ${
-                    listDatas?.items?.productionCode || ''
+                    listDatas?.items?.productionCode || null
                   }`}</Text>
                 </View>
                 <View style={styles.headerContentItem}>
                   <Text style={styles.normalText}>{`Tên thành phẩm: ${
-                    listDatas?.items?.item?.itemName || ''
+                    listDatas?.items?.itemName || null
                   }`}</Text>
                 </View>
                 <View style={styles.headerContentItem}>
                   <Text style={styles.normalText}>{`Kho xuất: ${
-                    listDatas?.items?.whsCode || ''
+                    listDatas?.items?.whsCode || null
                   }`}</Text>
                 </View>
               </View>
@@ -349,7 +378,7 @@ const TransferScreen: React.FC = () => {
                         // renderTranferId();
                       }}>
                       <Text style={styles.normalText}>
-                        {`${selectedTranferId || ''}`}
+                        {`${selectedTranferId || null}`}
                       </Text>
                       <Image
                         source={
@@ -362,12 +391,12 @@ const TransferScreen: React.FC = () => {
 
                   <View style={styles.headerContentItem}>
                     <Text style={styles.normalText}>{`Mã thành phẩm: ${
-                      listDatas?.items?.itemCode || ''
+                      listDatas?.items?.itemCode || null
                     }`}</Text>
                   </View>
                   <View style={styles.headerContentItem}>
                     <Text style={styles.normalText}>{`Người nhập: ${
-                      listDatas?.items?.creator || ''
+                      listDatas?.items?.creator || null
                     }`}</Text>
                   </View>
                 </View>
@@ -408,11 +437,9 @@ const TransferScreen: React.FC = () => {
                 <Text style={[styles.mainConTentText, {flex: 0.8}]}>
                   SL theo yc
                 </Text>
-                <TextInput
-                  editable={false}
-                  style={[styles.mainConTentText, {flex: 0.8}]}>
+                <Text style={[styles.mainConTentText, {flex: 0.8}]}>
                   SL xuất tt
-                </TextInput>
+                </Text>
                 <Text style={[styles.mainConTentText, {flex: 0.8}]}>
                   Sl lũy kế
                 </Text>
@@ -458,9 +485,9 @@ const TransferScreen: React.FC = () => {
                 ]}
                 // disabled={!isPressabled}
                 onPress={() => {
-                  // handleConfirm();
+                  handleConfirm();
                 }}>
-                <Text style={styles.bottonText}>Xác nhận</Text>
+                <Text style={styles.bottonText}>Đồng bộ</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -499,6 +526,19 @@ const TransferScreen: React.FC = () => {
           <Text>Back</Text>
         </TouchableOpacity>
       </View>
+      <CalendarModal
+        visible={modalCalendarVisible}
+        selectedDate={docDate}
+        onDateSelect={handleDateSelect}
+        onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
+      />
+      <WeightModal
+        visible={modalWeightVisible}
+        selectedData={[selectedData1]}
+        onClose={() => setModalWeightVisible(!modalWeightVisible)}
+        listDatas={listDatas}
+        onSave={handleSaveData}
+      />
     </View>
   );
 };
