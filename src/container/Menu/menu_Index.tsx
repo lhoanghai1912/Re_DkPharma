@@ -18,7 +18,6 @@ const MenuScreen: React.FC = () => {
 
   const handleBack = async () => {
     try {
-      console.log('handleback pressed');
       navigate(SCREEN_NAMES.HOME_SCREEN);
     } catch (e) {
       console.log('error: ', e);

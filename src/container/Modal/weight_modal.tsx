@@ -41,8 +41,6 @@ const WeightModal: React.FC<WeightModalProps> = ({
   onSave,
   listDatas,
 }) => {
-  const [nextId, setNextId] = useState(0);
-  const {userData} = useSelector((state: any) => state.user);
   const [dataList, setDataList] = useState(listDatas);
   const [tempData, setTempData] = useState<any>([]); // Để lưu trữ tạm các bản ghi thêm mới
 
@@ -57,7 +55,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
       updateData[0].apP_WTQ1_Sub = []; // Khởi tạo apP_WTQ1_Sub nếu chưa có
     }
     const newSubItem: SubItem = {
-      id: nextId,
+      id: 0,
       fatherId: selectedData[0].id,
       itemCode: selectedData[0].itemCode,
       itemName: selectedData[0].itemName,
@@ -71,8 +69,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
     // Cập nhật trạng thái editableMap cho bản ghi mới
 
     updateData[0].apP_WTQ1_Sub.push(newSubItem);
-    setNextId(nextId + 1);
-    setTempData([...tempData, newSubItem]);
+
+    setTempData([
+      ...tempData,
+      {...newSubItem, index: updateData[0].apP_WTQ1_Sub.length - 1},
+    ]);
+
     setDataList(dataList);
   };
   console.log('data tong', dataList);
@@ -105,15 +107,28 @@ const WeightModal: React.FC<WeightModalProps> = ({
     setTempData([]);
     onClose();
   };
+
   const handleCancel = async () => {
+    if (
+      !selectedData[0]?.apP_WTQ1_Sub ||
+      selectedData[0]?.apP_WTQ1_Sub?.length === 0
+    ) {
+      // Nếu không có item, vẫn gọi onClose
+      onClose();
+    }
+
     const updateData = selectedData;
     updateData[0].apP_WTQ1_Sub = updateData[0].apP_WTQ1_Sub.filter(
-      (item: SubItem) =>
-        !tempData.some((tempItem: SubItem) => tempItem.id === item.id),
+      (item: SubItem, index: number) =>
+        !tempData.some(
+          (tempItem: SubItem & {index?: number}) => tempItem.index === index,
+        ),
     );
     setDataList(updateData);
     setTempData([]);
     onClose();
+
+    console.log('close pressed');
   };
   // const validate = (value: string) => {
   //   const regex = /^\d*\.?\d*$/;
@@ -159,9 +174,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                 if (!updateData.apP_WTQ1_Sub) {
                   updateData.apP_WTQ1_Sub = []; // Khởi tạo apP_WTQ1_Sub nếu chưa có
                 }
-                const subItem = updateData.apP_WTQ1_Sub.find(
-                  (sub: SubItem) => sub.id === item.id,
-                );
+                const subItem = updateData.apP_WTQ1_Sub[index];
 
                 if (subItem) {
                   subItem.quantity = parseFloat(text) || 0;
@@ -182,9 +195,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
               if (!updateData.apP_WTQ1_Sub) {
                 updateData.apP_WTQ1_Sub = []; // Khởi tạo apP_WTQ1_Sub nếu chưa có
               }
-              const subItem = updateData.apP_WTQ1_Sub.find(
-                (sub: SubItem) => sub.id === item.id,
-              );
+              const subItem = updateData.apP_WTQ1_Sub[index];
 
               if (subItem) {
                 subItem.note = text;

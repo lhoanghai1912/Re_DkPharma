@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {act, useEffect, useState} from 'react';
 import {
   Alert,
   Animated,
@@ -41,6 +41,7 @@ const TransferScreen: React.FC = () => {
     (state: any) => state.item,
   );
   const {userData, itemData} = useSelector((state: any) => state.user);
+  const [isSynced, setIsSynced] = useState(false);
   const [isBlocked, setIsBlocked] = useState<string | null>('');
   const [isCameraOn, setIsCameraOn] = useState(false); // State for camera activation
   const {hasPermission, requestPermission} = useCameraPermission();
@@ -59,7 +60,14 @@ const TransferScreen: React.FC = () => {
   if (listDatas?.items) {
     listDatas.items.creator = userData?.user?.fullName;
   }
-
+  // console.log('aaaaa111111111111', listDatas.items.status);
+  useEffect(() => {
+    if (listDatas?.items?.status === 'DONG BO') {
+      setIsSynced(true);
+    } else {
+      setIsSynced(false);
+    }
+  }, [listDatas]); // Chỉ cập nhật khi userData.status thay đổi
   const fetchItemData = async () => {
     try {
       const response = await fetch(
@@ -77,9 +85,6 @@ const TransferScreen: React.FC = () => {
 
       console.log('detailsssssssssssssssssssss', details);
       if (response.ok) {
-        console.log('respon ok');
-        // dispatch(setDetailsItem(details)); //Luw vao storee
-
         setListData(details);
       }
     } catch {}
@@ -88,12 +93,11 @@ const TransferScreen: React.FC = () => {
     if (userData?.accessToken && selectedTranferId) {
       fetchItemData();
     }
-  }, [docDate, selectedTranferId, itemData.docEntry]);
+  }, [docDate, selectedTranferId, itemData.docEntry, itemData.quantity]);
   console.log('listdataaa', listDatas);
 
   const handleBack = async () => {
     try {
-      console.log('handleback pressed');
       navigate(SCREEN_NAMES.MENU_SCREEN);
     } catch (e) {
       console.log('error: ', e);
@@ -148,6 +152,7 @@ const TransferScreen: React.FC = () => {
       }
     },
   });
+  console.log('data day len api', listDatas?.items);
 
   const handleDateSelect = (date: string) => {
     setDocDate(date);
@@ -160,7 +165,6 @@ const TransferScreen: React.FC = () => {
   const handleSaveData = async (updateData: any) => {
     setSelectedData1(updateData);
   };
-  console.log(selectedData1, 'updateddata');
 
   const handleGoBack = async () => {
     setIsCameraOn(false);
@@ -176,10 +180,22 @@ const TransferScreen: React.FC = () => {
       <Text style={[styles.mainConTentText, {flex: 1}]}>{item}</Text>
     </TouchableOpacity>
   );
-  const handleConfirm = async () => {
+  const handleConfirm = async (action: 'save' | 'sync') => {
+    let apiStatus = '';
+    if (action === 'save') {
+      apiStatus = 'NHAP';
+    } else if (action === 'sync') {
+      apiStatus = 'DONG BO';
+    }
+    console.log('action', action);
+    console.log('apistatus', apiStatus);
+    console.log(
+      `API: https://pos.foxai.com.vn:8123/api/Production/addIssue?Status=${apiStatus}`,
+    );
+
     try {
       const response = await fetch(
-        'https://pos.foxai.com.vn:8123/api/Production/addIssue',
+        `https://pos.foxai.com.vn:8123/api/Production/addIssue?Status=${apiStatus}`,
         {
           method: 'POST',
           headers: {
@@ -189,27 +205,30 @@ const TransferScreen: React.FC = () => {
           body: JSON.stringify(listDatas.items),
         },
       );
-      if (!response.ok) {
-        const errorText = await response.text(); // Đọc lỗi từ response một lần
-        console.error('Error Response:', errorText);
-        Alert.alert('Error', `Failed to save data: ${errorText}`);
-        return;
-      }
+      console.log('resss', response);
+
       const data = await response.json();
       console.log('API response', data);
 
       if (response.ok) {
-        const errorResponse = await response.json();
         console.log('data api back: ', data);
+        fetchItemData();
+        if (action === 'save') {
+          Alert.alert('Success', 'Save data success');
+        } else if (action === 'sync') {
+          setIsSynced(true);
+          Alert.alert('Success', 'Sync data success');
+        }
         return;
       } else {
-        if (!response.ok) {
-          // Nếu phản hồi không thành công (mã lỗi 400)
-          const errorText = await response.text(); // Đọc body dưới dạng văn bản
-          console.error('Error Response:', errorText);
-          Alert.alert('Error', `Failed to save data: ${errorText}`);
-          return;
+        if (action === 'save') {
+          console.log('error: ', data);
+          // Alert.alert('Error', `Failed to save data: ${errors.errors}`);
+        } else if (action === 'sync') {
+          console.log('error: ', data);
+          Alert.alert('Error', 'Failed to sync data ');
         }
+        return;
       }
     } catch (e) {
       console.log('erro11111111111111111111: ', e);
@@ -235,8 +254,15 @@ const TransferScreen: React.FC = () => {
           }}
           style={[
             styles.mainConTentText,
-            {flex: 1, alignItems: 'center', justifyContent: 'center'},
-          ]}>
+            {
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: isSynced ? 0.5 : 1,
+              backgroundColor: isSynced ? 'lightgrey' : 'white',
+            },
+          ]}
+          disabled={isSynced}>
           <Image source={images.qr_code} style={styles.icon}></Image>
         </TouchableOpacity>
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
@@ -479,15 +505,20 @@ const TransferScreen: React.FC = () => {
                 <Text style={styles.bottonText}>Đăng xuất</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.footerButton,
-                  // {backgroundColor: isPressabled ? 'blue' : '#CCCCCC'},
-                ]}
-                // disabled={!isPressabled}
+                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+                disabled={isSynced}
                 onPress={() => {
-                  handleConfirm();
+                  handleConfirm('save');
                 }}>
-                <Text style={styles.bottonText}>Đồng bộ</Text>
+                <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+                disabled={isSynced}
+                onPress={() => {
+                  handleConfirm('sync');
+                }}>
+                <Text style={[styles.bottonText]}>Đồng bộ</Text>
               </TouchableOpacity>
             </View>
           </View>
