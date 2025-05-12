@@ -9,21 +9,25 @@ import {logout} from '../redux/slice_index';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  const {userData, refreshTokenExpire} = useSelector(
+  const {userData, refreshTokenExpiry} = useSelector(
     (state: any) => state.user,
   );
   const currentTime = Date.now();
 
   useEffect(() => {
-    if (currentTime && refreshTokenExpire > refreshTokenExpire) {
+    console.log('Current Time:', currentTime); // Log current time
+    console.log('Refresh Token Expiry:', refreshTokenExpiry); // Log refreshTokenExpiry
+
+    if (currentTime > refreshTokenExpiry) {
       console.log('Token hết hạn, mời đăng nhập lại');
       dispatch(logout());
       Alert.alert('Session expired', 'Please log in again.');
     }
-  }, [refreshTokenExpire, dispatch, currentTime]);
-  // console.log('token==================', userData?.accessToken);
-  // console.log('refreshTokenExpire==================', userData?.refreshToken);
-  // console.log('refreshTokenExpire==================', refreshTokenExpire);
+  }, [refreshTokenExpiry, dispatch, currentTime]);
+
+  // console.log('currentime1', currentTime);
+  // console.log('refreshTokenExpire', refreshTokenExpiry);
+
   return (
     <NavigationContainer ref={navigationRef}>
       {userData?.accessToken ? <AppStackScreen /> : <LoginStack />}

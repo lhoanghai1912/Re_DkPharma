@@ -62,7 +62,10 @@ const TransferScreen: React.FC = () => {
   }
   // console.log('aaaaa111111111111', listDatas.items.status);
   useEffect(() => {
-    if (listDatas?.items?.status === 'DONG BO') {
+    if (
+      listDatas?.items?.status === 'DONG BO' ||
+      listDatas?.items?.status === 'ĐỒNG BỘ'
+    ) {
       setIsSynced(true);
     } else {
       setIsSynced(false);

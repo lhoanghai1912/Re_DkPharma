@@ -4,7 +4,6 @@ import HomeScreen from '../../container/Home/home_Index';
 import MenuScreen from '../../container/Menu/menu_Index';
 import TransferScreen from '../../container/Transfer/transfer_Index';
 import SettingScreen from '../../container/Setting/setting_index';
-import WeightScreen from '../../container/Details_Weight/weight_index';
 const Stack = createNativeStackNavigator();
 
 const AppStackScreen = () => {
@@ -24,10 +23,6 @@ const AppStackScreen = () => {
       <Stack.Screen
         name={SCREEN_NAMES.SETTING_SCREEN}
         component={SettingScreen}
-      />
-      <Stack.Screen
-        name={SCREEN_NAMES.WEIGHT_SCREEN}
-        component={WeightScreen}
       />
     </Stack.Navigator>
   );
