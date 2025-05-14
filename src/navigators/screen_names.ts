@@ -1,4 +1,3 @@
-import WeightScreen from "../container/Details_Weight/weight_index";
 
 export const SCREEN_NAMES = {
     LOGIN_SCREEN: 'LoginScreen',
@@ -7,4 +6,5 @@ export const SCREEN_NAMES = {
     TRANSFER_CREEN: 'TransferScreen',
     SETTING_SCREEN: 'SettingScrenn',
     WEIGHT_SCREEN: 'WeightScreen',
+    STORE_SCREEN: 'StoreScreen',
 };

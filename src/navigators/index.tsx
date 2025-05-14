@@ -9,11 +9,10 @@ import {logout} from '../redux/slice_index';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
-  const {userData, refreshTokenExpiry} = useSelector(
-    (state: any) => state.user,
-  );
+  const {userData} = useSelector((state: any) => state.user);
   const currentTime = Date.now();
-
+  console.log('expiries', userData?.expiresIn);
+  const refreshTokenExpiry = currentTime + userData?.expiresIn * 1000;
   useEffect(() => {
     console.log('Current Time:', currentTime); // Log current time
     console.log('Refresh Token Expiry:', refreshTokenExpiry); // Log refreshTokenExpiry

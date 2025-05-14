@@ -5,6 +5,7 @@ import images from '../../component/contants';
 import {useSelector, UseSelector} from 'react-redux';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {navigate} from '../../navigators/root_navigators';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 const MenuScreen: React.FC = () => {
   const {getSelectedItem} = useSelector((state: any) => state.item);
   console.log(
@@ -14,7 +15,8 @@ const MenuScreen: React.FC = () => {
     getSelectedItem.docEntry,
   );
 
-  const isBTP = getSelectedItem.proType === 'BTP' ? true : false;
+  const isTP = getSelectedItem.proType === 'TP' ? true : false;
+  console.log('isTP', isTP);
 
   const handleBack = async () => {
     try {
@@ -24,6 +26,14 @@ const MenuScreen: React.FC = () => {
     }
   };
 
+  const handleGoStored = async () => {
+    try {
+      navigate(SCREEN_NAMES.STORE_SCREEN, {dataProp: getSelectedItem});
+      console.log('data truyen qua ', getSelectedItem);
+    } catch (e) {
+      console.log('error', e);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -63,11 +73,14 @@ const MenuScreen: React.FC = () => {
               <Text style={styles.bottonText}>Xuất kho sản xuất</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => {
+                handleGoStored();
+              }}
               style={[
                 styles.button,
-                {backgroundColor: isBTP ? '#CCCCCC' : 'blue'},
+                {backgroundColor: isTP ? 'blue' : '#CCCCCC'},
               ]}
-              disabled={isBTP ? true : false}>
+              disabled={isTP ? false : true}>
               <Text style={styles.bottonText}>Nhập kho thành phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
@@ -85,17 +98,20 @@ const MenuScreen: React.FC = () => {
               flex: 1,
             }}>
             <TouchableOpacity
+              onPress={() => {
+                handleGoStored();
+              }}
               style={[
                 styles.button,
-                {backgroundColor: isBTP ? 'blue' : '#CCCCCC'},
+                {backgroundColor: isTP ? '#CCCCCC' : 'blue'},
               ]}
-              disabled={isBTP ? false : true}>
+              disabled={isTP ? true : false}>
               <Text style={styles.bottonText}>Nhập kho bán thành phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.bottonText}>Trả lại NVL thừa</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity onPress={() => {}} style={styles.button}>
               <Text style={styles.bottonText}>Nhập kho điều chỉnh</Text>
             </TouchableOpacity>
             <TouchableOpacity

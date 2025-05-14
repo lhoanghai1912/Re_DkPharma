@@ -34,9 +34,7 @@ import WeightModal from '../Modal/weight_modal';
 import CalendarModal from '../Modal/calendar_modal';
 
 const TransferScreen: React.FC = () => {
-  const [selectedDocDate, SetSelectedDocDate] = useState(
-    moment().format('YYYY-MM-DD'),
-  );
+  const [selectedDocDate] = useState(moment().format('YYYY-MM-DD'));
   const {getSelectedItem, listDatasSelected} = useSelector(
     (state: any) => state.item,
   );
@@ -283,10 +281,10 @@ const TransferScreen: React.FC = () => {
           {item.quantity}
         </Text>
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-          {item.calculatedQuantity}
+          {item.calculatedQuantity | item.quantity}
         </Text>
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-          {item.remainingQuantity}
+          {(item.remainingQuantity = item.requiredQuantity - item.quantity)}
         </Text>
         <Text style={[styles.mainConTentText, {flex: 0.8}]}>
           {item.uomCode}
@@ -361,21 +359,35 @@ const TransferScreen: React.FC = () => {
                   }`}</Text>
                 </View>
               </View>
-              <View style={[styles.headerContentCol, {flex: 1.2}]}>
+              <View
+                style={[
+                  styles.headerContentCol,
+                  {flex: 1.2, alignItems: 'center'},
+                ]}>
                 <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Lệnh sản xuất: ${
+                  <Text
+                    style={[
+                      styles.normalText,
+                      {textAlign: 'center'},
+                    ]}>{`Lệnh sản xuất: ${
                     listDatas?.items?.productionCode || null
                   }`}</Text>
                 </View>
                 <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Tên thành phẩm: ${
+                  <Text
+                    style={[
+                      styles.normalText,
+                      {textAlign: 'center'},
+                    ]}>{`Tên thành phẩm: ${
                     listDatas?.items?.itemName || null
                   }`}</Text>
                 </View>
                 <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Kho xuất: ${
-                    listDatas?.items?.whsCode || null
-                  }`}</Text>
+                  <Text
+                    style={[
+                      styles.normalText,
+                      {textAlign: 'center'},
+                    ]}>{`Kho xuất: ${listDatas?.items?.whsCode || null}`}</Text>
                 </View>
               </View>
               <View
@@ -394,8 +406,19 @@ const TransferScreen: React.FC = () => {
                     justifyContent: 'space-between',
                   }}>
                   <View
-                    style={[styles.headerContentItem, {flexDirection: 'row'}]}>
-                    <Text style={styles.normalText}>{`Mã yêu cầu ck: `}</Text>
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        flexDirection: 'row',
+                        backgroundColor: 'red',
+                        justifyContent: 'flex-end',
+                      },
+                    ]}>
+                    <Text
+                      style={[
+                        styles.normalText,
+                        {textAlign: 'right'},
+                      ]}>{`Mã yêu cầu ck: `}</Text>
                     <TouchableOpacity
                       style={{
                         flexDirection: 'row',
@@ -418,12 +441,20 @@ const TransferScreen: React.FC = () => {
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.headerContentItem}>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {alignItems: 'flex-end'},
+                    ]}>
                     <Text style={styles.normalText}>{`Mã thành phẩm: ${
                       listDatas?.items?.itemCode || null
                     }`}</Text>
                   </View>
-                  <View style={styles.headerContentItem}>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {alignItems: 'flex-end'},
+                    ]}>
                     <Text style={styles.normalText}>{`Người nhập: ${
                       listDatas?.items?.creator || null
                     }`}</Text>

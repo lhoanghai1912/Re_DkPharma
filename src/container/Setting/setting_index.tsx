@@ -146,8 +146,14 @@ const SettingScreen: React.FC = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity></TouchableOpacity>
-        <Text style={styles.headerText}>Xuất kho sản xuất</Text>
+        <TouchableOpacity
+          onPress={() => {
+            handleBack();
+          }}
+          style={[styles.headerButtons, styles.icon]}>
+          <Image style={styles.icon} source={images.back_white}></Image>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Thông tin người dùng</Text>
         <TouchableOpacity></TouchableOpacity>
       </View>
       <View style={styles.body}>
