@@ -9,7 +9,6 @@ import {
   Image,
 } from 'react-native';
 import styles from '../Transfer/transfer_styles'; // Đảm bảo rằng các style tương ứng được import
-import images from '../../component/contants';
 
 // import { Container } from './styles';
 interface ItemCodeProps {
@@ -26,6 +25,22 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
   onClose,
 }) => {
   const [dataList, setDataList] = useState(listDatas);
+  const [uniqueItemCodes, setUniqueItemCodes] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (listDatas?.apP_OIGN_R_Line) {
+      console.log('aaaaaaaaaaaaaa', listDatas.apP_OIGN_R_Line);
+
+      const map = new Map();
+      listDatas.apP_OIGN_R_Line.forEach((item: any) => {
+        if (!map.has(item.itemCode)) {
+          map.set(item.itemCode, item);
+        }
+      });
+      setUniqueItemCodes(Array.from(map.values()));
+    }
+  }, [listDatas]);
+  console.log('abc', uniqueItemCodes);
 
   const renderItemId = ({item, index}: any) => {
     return (
@@ -65,7 +80,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
             alignContent: 'center',
             height: '50%',
           }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               //   handleAddWeight();
             }}
@@ -77,11 +92,26 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
               marginBottom: 5,
             }}>
             <Text style={[styles.headerText]}>Phiếu cân chi tiết</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <FlatList
-            data={listDatas?.apP_OIGN_R_Line || []}
+            data={uniqueItemCodes}
             renderItem={renderItemId}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => item.itemCode + index.toString()}
+            ListHeaderComponent={() => (
+              <TouchableOpacity
+                onPress={() => {
+                  //   handleAddWeight();
+                }}
+                style={{
+                  backgroundColor: 'blue',
+                  //   flex: 1,
+                  width: '100%',
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}>
+                <Text style={[styles.headerText]}>Chọn tất cả</Text>
+              </TouchableOpacity>
+            )}
             style={{
               flex: 1,
               width: '100%',
