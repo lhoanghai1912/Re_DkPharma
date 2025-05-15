@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         marginLeft: 10,
-        textAlign:'center'
     },
     icon:{
         width: 40,
@@ -50,30 +49,28 @@ const styles = StyleSheet.create({
     body:{
         flex:1.5,
         marginVertical:10,
-        // backgroundColor:'red',
+        // backgroundColor:'blue',
     },
     headerContent:{
-        flex:0.5,
+        flex:1,
         flexDirection:'row',
-        alignContent:'center',
+        alignItems:'center',
+        // backgroundColor:'red',
         paddingHorizontal:10,
         },
     headerContentCol:{
         flex:1,
-        marginRight:5,
-        // backgroundColor:'red',
-        justifyContent:'space-around',
-        alignContent:'center',
-        alignItems:'center',
+        height:'100%',
+        marginStart:5,
+        justifyContent:'center',
     },
     headerContentItem:{
         width:'100%',
+        flex:1,
     },
     mainContent:{
         flex:2,
         borderTopWidth:1,
-
-        // backgroundColor:'blue'
     },
 
     mainContentHeader:{
@@ -81,10 +78,18 @@ const styles = StyleSheet.create({
         alignContent:'center',
         justifyContent:'center',
     },    
-    mainConTentText:{
+    mainContentHeaderText:{
+        flex:1,
         fontSize:20,
-        borderLeftWidth:1,
-        borderBottomWidth:1,    
+        borderWidth:1,   
+        textAlign:'center',
+        textAlignVertical:'center',
+        fontWeight:'500',
+    },
+    mainContentBodyText:{
+        flex:1,
+        fontSize:20,
+        borderWidth:1,   
         textAlign:'center',
         textAlignVertical:'center',
     },
@@ -100,8 +105,7 @@ const styles = StyleSheet.create({
         borderRadius:5,
     },
     wrapWeightModal:{
-
-flex:1,
+        flex:1,
         width:'100%',
     },
 
@@ -136,7 +140,7 @@ flex:1,
 
     },
     footer:{
-        flex: 0.2, backgroundColor:'',
+        flex: 0.2,
     },
 
     footerContent:{
@@ -215,6 +219,12 @@ flex:1,
         fontSize: 20,
         color: 'black',
         fontWeight: 'bold',
+    },
+    buttonText:
+    {
+        fontSize:20,
+        color:'white',
+        fontWeight:500,
     },
     modalWeightRender:{
         flexDirection:'column',

@@ -1,4 +1,4 @@
-import React, {use, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -18,23 +18,20 @@ import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../redux/slice_index';
 
 const StoreScreen = ({route}: {route: any}) => {
-  const dataProp = route.params;
+  const dataProp = route.params.dataProp;
   const [modalCalendarVisible, setModalCalendarVisible] = useState(false);
   const [docDate, setDocDate] = useState(moment().format('YYYY-MM-DD'));
   const [listDatas, setListData] = useState<any>();
-  const [isSynced, setIsSynced] = useState(
-    listDatas?.item?.status === 'ĐÔNG BỘ' ? true : false,
-  );
-  const [selectedData1, setSelectedData1] = useState<any>();
+  const [isSynced, setIsSynced] = useState(false);
   const dispatch = useDispatch();
-  console.log('dataProp', dataProp);
-  console.log('selec data', selectedData1);
-
+  console.log('docdate', docDate);
   const {userData} = useSelector((state: any) => state.user);
+  console.log('000000000000000000', dataProp?.proType);
+
   const fetchItemData = async () => {
     try {
       const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getReceiptPO${dataProp?.dataProp.docEntry}?docDate=${docDate}`,
+        `https://pos.foxai.com.vn:8123/api/Production/getReceiptPO${dataProp?.docEntry}?docDate=${docDate}`,
         {
           method: 'GET',
           headers: {
@@ -45,9 +42,13 @@ const StoreScreen = ({route}: {route: any}) => {
       );
       const details = await response.json();
       console.log('response', response);
-
       console.log('details', details);
       if (response.ok) {
+        if (details.items.status == null) {
+          details.items.status = '';
+          setIsSynced(false);
+        }
+        console.log(details, 'detailssssssssssss');
         setListData(details);
       }
     } catch (e) {
@@ -57,9 +58,9 @@ const StoreScreen = ({route}: {route: any}) => {
   useEffect(() => {
     if (userData?.accessToken) {
       fetchItemData();
+      console.log('listdataaaaaaaa', listDatas);
     }
   }, [docDate, dataProp.docEntry]);
-  console.log('listDatas', listDatas);
 
   const handleBack = async () => {
     try {
@@ -79,26 +80,67 @@ const StoreScreen = ({route}: {route: any}) => {
     setDocDate(date);
     setModalCalendarVisible(false);
   };
-  console.log('dataRender', listDatas?.items?.apP_OIGN_Line);
   const handleLogout = async () => {
     dispatch(logout());
   };
   const handleConfirm = async () => {
     setIsSynced(!isSynced);
     console.log('Sync Pressed');
-    console.log('selectedData1213123213', listDatas);
+    listDatas.items.docDate = docDate;
+    console.log('data lên api', listDatas);
+
+    try {
+      const response = await fetch(
+        `https://pos.foxai.com.vn:8123/api/Production/addReceiptForPO`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData?.accessToken}`,
+          },
+          body: JSON.stringify(listDatas.items),
+        },
+      );
+      console.log('response1231231232 ', response);
+      const dataBack = await response.json();
+      if (response.ok) {
+        console.log('API Confirm response', dataBack);
+        fetchItemData();
+      } else {
+        console.log('Fail to sync data', dataBack);
+        return;
+      }
+    } catch (e) {
+      console.log('error1', e);
+    }
+  };
+  const validateQuantity = (text: string) => {
+    if (text.trim() === '') {
+      return '0';
+    }
+
+    const regex = /^\d+$/;
+
+    if (!regex.test(text)) {
+      return undefined; // không hợp lệ thì trả về undefined
+    }
+
+    const formatted = text.replace(/^0+/, '');
+
+    return formatted === '' ? '0' : formatted;
   };
   const onChangedText = (field: string, value: string) => {
-    setSelectedData1(listDatas);
-    const updateData = {...selectedData1};
-    console.log('updateData', updateData);
-
-    updateData[field] = value;
-    setSelectedData1(updateData);
+    const validated = validateQuantity(value);
+    if (validated !== undefined) {
+      const updateData = {...listDatas};
+      updateData.items.apP_OIGN_Line[field] = value;
+      setListData(updateData);
+      console.log(listDatas);
+    }
+    if (value === '') {
+      return '0';
+    }
   };
-  console.log('data thay đổi', selectedData1);
-
-  console.log('listdata', listDatas);
 
   const renderItem = ({item}: any) => {
     return (
@@ -112,11 +154,12 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="phone-pad"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.evenPackage}
+          value={`${item.evenPackage}`}
           onChangeText={text => onChangedText('evenPackage', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -126,7 +169,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.boxPerCase}
+          value={`${item.boxPerCase}`}
           onChangeText={text => onChangedText('boxPerCase', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -136,7 +179,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.oddBox}
+          value={`${item.oddBox}`}
           onChangeText={text => onChangedText('oddBox', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -154,7 +197,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.qtyStatistic}
+          value={`${item.qtyStatistic}`}
           onChangeText={text => onChangedText('qtyStatistic', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -164,7 +207,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.uomStatistic}
+          value={`${item.uomStatistic}`}
           onChangeText={text => onChangedText('uomStatistic', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -174,7 +217,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={selectedData1?.note}
+          value={`${item.note}`}
           onChangeText={text => onChangedText('note', text)} // Gọi hàm onChangedText
         />
       </View>
@@ -190,7 +233,11 @@ const StoreScreen = ({route}: {route: any}) => {
           style={[styles.headerButtons, styles.icon]}>
           <Image style={styles.icon} source={images.back_white}></Image>
         </TouchableOpacity>
-        <Text style={styles.headerText}>Xuất kho sản xuất</Text>
+        <Text style={styles.headerText}>
+          {dataProp?.proType === 'TP'
+            ? 'Nhập kho thành phẩm'
+            : 'Nhập kho bán thành phẩm'}
+        </Text>
         <TouchableOpacity
           style={styles.headerButtons}
           onPress={() => {
@@ -223,7 +270,7 @@ const StoreScreen = ({route}: {route: any}) => {
               </View>
               <View style={styles.headerContentItem}>
                 <Text style={styles.normalText}>
-                  {`Trạng thái: ${dataProp?.status || ''}`}
+                  {`Trạng thái: ${listDatas?.items?.status || ''}`}
                 </Text>
               </View>
             </View>
@@ -317,9 +364,9 @@ const StoreScreen = ({route}: {route: any}) => {
             </View>
             <View style={[styles.mainContentBody]}>
               <FlatList
-                data={[selectedData1?.items?.apP_OIGN_Line || []]}
+                data={[listDatas?.items?.apP_OIGN_Line || []]}
                 renderItem={renderItem}
-                keyExtractor={item => item.itemCode}
+                keyExtractor={item => item.expDate}
                 style={[
                   {
                     flex: 1,
@@ -342,7 +389,7 @@ const StoreScreen = ({route}: {route: any}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-            // disabled={isSynced}
+            disabled={isSynced}
             onPress={() => {
               handleConfirm();
             }}>

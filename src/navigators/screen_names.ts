@@ -7,4 +7,5 @@ export const SCREEN_NAMES = {
     SETTING_SCREEN: 'SettingScrenn',
     WEIGHT_SCREEN: 'WeightScreen',
     STORE_SCREEN: 'StoreScreen',
+    RESTORE_SCREEN: 'RestoreScreen',
 };

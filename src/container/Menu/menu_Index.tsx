@@ -6,6 +6,7 @@ import {useSelector, UseSelector} from 'react-redux';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {navigate} from '../../navigators/root_navigators';
 import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import HomeScreen from '../Home/home_Index';
 const MenuScreen: React.FC = () => {
   const {getSelectedItem} = useSelector((state: any) => state.item);
   console.log(
@@ -30,6 +31,13 @@ const MenuScreen: React.FC = () => {
     try {
       navigate(SCREEN_NAMES.STORE_SCREEN, {dataProp: getSelectedItem});
       console.log('data truyen qua ', getSelectedItem);
+    } catch (e) {
+      console.log('error', e);
+    }
+  };
+  const handleGoRestore = async () => {
+    try {
+      navigate(SCREEN_NAMES.RESTORE_SCREEN, {dataProp: getSelectedItem});
     } catch (e) {
       console.log('error', e);
     }
@@ -108,7 +116,9 @@ const MenuScreen: React.FC = () => {
               disabled={isTP ? true : false}>
               <Text style={styles.bottonText}>Nhập kho bán thành phẩm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              onPress={() => handleGoRestore()}
+              style={styles.button}>
               <Text style={styles.bottonText}>Trả lại NVL thừa</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {}} style={styles.button}>

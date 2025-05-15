@@ -5,6 +5,7 @@ import MenuScreen from '../../container/Menu/menu_Index';
 import TransferScreen from '../../container/Transfer/transfer_Index';
 import SettingScreen from '../../container/Setting/setting_index';
 import StoreScreen from '../../container/Stored/stored_index';
+import RestoreScreen from '../../container/Restore/restore_Index';
 const Stack = createNativeStackNavigator();
 
 const AppStackScreen = () => {
@@ -26,6 +27,10 @@ const AppStackScreen = () => {
         component={SettingScreen}
       />
       <Stack.Screen name={SCREEN_NAMES.STORE_SCREEN} component={StoreScreen} />
+      <Stack.Screen
+        name={SCREEN_NAMES.RESTORE_SCREEN}
+        component={RestoreScreen}
+      />
     </Stack.Navigator>
   );
 };
