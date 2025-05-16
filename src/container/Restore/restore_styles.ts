@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'blue',
     },
     headerContent:{
-        flex:1,
+        flex:0.5,
         flexDirection:'row',
         alignItems:'center',
         // backgroundColor:'red',
