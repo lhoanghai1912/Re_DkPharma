@@ -24,14 +24,13 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
   onClose,
   onSelectedItemsChange,
 }) => {
-  const [dataList, setDataList] = useState(listDatas);
   const [uniqueItemCodes, setUniqueItemCodes] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState<string[]>([]);
 
   useEffect(() => {
-    if (listDatas?.apP_OIGN_R_Line) {
+    if (listDatas?.items?.apP_OIGE_Line) {
       const map = new Map();
-      listDatas.apP_OIGN_R_Line.forEach((item: any) => {
+      listDatas?.items?.apP_OIGE_Line.forEach((item: any) => {
         if (!map.has(item.itemCode)) {
           map.set(item.itemCode, item);
         }

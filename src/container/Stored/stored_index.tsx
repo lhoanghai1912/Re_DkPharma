@@ -130,15 +130,21 @@ const StoreScreen = ({route}: {route: any}) => {
     return formatted === '' ? '0' : formatted;
   };
   const onChangedText = (field: string, value: string) => {
-    const validated = validateQuantity(value);
-    if (validated !== undefined) {
+    if (field === 'note') {
       const updateData = {...listDatas};
       updateData.items.apP_OIGN_Line[field] = value;
       setListData(updateData);
-      console.log(listDatas);
-    }
-    if (value === '') {
-      return '0';
+    } else {
+      const validated = validateQuantity(value);
+      if (value === '') {
+        return '0';
+      }
+      if (validated !== undefined) {
+        const updateData = {...listDatas};
+        updateData.items.apP_OIGN_Line[field] = value;
+        setListData(updateData);
+        console.log(listDatas);
+      }
     }
   };
 
@@ -207,7 +213,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={`${item.uomStatistic}`}
+          value={`${item.uomStatistic || ''}`}
           onChangeText={text => onChangedText('uomStatistic', text)} // Gọi hàm onChangedText
         />
         <TextInput
@@ -217,7 +223,7 @@ const StoreScreen = ({route}: {route: any}) => {
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
           ]}
-          value={`${item.note}`}
+          value={`${item.note || ''}`}
           onChangeText={text => onChangedText('note', text)} // Gọi hàm onChangedText
         />
       </View>

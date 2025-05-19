@@ -42,6 +42,15 @@ const MenuScreen: React.FC = () => {
       console.log('error', e);
     }
   };
+  const handleGoEdit = async (field: string) => {
+    try {
+      navigate(SCREEN_NAMES.EDITSTOCK_SCREEN, {
+        dataProp: {getSelectedItem, field},
+      });
+    } catch (e) {
+      console.log('erro', e);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -94,7 +103,11 @@ const MenuScreen: React.FC = () => {
             <TouchableOpacity style={styles.button}>
               <Text style={styles.bottonText}>Chuyển kho nội bộ</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                handleGoEdit('Xuat');
+              }}>
               <Text style={styles.bottonText}>Xuất kho điều chỉnh</Text>
             </TouchableOpacity>
           </View>
@@ -121,7 +134,11 @@ const MenuScreen: React.FC = () => {
               style={styles.button}>
               <Text style={styles.bottonText}>Trả lại NVL thừa</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} style={styles.button}>
+            <TouchableOpacity
+              onPress={() => {
+                handleGoEdit('Nhap');
+              }}
+              style={styles.button}>
               <Text style={styles.bottonText}>Nhập kho điều chỉnh</Text>
             </TouchableOpacity>
             <TouchableOpacity

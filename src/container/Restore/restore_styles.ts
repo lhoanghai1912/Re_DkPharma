@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
         height:'100%',
         marginStart:5,
         justifyContent:'center',
+        // backgroundColor:'red',
     },
     headerContentItem:{
         width:'100%',
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     {
         fontSize:20,
         color:'white',
-        fontWeight:500,
+        fontWeight:'bold',
     },
     modalWeightRender:{
         flexDirection:'column',

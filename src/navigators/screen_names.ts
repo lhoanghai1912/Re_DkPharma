@@ -8,4 +8,5 @@ export const SCREEN_NAMES = {
     WEIGHT_SCREEN: 'WeightScreen',
     STORE_SCREEN: 'StoreScreen',
     RESTORE_SCREEN: 'RestoreScreen',
+    EDITSTOCK_SCREEN: 'EditStockScreen',
 };
