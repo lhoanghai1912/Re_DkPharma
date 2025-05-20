@@ -3,22 +3,22 @@ import {FlatList, Modal, TouchableOpacity, View, Text} from 'react-native';
 import styles from '../Transfer/transfer_styles'; // Đảm bảo rằng các style tương ứng được import
 
 // import { Container } from './styles';
-interface ItemReasonProp {
+interface ItemDepartmentProp {
   visible: boolean;
   onClose: () => void;
-  onSelectedReason: (value: string) => void;
-  listReason: any;
+  onSelectedDepartment: (value: string) => void;
+  listDepartment: any;
 }
 
-const ReasonModal: React.FC<ItemReasonProp> = ({
+const DepartmentModal: React.FC<ItemDepartmentProp> = ({
   visible,
   onClose,
-  onSelectedReason,
-  listReason,
+  onSelectedDepartment,
+  listDepartment,
 }) => {
-  const [selectedReason, setSelectedReason] = useState('');
-  const renderReason = ({item}: any) => {
-    const isSelected = selectedReason === item; // hoặc item.name tùy bạn muốn so sánh trường nào
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const renderDepartment = ({item}: any) => {
+    const isSelected = selectedDepartment === item; // hoặc item.name tùy bạn muốn so sánh trường nào
 
     return (
       <View
@@ -29,21 +29,20 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
         }}>
         <TouchableOpacity
           onPress={() => {
-            setSelectedReason(item);
-            console.log('selectedReason', selectedReason);
+            setSelectedDepartment(item);
+            console.log('selectedDepartment', selectedDepartment);
           }}
           style={[
-            styles.button,
+            isSelected ? styles.buttonOnSelected : styles.buttonOnNormal,
             {
               flex: 1,
               width: '100%',
-              backgroundColor: isSelected ? 'blue' : 'lightgray',
             },
           ]}>
           <Text
             style={[
               isSelected ? styles.bottonText : styles.normalText,
-              {fontSize: 22},
+              {fontSize: 22, textAlign: 'center'},
             ]}>
             {item.name}
           </Text>
@@ -70,8 +69,8 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
             height: '70%',
           }}>
           <FlatList
-            data={listReason?.items}
-            renderItem={renderReason}
+            data={listDepartment?.items}
+            renderItem={renderDepartment}
             keyExtractor={(item, index) => item.code + index.toString()}
             style={{
               flex: 1,
@@ -91,7 +90,7 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
             }}>
             <TouchableOpacity
               onPress={() => {
-                onSelectedReason(selectedReason);
+                onSelectedDepartment(selectedDepartment);
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
@@ -111,4 +110,4 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
   );
 };
 
-export default ReasonModal;
+export default DepartmentModal;

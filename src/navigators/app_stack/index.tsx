@@ -8,6 +8,7 @@ import StoreScreen from '../../container/Stored/stored_index';
 import RestoreScreen from '../../container/Restore/restore_Index';
 import StockScreen from '../../container/EditStock/editStock_Index';
 import EditStockScreen from '../../container/EditStock/editStock_Index';
+import InternalTransferScreen from '../../container/chuyenkho/InternalTransfer';
 const Stack = createNativeStackNavigator();
 
 const AppStackScreen = () => {
@@ -36,6 +37,10 @@ const AppStackScreen = () => {
       <Stack.Screen
         name={SCREEN_NAMES.EDITSTOCK_SCREEN}
         component={EditStockScreen}
+      />
+      <Stack.Screen
+        name={SCREEN_NAMES.INTERNALTRANSFER_SCREEN}
+        component={InternalTransferScreen}
       />
     </Stack.Navigator>
   );

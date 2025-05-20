@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+} from 'react-native';
 import styles from './setting_styles';
-import {RadioButton, TextInput} from 'react-native-paper';
+import {RadioButton} from 'react-native-paper';
 import images from '../../component/contants';
 import {navigate} from '../../navigators/root_navigators';
 import {SCREEN_NAMES} from '../../navigators/screen_names';

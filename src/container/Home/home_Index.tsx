@@ -14,10 +14,19 @@ import {useSelector, useDispatch} from 'react-redux';
 import {navigate} from '../../navigators/root_navigators';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 
+type ItemType = {
+  proCode: string;
+  itemCode?: string;
+  itemName?: string;
+  // Add other properties as needed
+};
+
 const HomeScreen: React.FC = () => {
   const dispatch = useDispatch();
   const {userData, itemData} = useSelector((state: any) => state.user);
-  const [selectedItem, setSelectedItem] = useState();
+  const [selectedItem, setSelectedItem] = useState<ItemType | undefined>(
+    undefined,
+  );
   const [isSelecting, SetIsSelecting] = useState(false);
 
   const showItem = isSelecting === false && selectedItem;
@@ -54,6 +63,7 @@ const HomeScreen: React.FC = () => {
       fetchDataApi();
     }
   }, [userData]);
+  console.log('selec', selectedItem);
 
   const renderItem = ({item}: any) => {
     return (

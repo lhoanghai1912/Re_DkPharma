@@ -51,6 +51,15 @@ const MenuScreen: React.FC = () => {
       console.log('erro', e);
     }
   };
+  const handleGoInternalTransfer = async () => {
+    try {
+      navigate(SCREEN_NAMES.INTERNALTRANSFER_SCREEN, {
+        dataProp: getSelectedItem,
+      });
+    } catch (e) {
+      console.log('erro: ', e);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -100,7 +109,9 @@ const MenuScreen: React.FC = () => {
               disabled={isTP ? false : true}>
               <Text style={styles.bottonText}>Nhập kho thành phẩm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              onPress={() => handleGoInternalTransfer()}
+              style={styles.button}>
               <Text style={styles.bottonText}>Chuyển kho nội bộ</Text>
             </TouchableOpacity>
             <TouchableOpacity

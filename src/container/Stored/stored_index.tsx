@@ -148,7 +148,7 @@ const StoreScreen = ({route}: {route: any}) => {
     }
   };
 
-  const renderItem = ({item}: any) => {
+  const renderItem = ({item, index}: any) => {
     return (
       <View style={styles.mainContentHeader}>
         <Text style={[styles.mainContentBodyText]}>{item.itemCode}</Text>
@@ -372,7 +372,7 @@ const StoreScreen = ({route}: {route: any}) => {
               <FlatList
                 data={[listDatas?.items?.apP_OIGN_Line || []]}
                 renderItem={renderItem}
-                keyExtractor={item => item.expDate}
+                keyExtractor={(item, index) => index.toString()}
                 style={[
                   {
                     flex: 1,

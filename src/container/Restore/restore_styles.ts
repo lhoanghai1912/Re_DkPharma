@@ -43,7 +43,9 @@ const styles = StyleSheet.create({
     iconArrow:{
         width:20,
         height:20,
-        resizeMode:'contain'
+        resizeMode:'contain',
+        marginLeft:5,
+
     },
 
     body:{
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'blue',
     },
     headerContent:{
-        flex:0.5,
+        flex:0.8,
         flexDirection:'row',
         alignItems:'center',
         // backgroundColor:'red',
@@ -64,6 +66,9 @@ const styles = StyleSheet.create({
         marginStart:5,
         justifyContent:'center',
         // backgroundColor:'red',
+        padding: 10,
+        paddingHorizontal:25
+
     },
     headerContentItem:{
         width:'100%',
@@ -236,8 +241,11 @@ const styles = StyleSheet.create({
         height:'auto',
         alignItems:'center',
         justifyContent:'center',
-        paddingVertical:10,
+        paddingVertical:5,
         marginBottom:'5%',
+        borderRadius:5,
+        paddingHorizontal:5,
+
     },
 
     bottonText:{

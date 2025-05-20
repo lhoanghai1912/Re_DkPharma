@@ -1,5 +1,6 @@
 import React, {use, useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   ImageStyle,
@@ -32,15 +33,15 @@ const EditStockScreen = ({route}: {route: any}) => {
   const [isSelectingType, setIsSelectingType] = useState(false);
   const [isSelectingReason, setIsSelectingReason] = useState(false);
   const [docDate, setDocDate] = useState(moment().format('YYYY-MM-DD'));
-  const [reason, setReason] = useState();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const {userData} = useSelector((state: any) => state.user);
-  const [isIn, setIsIn] = useState(true);
+  const [isIn] = useState(dataProp.field === 'Nhap' ? true : false);
   const [isSynced, setisSynced] = useState(false);
   const [filteredItems, setFilteredItems] = useState<any[]>([]); // Items đã lọc
   const [goodType, setGoodType] = useState('');
   const [tempData, setTempData] = useState('');
   const [selectedReason, setSelectedReason] = useState<any>(null);
+
   const fetchItemData = async () => {
     try {
       const response = await fetch(
@@ -59,6 +60,11 @@ const EditStockScreen = ({route}: {route: any}) => {
       if (response.ok) {
         setListDatas(details);
         setFilteredItems(details.items.apP_OIGN_R_Line);
+        if (details.items.status === 'ĐỒNG BỘ') {
+          setisSynced(true);
+        } else {
+          setisSynced(false);
+        }
       }
     } catch (e) {
       console.log('erroItem', e);
@@ -69,6 +75,7 @@ const EditStockScreen = ({route}: {route: any}) => {
       fetchItemData();
     }
   }, [docDate, dataProp.docEntry]);
+
   console.log('dataProp', dataProp);
   const fetchReasonData = async () => {
     try {
@@ -169,7 +176,7 @@ const EditStockScreen = ({route}: {route: any}) => {
   };
   const handleSyncData = async () => {
     try {
-      listDatas.items.docData = docDate;
+      listDatas.items.docDate = docDate;
       console.log('data day len api ', listDatas.items);
       const response = await fetch(
         `https://pos.foxai.com.vn:8123/api/Production/addReturn`,
@@ -190,6 +197,7 @@ const EditStockScreen = ({route}: {route: any}) => {
         setisSynced(!isSynced);
       } else {
         console.log('Fail to sync data', dataBack);
+        Alert.alert(dataBack.errors.Reason);
         return;
       }
     } catch (e) {
@@ -307,7 +315,10 @@ const EditStockScreen = ({route}: {route: any}) => {
           value={`${item.requireQty}`}
           keyboardType="numeric"
           onChangeText={text => onChangedText(index, 'requireQty', text)} // Gọi hàm onChangedText
-          style={[styles.mainContentHeaderText]}></TextInput>
+          style={[
+            styles.mainContentHeaderText,
+            {backgroundColor: isSynced ? 'lightgray' : 'white'},
+          ]}></TextInput>
         <Text
           style={[
             styles.mainContentHeaderText,
@@ -318,7 +329,10 @@ const EditStockScreen = ({route}: {route: any}) => {
         <TextInput
           onChangeText={text => onChangedText(index, 'note', text)} // Gọi hàm onChangedText
           value={`${item.note || ''}`}
-          style={[styles.mainContentHeaderText]}></TextInput>
+          style={[
+            styles.mainContentHeaderText,
+            {backgroundColor: isSynced ? 'lightgray' : 'white'},
+          ]}></TextInput>
       </View>
     );
   };
