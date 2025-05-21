@@ -5,8 +5,6 @@ import images from '../../component/contants';
 import {useSelector, UseSelector} from 'react-redux';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {navigate} from '../../navigators/root_navigators';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-import HomeScreen from '../Home/home_Index';
 const MenuScreen: React.FC = () => {
   const {getSelectedItem} = useSelector((state: any) => state.item);
   console.log(

@@ -48,31 +48,46 @@ const LoginScreen: React.FC = ({}) => {
         },
       );
       const dataLogin = await respone.json();
-      if (dataLogin?.refreshToken) {
-        try {
-          await AsyncStorage.removeItem('userToken');
-        } catch (e) {
-          console.log('Erro:', e);
-        }
-        try {
-          const jsonValue = JSON.stringify(dataLogin);
-          await AsyncStorage.setItem('userToken', jsonValue);
-        } catch (e) {
-          console.log('eeeeeeee.', e);
-        }
-        try {
-          dispatch(
-            setUserData({
-              userData: dataLogin,
-            }),
-          ),
-            console.log('Login successful:', dataLogin);
-        } catch (e) {
-          console.log('Error:', e);
-        }
+      if (respone.ok && dataLogin.accessToken) {
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.setItem('accessToken', dataLogin.accessToken);
+
+        //dispatch
+        dispatch(setUserData({userData: dataLogin}));
+
+        console.log('login success', dataLogin);
       } else {
-        Alert.alert('Error', dataLogin.message || 'Login failed');
+        Alert.alert(
+          'Login failed',
+          dataLogin.message || 'Sai tên đăng nhập hoặc mật khẩu',
+        );
       }
+
+      // if (dataLogin?.refreshToken) {
+      //   try {
+      //     await AsyncStorage.removeItem('userToken');
+      //   } catch (e) {
+      //     console.log('Erro:', e);
+      //   }
+      //   try {
+      //     const jsonValue = JSON.stringify(dataLogin);
+      //     await AsyncStorage.setItem('userToken', jsonValue);
+      //   } catch (e) {
+      //     console.log('eeeeeeee.', e);
+      //   }
+      //   try {
+      //     dispatch(
+      //       setUserData({
+      //         userData: dataLogin,
+      //       }),
+      //     ),
+      //       console.log('Login successful:', dataLogin);
+      //   } catch (e) {
+      //     console.log('Error:', e);
+      //   }
+      // } else {
+      //   Alert.alert('Error', dataLogin.message || 'Login failed');
+      // }
     } catch (error) {
       console.error('Error logging in:', error);
       Alert.alert('Error', 'Something went wrong. Please try again late111r.');

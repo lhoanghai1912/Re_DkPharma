@@ -130,10 +130,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
 
     console.log('close pressed');
   };
-  // const validate = (value: string) => {
-  //   const regex = /^\d*\.?\d*$/;
-  //   return regex.test(value);
-  // };
+
   const validateQuantity = (text: string) => {
     if (text.split('.').length > 2) {
       return;

@@ -15,7 +15,9 @@ import {SCREEN_NAMES} from '../../navigators/screen_names';
 import moment from 'moment';
 import CalendarModal from '../Modal/calendar_modal';
 import {useDispatch, useSelector} from 'react-redux';
-import {logout} from '../../redux/slice_index';
+import {logout, setUserData} from '../../redux/slice_index';
+import {callApi} from '../../component/apiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StoreScreen = ({route}: {route: any}) => {
   const dataProp = route.params.dataProp;
@@ -26,33 +28,29 @@ const StoreScreen = ({route}: {route: any}) => {
   const dispatch = useDispatch();
   console.log('docdate', docDate);
   const {userData} = useSelector((state: any) => state.user);
-  console.log('000000000000000000', dataProp?.proType);
 
   const fetchItemData = async () => {
+    console.log('userdata', userData);
+
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getReceiptPO${dataProp?.docEntry}?docDate=${docDate}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
-          },
-        },
+      if (!dataProp?.docEntry) return;
+      const url = `https://pos.foxai.com.vn:8123/api/Production/getReceiptPO${dataProp.docEntry}?docDate=${docDate}`;
+
+      const data = await callApi(url, {method: 'GET'}, () =>
+        dispatch(logout()),
       );
-      const details = await response.json();
-      console.log('response', response);
-      console.log('details', details);
-      if (response.ok) {
-        if (details.items.status == null) {
-          details.items.status = '';
-          setIsSynced(false);
-        }
-        console.log(details, 'detailssssssssssss');
-        setListData(details);
+      console.log('data response', data);
+
+      if (data.items.status === null) {
+        data.items.status = '';
+        setIsSynced(false);
+      } else if (data.items.status === 'ĐỒNG BỘ') {
+        setIsSynced(true);
       }
+
+      setListData(data);
     } catch (e) {
-      console.log('error', e);
+      console.log('error: ', e);
     }
   };
   useEffect(() => {
@@ -87,27 +85,30 @@ const StoreScreen = ({route}: {route: any}) => {
     setIsSynced(!isSynced);
     console.log('Sync Pressed');
     listDatas.items.docDate = docDate;
-    console.log('data lên api', listDatas);
+    console.log('data lên api', listDatas?.items);
 
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/addReceiptForPO`,
+      const url = `https://pos.foxai.com.vn:8123/api/Production/addReceiptForPO`;
+      // const token =
+      const dataBack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem(
+              'accessToken',
+            )}`,
           },
           body: JSON.stringify(listDatas.items),
         },
+        () => dispatch(logout()),
       );
-      console.log('response1231231232 ', response);
-      const dataBack = await response.json();
-      if (response.ok) {
-        console.log('API Confirm response', dataBack);
+      if (dataBack) {
+        console.log('API respone', dataBack);
         fetchItemData();
       } else {
-        console.log('Fail to sync data', dataBack);
+        console.log('fail to sync data', dataBack);
         return;
       }
     } catch (e) {
@@ -130,7 +131,7 @@ const StoreScreen = ({route}: {route: any}) => {
     return formatted === '' ? '0' : formatted;
   };
   const onChangedText = (field: string, value: string) => {
-    if (field === 'note') {
+    if (field === 'note' || 'uomStatistic') {
       const updateData = {...listDatas};
       updateData.items.apP_OIGN_Line[field] = value;
       setListData(updateData);

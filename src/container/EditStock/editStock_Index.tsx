@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import styles from '../Restore/restore_styles';
-import ItemCodeModal from '../Modal/itemCode_modal';
 import CalendarModal from '../Modal/calendar_modal';
 import {navigate} from '../../navigators/root_navigators';
 import {useDispatch, useSelector} from 'react-redux';
@@ -20,6 +19,8 @@ import images from '../../component/contants';
 import moment from 'moment';
 import TypeModal from '../Modal/type_Modal';
 import ReasonModal from '../Modal/reason_modal';
+import {callApi} from '../../component/apiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import { Container } from './styles';
 const EditStockScreen = ({route}: {route: any}) => {
@@ -44,27 +45,21 @@ const EditStockScreen = ({route}: {route: any}) => {
 
   const fetchItemData = async () => {
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getReturn${dataProp.getSelectedItem.docEntry}?docDate=${docDate}&IsIn=${isIn}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
-          },
-        },
+      const url = `https://pos.foxai.com.vn:8123/api/Production/getReturn${dataProp.getSelectedItem.docEntry}?docDate=${docDate}&IsIn=${isIn}`;
+      const data = await callApi(url, {method: 'GET'}, () =>
+        dispatch(logout()),
       );
-      const details = await response.json();
-      console.log('responseItem', response);
-      console.log('detailsItem', details);
-      if (response.ok) {
-        setListDatas(details);
-        setFilteredItems(details.items.apP_OIGN_R_Line);
-        if (details.items.status === 'ĐỒNG BỘ') {
+      if (data) {
+        console.log(
+          `https://pos.foxai.com.vn:8123/api/Production/getReturn${dataProp.getSelectedItem.docEntry}?docDate=${docDate}&IsIn=${isIn}`,
+        );
+        console.log('listdata API', listDatas);
+        data.items.docDate = docDate;
+        setListDatas(data);
+        setFilteredItems(data.items.apP_OIGN_R_Line);
+        if (data.items.status === 'ĐỒNG BỘ') {
           setisSynced(true);
-        } else {
-          setisSynced(false);
-        }
+        } else setisSynced(false);
       }
     } catch (e) {
       console.log('erroItem', e);
@@ -77,24 +72,19 @@ const EditStockScreen = ({route}: {route: any}) => {
   }, [docDate, dataProp.docEntry]);
 
   console.log('dataProp', dataProp);
+
   const fetchReasonData = async () => {
+    console.log('fetchreasonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/reason?type=true`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
-          },
-        },
+      const url = `https://pos.foxai.com.vn:8123/api/Production/reason?type=fail`;
+      const data = await callApi(url, {method: 'GET'}, () =>
+        dispatch(logout()),
       );
-      const details = await response.json();
-      console.log('responseReason', response);
-      console.log('detailsReason', details);
-      if (response.ok) {
-        setListReason(details);
-        console.log('listReason', listReason);
+      if (data) {
+        setListReason(data);
+        console.log('listReason:', listReason);
+      } else {
+        console.log('khong nhan duoc', data);
       }
     } catch (e) {
       console.log('erroReason', e);
@@ -105,9 +95,6 @@ const EditStockScreen = ({route}: {route: any}) => {
       fetchReasonData();
     }
   }, [docDate, dataProp.docEntry]);
-  console.log(
-    `https://pos.foxai.com.vn:8123/api/Production/getReturn${dataProp.getSelectedItem.docEntry}?docDate=${docDate}&IsIn=${isIn}`,
-  );
 
   const handleBack = async () => {
     try {
@@ -174,30 +161,275 @@ const EditStockScreen = ({route}: {route: any}) => {
     );
     setTempData('TP/BTP');
   };
+  console.log('listDataslistDatas', listDatas);
+
   const handleSyncData = async () => {
     try {
-      listDatas.items.docDate = docDate;
-      console.log('data day len api ', listDatas.items);
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/addReturn`,
+      const url = `https://pos.foxai.com.vn:8123/api/Production/addReturn`;
+      const databack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem(
+              'accessToken',
+            )}`,
           },
-          body: JSON.stringify(listDatas.items),
+          // body: JSON.stringify(listDatas.items),
+          body: {
+            id: 40,
+            docCode: 'CT00000035',
+            isIn: false,
+            productionId: 17,
+            docDate: '2025-05-03T00:00:00',
+            productionCode: 'TP00626-TP00626.01-17',
+            itemCode: 'TP00626',
+            itemName: 'Test thành phẩm hoàn thiện',
+            creator: 'it helpdesk',
+            reasonCode: '8',
+            reason: 'Nhập điều chỉnh TP để tính giá thành',
+            status: 'ĐỒNG BỘ',
+            apP_OIGN_R_Line: [
+              {
+                id: 481,
+                fatherId: 40,
+                itemCode: 'BB00001',
+                itemName: 'Đơn Kem nano bạc Agrin',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100000,
+                requireQty: 1,
+                batchNum: '0020634-m1',
+                expDate: null,
+                note: 'aertertert',
+              },
+              {
+                id: 482,
+                fatherId: 40,
+                itemCode: 'BB00001',
+                itemName: 'Đơn Kem nano bạc Agrin',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 100,
+                plannedQty: 100000,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 483,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.8,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: '0040824',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 484,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: '9742816',
+                expDate: '2025-05-23T00:00:00',
+                note: null,
+              },
+              {
+                id: 485,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 99.7,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00004.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 486,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 487,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 488,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 489,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 490,
+                fatherId: 40,
+                itemCode: 'BB00004',
+                itemName: 'Hộp Kem nano bạc Agrin 25g',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 100,
+                requireQty: 0,
+                batchNum: 'BB00001.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 491,
+                fatherId: 40,
+                itemCode: 'BB00010',
+                itemName: 'Nắp nhựa trắng tuýp kem bạc Agrin',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.5,
+                plannedQty: 0.5,
+                requireQty: 0,
+                batchNum: 'BB00010.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 492,
+                fatherId: 40,
+                itemCode: 'BB00011',
+                itemName: 'Nhãn Agsinus 70ml',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.46,
+                plannedQty: 0.46,
+                requireQty: 0,
+                batchNum: 'BB00011.01',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 493,
+                fatherId: 40,
+                itemCode: 'BB00011',
+                itemName: 'Nhãn Agsinus 70ml',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.46,
+                plannedQty: 0.46,
+                requireQty: 0,
+                batchNum: '65214',
+                expDate: null,
+                note: null,
+              },
+              {
+                id: 494,
+                fatherId: 40,
+                itemCode: 'BB00013',
+                itemName: 'Tuýp kem bạc Agrin',
+                type: 'NVL',
+                whsCode: 'K-CKN',
+                uomCodeId: 172,
+                uomCode: 'Cái',
+                quantity: 0.55,
+                plannedQty: 0.55,
+                requireQty: 0,
+                batchNum: '1234',
+                expDate: null,
+                note: null,
+              },
+            ],
+          },
         },
+
+        // () => dispatch(logout()),
       );
-      console.log('response1231231232 ', response);
-      const dataBack = await response.json();
-      if (response.ok) {
-        console.log('API Confirm response', dataBack);
+
+      console.log('databackdataback=>', databack);
+
+      if (databack) {
         fetchItemData();
         setisSynced(!isSynced);
       } else {
-        console.log('Fail to sync data', dataBack);
-        Alert.alert(dataBack.errors.Reason);
+        console.log('Fail to sync data', databack.error);
+        Alert.alert(databack.errors.Reason);
         return;
       }
     } catch (e) {
@@ -251,6 +483,7 @@ const EditStockScreen = ({route}: {route: any}) => {
   };
   console.log('loai hàng', goodType);
   console.log('listdataaaaa', listDatas);
+  console.log('docdate', docDate);
 
   const renderItem = ({item, index}: any) => {
     return (

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {act} from 'react';
 
@@ -44,6 +45,7 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       state.userData = null;
       state.itemData = [];
+      AsyncStorage.removeItem('accessToken');
     },
     setUserData(state, action: PayloadAction<any>) {
       state.userData = action.payload.userData;

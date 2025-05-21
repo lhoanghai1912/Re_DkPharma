@@ -5,8 +5,6 @@ import {
   FlatList,
   Image,
   ImageStyle,
-  Modal,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -16,11 +14,7 @@ import {
 import styles from './transfer_styles';
 import images from '../../component/contants';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  logout,
-  setDetailsItem,
-  setDetailsItemSelected,
-} from '../../redux/slice_index';
+import {logout} from '../../redux/slice_index';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {navigate} from '../../navigators/root_navigators';
 import moment from 'moment';
@@ -32,6 +26,8 @@ import {
 } from 'react-native-vision-camera';
 import WeightModal from '../Modal/weight_modal';
 import CalendarModal from '../Modal/calendar_modal';
+import {callApi} from '../../component/apiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TransferScreen: React.FC = () => {
   const [selectedDocDate] = useState(moment().format('YYYY-MM-DD'));
@@ -71,24 +67,15 @@ const TransferScreen: React.FC = () => {
   }, [listDatas]); // Chỉ cập nhật khi userData.status thay đổi
   const fetchItemData = async () => {
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${selectedTranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
-          },
-        },
-      );
-      const details = await response.json();
-      console.log('response', response);
+      const url = `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${selectedTranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`;
 
-      console.log('detailsssssssssssssssssssss', details);
-      if (response.ok) {
-        setListData(details);
-      }
-    } catch {}
+      const data = await callApi(url, {method: 'GET'}, () => {
+        dispatch(logout());
+      });
+      setListData(data);
+    } catch (e) {
+      console.log('erro: ', e);
+    }
   };
   useEffect(() => {
     if (userData?.accessToken && selectedTranferId) {
@@ -190,29 +177,26 @@ const TransferScreen: React.FC = () => {
     }
     console.log('action', action);
     console.log('apistatus', apiStatus);
-    console.log(
-      `API: https://pos.foxai.com.vn:8123/api/Production/addIssue?Status=${apiStatus}`,
-    );
+    console.log();
 
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/addIssue?Status=${apiStatus}`,
+      const url = `https://pos.foxai.com.vn:8123/api/Production/addIssue?Status=${apiStatus}`;
+      const dataBack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem(
+              'accessToken',
+            )}`,
           },
           body: JSON.stringify(listDatas.items),
         },
+        () => dispatch(logout()),
       );
-      console.log('resss', response);
-
-      const data = await response.json();
-      console.log('API response', data);
-
-      if (response.ok) {
-        console.log('data api back: ', data);
+      if (dataBack) {
+        console.log('API response', dataBack);
         fetchItemData();
         if (action === 'save') {
           Alert.alert('Success', 'Save data success');
@@ -223,10 +207,10 @@ const TransferScreen: React.FC = () => {
         return;
       } else {
         if (action === 'save') {
-          console.log('error: ', data);
+          console.log('error: ', dataBack);
           // Alert.alert('Error', `Failed to save data: ${errors.errors}`);
         } else if (action === 'sync') {
-          console.log('error: ', data);
+          console.log('error: ', dataBack);
           Alert.alert('Error', 'Failed to sync data ');
         }
         return;
@@ -290,13 +274,19 @@ const TransferScreen: React.FC = () => {
           {item.uomCode}
         </Text>
         <TextInput
-          editable={isBlocked === item.itemCode ? false : true}
+          editable={
+            isBlocked === item.itemCode || isSynced
+              ? false
+              : true
+              ? false
+              : true
+          }
           style={[
             styles.mainConTentText,
             {
               flex: 1,
               backgroundColor:
-                isBlocked === item.itemCode ? '#CCCCCC' : 'white',
+                isSynced || isBlocked === item.itemCode ? '#CCCCCC' : 'white',
             },
           ]}>
           {item.note}

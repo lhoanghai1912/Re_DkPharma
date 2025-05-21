@@ -17,6 +17,8 @@ import CalendarModal from '../Modal/calendar_modal';
 import ItemCodeModal from '../Modal/itemCode_modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../redux/slice_index';
+import {callApi} from '../../component/apiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import { Container } from './styles';
 
@@ -36,20 +38,14 @@ const RestoreScreen = ({route}: {route: any}) => {
 
   const fetchItemData = async () => {
     try {
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/getGoodIssue${dataProp.docEntry}?docDate=${docDate}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
-          },
-        },
+      if (!dataProp?.docEntry) return;
+      const url = `https://pos.foxai.com.vn:8123/api/Production/getGoodIssue${dataProp.docEntry}?docDate=${docDate}`;
+      const data = await callApi(url, {method: 'GET'}, () =>
+        dispatch(logout()),
       );
-      const details = await response.json();
-      if (response.ok) {
-        setListDatas(details);
-        if (details?.items?.status === 'ĐỒNG BỘ') {
+      if (data) {
+        setListDatas(data);
+        if (data.items.status === 'ĐỒNG BỘ') {
           setisSynced(true);
         } else {
           setisSynced(false);
@@ -91,27 +87,27 @@ const RestoreScreen = ({route}: {route: any}) => {
 
   const handleConfirm = async () => {
     try {
-      setisSynced(!isSynced);
-      listDatas.items.docDate = docDate;
-      console.log('data day len api ', listDatas);
-      const response = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Production/addGoodIssue`,
+      const url = `https://pos.foxai.com.vn:8123/api/Production/addGoodIssue`;
+      const databack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.accessToken}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem(
+              'accessToken',
+            )}`,
           },
           body: JSON.stringify(listDatas.items),
         },
+        () => dispatch(logout()),
       );
-      console.log('response1231231232 ', response);
-      const dataBack = await response.json();
-      if (response.ok) {
-        console.log('API Confirm response', dataBack);
+      if (databack) {
+        console.log('API response:', databack);
+        setisSynced(!isSynced);
         fetchItemData();
       } else {
-        console.log('Fail to sync data', dataBack);
+        console.log('Fail to sync data', databack);
         return;
       }
     } catch (e) {
