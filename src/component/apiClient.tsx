@@ -20,7 +20,6 @@ export async function callApi(
       headers,
     });
     console.log('resres========>', response);
-    // console.log('data', data);
 
     if (response.status === 401) {
       await AsyncStorage.removeItem('accessToken');
@@ -33,14 +32,14 @@ export async function callApi(
     }
     const data = await response.json();
 
-    // if (response.status === 200 && data?.accessToken) {
-    //   await AsyncStorage.setItem('accessToken', data?.accessToken);
-    // }
+    if (response.status === 200 && data?.accessToken) {
+      await AsyncStorage.setItem('accessToken', data?.accessToken);
+    }
 
     if (!response.ok) {
       // Alert.alert(data.errors.Reason);
-      console.log('erros:', data?.errors.Reason);
-      Alert.alert(`Lỗi: ${data?.errors.Reason} `);
+      console.log('erros:', data?.title);
+      Alert.alert(`Lỗi: ${data?.title} `);
       throw new Error(`Lỗi: ${response.status}`);
     }
     return data;
