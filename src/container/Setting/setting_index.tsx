@@ -18,6 +18,9 @@ import {
   setUserData,
   setUserDataInformation,
 } from '../../redux/slice_index';
+import {callApi} from '../../api/apiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from '../../component/loading_index';
 
 const SettingScreen: React.FC = ({navigation}: any) => {
   const [checked, setChecked] = useState('first');
@@ -32,7 +35,7 @@ const SettingScreen: React.FC = ({navigation}: any) => {
     useState<boolean>(false);
   const [isNewPasswordRefVisible, setIsNewPasswordRefVisible] =
     useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleBack = async () => {
@@ -70,35 +73,38 @@ const SettingScreen: React.FC = ({navigation}: any) => {
         return;
       }
       try {
-        const respone = await fetch('https://pos.foxai.com.vn:8123/api/Auth', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData.user.accessToken}`,
+        const url = 'https://pos.foxai.com.vn:8123/api/Auth';
+        const databack = await callApi(
+          url,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await AsyncStorage.getItem(
+                'accessToken',
+              )}`,
+            },
+            body: JSON.stringify({
+              id: userInfo?.id,
+              fullName: userInfo?.fullName,
+              center: userInfo?.center,
+              department: userInfo?.department,
+            }),
           },
-          body: JSON.stringify({
-            id: userInfo?.id,
-            fullName: userInfo?.fullName,
-            center: userInfo?.center,
-            department: userInfo?.department,
-          }),
-        });
-        console.log('respone', respone);
-
-        const data = await respone.json();
-
-        console.log('dataaaaaaaaaaaaaa', data);
-        if (respone.status === 200) {
+          setIsLoading,
+          () => dispatch(logout()),
+        );
+        if (databack) {
           try {
             dispatch(setUserDataInformation({user: userInfo}));
-            console.log('update thanh cong');
-
-            // navigate(SCREEN_NAMES.HOME_SCREEN);
+            console.log('Update successful');
+            Alert.alert('Update successful');
           } catch (e) {
-            console.log('loi: ', e);
+            Alert.alert('Lỗi');
+            console.log('error: ', e);
           }
         } else {
-          console.log('loiiiii');
+          console.log('Lỗi');
         }
       } catch (e) {
         console.log('error', e);
@@ -117,13 +123,16 @@ const SettingScreen: React.FC = ({navigation}: any) => {
       return;
     }
     try {
-      const respone = await fetch(
-        `https://pos.foxai.com.vn:8123/api/Auth/changePassword`,
+      const url = `https://pos.foxai.com.vn:8123/api/Auth/changePassword`;
+      const databack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.user?.accessToken}`,
+            Authorization: `Bearer ${await AsyncStorage.getItem(
+              'accessToken',
+            )}`,
           },
           body: JSON.stringify({
             id: userData?.user?.id,
@@ -132,17 +141,17 @@ const SettingScreen: React.FC = ({navigation}: any) => {
             refPassword: newPasswordRef,
           }),
         },
+        setIsLoading,
+        () => dispatch(logout()),
       );
-      console.log('ressss', respone);
-      const data = await respone.json();
-      if (respone.status === 200) {
+      if (databack) {
         Alert.alert('Password changed, please login again');
         dispatch(logout());
       } else {
         Alert.alert(
           'faild to change password',
-          data?.status,
-          data?.message || 'Please try again later',
+          databack?.status,
+          databack?.message || 'Please try again later',
         );
       }
     } catch (e) {
@@ -183,44 +192,48 @@ const SettingScreen: React.FC = ({navigation}: any) => {
           </View>
         </View>
         <View style={styles.mainBody}>
-          <View
-            style={[
-              styles.updateInfo,
-              {display: checked === 'first' ? 'flex' : 'none'},
-            ]}>
-            <View style={styles.mainContent}>
-              <Text style={styles.lableStyle}>UserName</Text>
-              <TextInput
-                value={userInfo?.username}
-                editable={false}
-                placeholder="Username"
-                style={styles.readonly}
-              />
-              <Text style={styles.lableStyle}>Center</Text>
-              <TextInput
-                value={userInfo?.center}
-                placeholder="Center"
-                style={styles.textInput}
-                onChangeText={text => handleInputChange(text, 'center')}
-              />
+          {isLoading ? (
+            <LoadingScreen></LoadingScreen>
+          ) : (
+            <View
+              style={[
+                styles.updateInfo,
+                {display: checked === 'first' ? 'flex' : 'none'},
+              ]}>
+              <View style={styles.mainContent}>
+                <Text style={styles.lableStyle}>UserName</Text>
+                <TextInput
+                  value={userInfo?.username}
+                  editable={false}
+                  placeholder="Username"
+                  style={styles.readonly}
+                />
+                <Text style={styles.lableStyle}>Center</Text>
+                <TextInput
+                  value={userInfo?.center}
+                  placeholder="Center"
+                  style={styles.textInput}
+                  onChangeText={text => handleInputChange(text, 'center')}
+                />
+              </View>
+              <View style={styles.mainContent}>
+                <Text style={styles.lableStyle}>Full Name</Text>
+                <TextInput
+                  value={userInfo?.fullName}
+                  placeholder="Full Name"
+                  style={styles.textInput}
+                  onChangeText={text => handleInputChange(text, 'fullName')}
+                />
+                <Text style={styles.lableStyle}>Department</Text>
+                <TextInput
+                  value={userInfo?.department}
+                  placeholder="Department"
+                  style={styles.textInput}
+                  onChangeText={text => handleInputChange(text, 'department')}
+                />
+              </View>
             </View>
-            <View style={styles.mainContent}>
-              <Text style={styles.lableStyle}>Full Name</Text>
-              <TextInput
-                value={userInfo?.fullName}
-                placeholder="Full Name"
-                style={styles.textInput}
-                onChangeText={text => handleInputChange(text, 'fullName')}
-              />
-              <Text style={styles.lableStyle}>Department</Text>
-              <TextInput
-                value={userInfo?.department}
-                placeholder="Department"
-                style={styles.textInput}
-                onChangeText={text => handleInputChange(text, 'department')}
-              />
-            </View>
-          </View>
+          )}
           <View
             style={[
               styles.changePassword,

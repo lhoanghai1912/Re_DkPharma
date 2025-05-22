@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'blue',
     },
     headerContent:{
-        flex:1,
+        flex:0.7,
         flexDirection:'row',
         alignItems:'center',
         // backgroundColor:'red',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     mainContent:{
         flex:2,
-        borderTopWidth:1,
+        // borderTopWidth:1,
     },
 
     mainContentHeader:{
@@ -81,15 +81,20 @@ const styles = StyleSheet.create({
     mainContentHeaderText:{
         flex:1,
         fontSize:20,
-        borderWidth:1,   
+        borderWidth:1,
+        borderRightWidth:0,   
         textAlign:'center',
         textAlignVertical:'center',
+        backgroundColor:'green',
+        color:'white',
+        height:'auto',
         fontWeight:'500',
     },
     mainContentBodyText:{
         flex:1,
         fontSize:20,
         borderWidth:1,   
+        borderRightWidth:0,   
         textAlign:'center',
         textAlignVertical:'center',
     },
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
     },
 
     bottonText:{
-        fontSize: 22,
+        fontSize: 20,
         color: 'white',
         fontWeight: 'bold',
     },

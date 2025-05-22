@@ -1,7 +1,6 @@
 import React, {act, useEffect, useState} from 'react';
 import {
   Alert,
-  Animated,
   FlatList,
   Image,
   ImageStyle,
@@ -26,8 +25,9 @@ import {
 } from 'react-native-vision-camera';
 import WeightModal from '../Modal/weight_modal';
 import CalendarModal from '../Modal/calendar_modal';
-import {callApi} from '../../component/apiClient';
+import {callApi} from '../../api/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from '../../component/loading_index';
 
 const TransferScreen: React.FC = () => {
   const [selectedDocDate] = useState(moment().format('YYYY-MM-DD'));
@@ -50,6 +50,8 @@ const TransferScreen: React.FC = () => {
   const [selectedData1, setSelectedData1] = useState<any>();
   const [docDate, setDocDate] = useState(selectedDocDate);
   const [listDatas, setListData] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
   if (listDatas?.items) {
     listDatas.items.creator = userData?.user?.fullName;
@@ -69,7 +71,7 @@ const TransferScreen: React.FC = () => {
     try {
       const url = `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${selectedTranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`;
 
-      const data = await callApi(url, {method: 'GET'}, () => {
+      const data = await callApi(url, {method: 'GET'}, setIsLoading, () => {
         dispatch(logout());
       });
       setListData(data);
@@ -94,18 +96,15 @@ const TransferScreen: React.FC = () => {
   const handleLogout = async () => {
     dispatch(logout());
   };
+
   const handleQR = async () => {
     requestPermission();
 
     if (hasPermission == true) {
       console.log('Request Permission Accecpted');
-      // setIsCameraOn(true);
-      //   navigate(SCREEN_NAMES.WEIGHT_SCREEN, {
-      //     dataProps: listDatas,
-      // dataSelected: selectedData1,
-      //   }
-      // );
-      setModalWeightVisible(!modalWeightVisible);
+      setIsCameraOn(true);
+
+      // setModalWeightVisible(!modalWeightVisible);
 
       if (device == null) {
         console.log('device not found');
@@ -127,16 +126,19 @@ const TransferScreen: React.FC = () => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (code: any) => {
       setQrData(code[0]?.value);
-      const formattedValue = `${listDatasSelected.itemCode}''${listDatasSelected.batchNumber}`;
+      const formattedValue = `${selectedData1?.itemCode}''${selectedData1?.batchNumber}`;
+      console.log('form', formattedValue);
+      console.log('qrdata', qrData);
+
       if (qrData === formattedValue) {
         console.log('QR hợp lệ');
         setIsCameraOn(false);
-        setIsBlocked(listDatasSelected.itemCode);
-        navigate(SCREEN_NAMES.WEIGHT_SCREEN);
+        setModalWeightVisible(!modalWeightVisible);
+        setIsBlocked(listDatasSelected?.itemCode);
       } else {
         console.log('QR k hợp lệ');
         setIsCameraOn(false);
-        // setIsBlocked(listDatasSelected.proCode);
+        setIsBlocked(listDatasSelected?.proCode);
       }
     },
   });
@@ -165,7 +167,7 @@ const TransferScreen: React.FC = () => {
         setSelectedTranferId(item);
         setIsSelecting(!isSelecting);
       }}>
-      <Text style={[styles.mainConTentText, {flex: 1}]}>{item}</Text>
+      <Text style={[styles.mainConTentBodyText, {flex: 1}]}>{item}</Text>
     </TouchableOpacity>
   );
   const handleConfirm = async (action: 'save' | 'sync') => {
@@ -193,6 +195,7 @@ const TransferScreen: React.FC = () => {
           },
           body: JSON.stringify(listDatas.items),
         },
+        setIsLoading,
         () => dispatch(logout()),
       );
       if (dataBack) {
@@ -222,13 +225,19 @@ const TransferScreen: React.FC = () => {
   const renderItem = ({item, index}: any) => {
     return (
       <View style={styles.mainContentHeader}>
-        <Text style={[styles.mainConTentText, {flex: 0.4}]}>{index + 1}</Text>
-        <Text style={[styles.mainConTentText, {flex: 1}]}>{item.itemCode}</Text>
-        <Text style={[styles.mainConTentText, {flex: 1}]}>{item.itemName}</Text>
-        <Text style={[styles.mainConTentText, {flex: 0.6}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.4}]}>
+          {index + 1}
+        </Text>
+        <Text style={[styles.mainConTentBodyText, {flex: 1}]}>
+          {item.itemCode}
+        </Text>
+        <Text style={[styles.mainConTentBodyText, {flex: 1}]}>
+          {item.itemName}
+        </Text>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.6}]}>
           {item.batchNumber}
         </Text>
-        <Text style={[styles.mainConTentText, {flex: 1.2}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 1.2}]}>
           {moment(item.expiryDate).format('DD-MM-YYYY')}
         </Text>
         <TouchableOpacity
@@ -238,25 +247,29 @@ const TransferScreen: React.FC = () => {
             handleQR();
           }}
           style={[
-            styles.mainConTentText,
+            styles.mainConTentBodyText,
             {
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
               opacity: isSynced ? 0.5 : 1,
               backgroundColor: isSynced ? 'lightgrey' : 'white',
+              borderWidth: 1,
+              borderRightWidth: 0,
             },
           ]}
           disabled={isSynced}>
           <Image source={images.qr_code} style={styles.icon}></Image>
         </TouchableOpacity>
-        <Text style={[styles.mainConTentText, {flex: 0.8}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.8}]}>
           {item.requiredQuantity}
         </Text>
         <Text
           style={[
-            styles.mainConTentText,
+            styles.mainConTentBodyText,
             {
+              borderWidth: 1,
+              borderRightWidth: 0,
               flex: 0.8,
               backgroundColor:
                 isBlocked === item.itemCode ? '#CCCCCC' : 'white',
@@ -264,13 +277,13 @@ const TransferScreen: React.FC = () => {
           ]}>
           {item.quantity}
         </Text>
-        <Text style={[styles.mainConTentText, {flex: 0.8}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.8}]}>
           {item.calculatedQuantity | item.quantity}
         </Text>
-        <Text style={[styles.mainConTentText, {flex: 0.8}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.8}]}>
           {(item.remainingQuantity = item.requiredQuantity - item.quantity)}
         </Text>
-        <Text style={[styles.mainConTentText, {flex: 0.8}]}>
+        <Text style={[styles.mainConTentBodyText, {flex: 0.8}]}>
           {item.uomCode}
         </Text>
         <TextInput
@@ -282,7 +295,7 @@ const TransferScreen: React.FC = () => {
               : true
           }
           style={[
-            styles.mainConTentText,
+            styles.mainConTentBodyText,
             {
               flex: 1,
               backgroundColor:
@@ -320,231 +333,272 @@ const TransferScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
-          <View style={{flex: 1}}>
-            <View style={styles.headerContent}>
-              <View style={styles.headerContentCol}>
-                <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Mã CT: ${
-                    listDatas?.items?.docCode || null
-                  }`}</Text>
-                </View>
-                <View
-                  style={[styles.headerContentItem, {flexDirection: 'row'}]}>
-                  <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModalCalendarVisible(true);
-                      console.log('modal press');
-                      console.log('modal visible: ', modalWeightVisible);
-                    }}>
-                    <Text
-                      style={[styles.normalText, {backgroundColor: 'red'}]}>{`${
-                      moment(docDate).format('DD-MM-YYYY') || null
+          {isLoading ? (
+            <LoadingScreen></LoadingScreen>
+          ) : (
+            <View style={{flex: 1}}>
+              <View style={styles.headerContent}>
+                <View style={styles.headerContentCol}>
+                  <View style={styles.headerContentItem}>
+                    <Text style={styles.normalText}>{`Mã CT: ${
+                      listDatas?.items?.docCode || null
                     }`}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Trạng thái: ${
-                    listDatas?.items?.status || null
-                  }`}</Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.headerContentCol,
-                  {flex: 1.2, alignItems: 'center'},
-                ]}>
-                <View style={styles.headerContentItem}>
-                  <Text
-                    style={[
-                      styles.normalText,
-                      {textAlign: 'center'},
-                    ]}>{`Lệnh sản xuất: ${
-                    listDatas?.items?.productionCode || null
-                  }`}</Text>
-                </View>
-                <View style={styles.headerContentItem}>
-                  <Text
-                    style={[
-                      styles.normalText,
-                      {textAlign: 'center'},
-                    ]}>{`Tên thành phẩm: ${
-                    listDatas?.items?.itemName || null
-                  }`}</Text>
-                </View>
-                <View style={styles.headerContentItem}>
-                  <Text
-                    style={[
-                      styles.normalText,
-                      {textAlign: 'center'},
-                    ]}>{`Kho xuất: ${listDatas?.items?.whsCode || null}`}</Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.headerContentCol,
-                  {
-                    flexDirection: 'row',
-                    padding: 5,
-                  },
-                ]}>
-                <View
-                  style={{
-                    flex: 1,
-                    height: '100%',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}>
+                  </View>
                   <View
                     style={[
                       styles.headerContentItem,
                       {
                         flexDirection: 'row',
-                        backgroundColor: 'red',
-                        justifyContent: 'flex-end',
+                        alignContent: 'center',
+                        alignItems: 'center',
                       },
                     ]}>
-                    <Text
-                      style={[
-                        styles.normalText,
-                        {textAlign: 'right'},
-                      ]}>{`Mã yêu cầu ck: `}</Text>
+                    <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
                     <TouchableOpacity
-                      style={{
-                        flexDirection: 'row',
-                        backgroundColor: 'red',
-                        alignItems: 'center',
-                      }}
+                      style={[
+                        styles.button,
+                        {
+                          width: 'auto',
+                          paddingVertical: 0,
+                          paddingHorizontal: 5,
+                          alignItems: 'center',
+                          marginBottom: 0,
+                        },
+                      ]}
                       onPress={() => {
-                        setIsSelecting(!isSelecting);
-                        // renderTranferId();
+                        setModalCalendarVisible(true);
+                        console.log('modal press');
+                        console.log('modal visible: ', modalWeightVisible);
                       }}>
-                      <Text style={styles.normalText}>
-                        {`${selectedTranferId || null}`}
-                      </Text>
-                      <Image
-                        source={
-                          isSelecting ? images.up_white : images.down_white
-                        }
-                        style={[styles.iconArrow, {marginLeft: 5}]}
-                      />
+                      <Text style={[styles.bottonText, {fontSize: 20}]}>{`${
+                        moment(docDate).format('DD-MM-YYYY') || null
+                      }`}</Text>
                     </TouchableOpacity>
                   </View>
-
-                  <View
-                    style={[
-                      styles.headerContentItem,
-                      {alignItems: 'flex-end'},
-                    ]}>
-                    <Text style={styles.normalText}>{`Mã thành phẩm: ${
-                      listDatas?.items?.itemCode || null
-                    }`}</Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.headerContentItem,
-                      {alignItems: 'flex-end'},
-                    ]}>
-                    <Text style={styles.normalText}>{`Người nhập: ${
-                      listDatas?.items?.creator || null
+                  <View style={styles.headerContentItem}>
+                    <Text style={styles.normalText}>{`Trạng thái: ${
+                      listDatas?.items?.status || null
                     }`}</Text>
                   </View>
                 </View>
-
                 <View
                   style={[
-                    // styles.pickerBody,
+                    styles.headerContentCol,
+                    {flex: 1.2, alignItems: 'center'},
+                  ]}>
+                  <View style={styles.headerContentItem}>
+                    <Text
+                      style={[
+                        styles.normalText,
+                        {textAlign: 'center'},
+                      ]}>{`Lệnh sản xuất: ${
+                      listDatas?.items?.productionCode || null
+                    }`}</Text>
+                  </View>
+                  <View style={styles.headerContentItem}>
+                    <Text
+                      style={[
+                        styles.normalText,
+                        {textAlign: 'center'},
+                      ]}>{`Tên thành phẩm: ${
+                      listDatas?.items?.itemName || null
+                    }`}</Text>
+                  </View>
+                  <View style={styles.headerContentItem}>
+                    <Text
+                      style={[
+                        styles.normalText,
+                        {textAlign: 'center'},
+                      ]}>{`Kho xuất: ${
+                      listDatas?.items?.whsCode || null
+                    }`}</Text>
+                  </View>
+                </View>
+                <View
+                  style={[
+                    styles.headerContentCol,
                     {
-                      flex: 0.2,
-                      flexDirection: 'column',
-                      display: isSelecting ? 'flex' : 'none',
+                      flexDirection: 'row',
+                      padding: 5,
                     },
                   ]}>
-                  <FlatList
-                    data={listDatas?.items?.tranferId}
-                    renderItem={renderTranferId}
-                    keyExtractor={item => item.proCode}
+                  <View
                     style={{
                       flex: 1,
-                    }}
+                      height: '100%',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                    }}>
+                    <View
+                      style={[
+                        styles.headerContentItem,
+                        {
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                        },
+                      ]}>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          {textAlign: 'right'},
+                        ]}>{`Mã yêu cầu ck: `}</Text>
+                      <TouchableOpacity
+                        style={[
+                          styles.button,
+                          {
+                            flexDirection: 'row',
+                            width: 'auto',
+                            paddingHorizontal: 5,
+                            paddingVertical: 0,
+                            alignItems: 'center',
+                            marginBottom: 0,
+                          },
+                        ]}
+                        onPress={() => {
+                          setIsSelecting(!isSelecting);
+                          // renderTranferId();
+                        }}>
+                        <Text style={[styles.bottonText, {fontSize: 20}]}>
+                          {`${selectedTranferId || null}`}
+                        </Text>
+                        <Image
+                          source={
+                            isSelecting ? images.up_white : images.down_white
+                          }
+                          style={[styles.iconArrow, {marginLeft: 5}]}
+                        />
+                      </TouchableOpacity>
+                    </View>
+
+                    <View
+                      style={[
+                        styles.headerContentItem,
+                        {alignItems: 'flex-end'},
+                      ]}>
+                      <Text style={styles.normalText}>{`Mã thành phẩm: ${
+                        listDatas?.items?.itemCode || null
+                      }`}</Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.headerContentItem,
+                        {alignItems: 'flex-end'},
+                      ]}>
+                      <Text style={styles.normalText}>{`Người nhập: ${
+                        listDatas?.items?.creator || null
+                      }`}</Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={[
+                      // styles.pickerBody,
+                      {
+                        flex: 0.2,
+                        flexDirection: 'column',
+                        display: isSelecting ? 'flex' : 'none',
+                      },
+                    ]}>
+                    <FlatList
+                      data={listDatas?.items?.tranferId}
+                      renderItem={renderTranferId}
+                      keyExtractor={item => item.proCode}
+                      style={{
+                        flex: 1,
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+
+              <View style={[styles.mainContent]}>
+                <View
+                  style={[
+                    styles.mainContentHeader,
+                    {backgroundColor: 'green'},
+                  ]}>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.4}]}>
+                    STT
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                    Mã NVL
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                    Tên NVL
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.6}]}>
+                    Số lô
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 1.2}]}>
+                    Hạn sử dụng
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                    Kiểm tra QR
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                    SL theo yc
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                    SL xuất tt
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                    Sl lũy kế
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                    SL còn lại
+                  </Text>
+                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                    ĐVT
+                  </Text>
+                  <TextInput
+                    editable={false}
+                    style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                    Ghi chú
+                  </TextInput>
+                </View>
+                <View style={styles.mainContentBody}>
+                  <FlatList
+                    data={listDatas?.items?.apP_WTQ1 || []}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.itemCode}
+                    style={[
+                      {
+                        flex: 1,
+                        width: '100%',
+                      },
+                      // {display:modalVisible ? 'none' : 'flex'},
+                    ]}
                   />
                 </View>
               </View>
             </View>
-
-            <View style={[styles.mainContent]}>
-              <View style={styles.mainContentHeader}>
-                <Text style={[styles.mainConTentText, {flex: 0.4}]}>STT</Text>
-                <Text style={[styles.mainConTentText, {flex: 1}]}>Mã NVL</Text>
-                <Text style={[styles.mainConTentText, {flex: 1}]}>Tên NVL</Text>
-                <Text style={[styles.mainConTentText, {flex: 0.6}]}>Số lô</Text>
-                <Text style={[styles.mainConTentText, {flex: 1.2}]}>
-                  Hạn sử dụng
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 1}]}>
-                  Kiểm tra QR
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-                  SL theo yc
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-                  SL xuất tt
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-                  Sl lũy kế
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 0.8}]}>
-                  SL còn lại
-                </Text>
-                <Text style={[styles.mainConTentText, {flex: 0.8}]}>ĐVT</Text>
-                <TextInput
-                  editable={false}
-                  style={[styles.mainConTentText, {flex: 1}]}>
-                  Ghi chú
-                </TextInput>
-              </View>
-              <View style={styles.mainContentBody}>
-                <FlatList
-                  data={listDatas?.items?.apP_WTQ1 || []}
-                  renderItem={renderItem}
-                  keyExtractor={item => item.itemCode}
-                  style={[
-                    {
-                      flex: 1,
-                      width: '100%',
-                    },
-                    // {display:modalVisible ? 'none' : 'flex'},
-                  ]}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.footer}>
-            <View style={styles.footerContent}>
-              <TouchableOpacity
-                style={styles.footerButton}
-                onPress={() => {
-                  handleLogout();
-                }}>
-                <Text style={styles.bottonText}>Đăng xuất</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-                disabled={isSynced}
-                onPress={() => {
-                  handleConfirm('save');
-                }}>
-                <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-                disabled={isSynced}
-                onPress={() => {
-                  handleConfirm('sync');
-                }}>
-                <Text style={[styles.bottonText]}>Đồng bộ</Text>
-              </TouchableOpacity>
-            </View>
+          )}
+        </View>
+        <View style={styles.footer}>
+          <View style={styles.footerContent}>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => {
+                handleLogout();
+              }}>
+              <Text style={styles.bottonText}>Đăng xuất</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+              disabled={isSynced}
+              onPress={() => {
+                handleConfirm('save');
+              }}>
+              <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+              disabled={isSynced}
+              onPress={() => {
+                handleConfirm('sync');
+              }}>
+              <Text style={[styles.bottonText]}>Đồng bộ</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

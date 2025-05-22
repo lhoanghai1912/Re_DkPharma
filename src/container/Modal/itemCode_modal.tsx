@@ -127,18 +127,18 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
             }}>
             <TouchableOpacity
               onPress={() => {
+                onClose();
+              }}
+              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              <Text style={[styles.bottonText]}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 onSelectedItemsChange(selectedItem);
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
               <Text style={[styles.bottonText]}>Xác nhận</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                onClose();
-              }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
             </TouchableOpacity>
           </View>
         </View>

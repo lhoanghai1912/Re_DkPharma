@@ -85,18 +85,18 @@ const TypeModal: React.FC<ItemTypeProps> = ({
             }}>
             <TouchableOpacity
               onPress={() => {
+                onClose();
+              }}
+              style={[styles.button, {width: '30%', marginBottom: 0}]}>
+              <Text style={[styles.bottonText]}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 onConfirm();
                 onClose();
               }}
               style={[styles.button, {width: '30%', marginBottom: 0}]}>
               <Text style={[styles.bottonText]}>Xác nhận</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                onClose();
-              }}
-              style={[styles.button, {width: '30%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -67,16 +67,16 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
           <TouchableOpacity
             style={styles.footerButton}
             onPress={() => {
-              handleConfirm();
+              handleCancel();
             }}>
-            <Text style={styles.bottonText}>Xác nhận</Text>
+            <Text style={styles.bottonText}>Hủy bỏ</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.footerButton}
             onPress={() => {
-              handleCancel();
+              handleConfirm();
             }}>
-            <Text style={styles.bottonText}>Hủy bỏ</Text>
+            <Text style={styles.bottonText}>Xác nhận</Text>
           </TouchableOpacity>
         </View>
       </View>

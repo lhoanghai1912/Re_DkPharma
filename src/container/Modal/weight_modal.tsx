@@ -253,12 +253,15 @@ const WeightModal: React.FC<WeightModalProps> = ({
             <TouchableOpacity
               onPress={() => handleSave()}
               disabled={isQuantityZero()}
-              style={[styles.button, {opacity: isQuantityZero() ? 0.5 : 1}]}>
+              style={[
+                styles.button,
+                {opacity: isQuantityZero() ? 0.5 : 1, width: '20%'},
+              ]}>
               <Text style={styles.bottonText}>Lưu</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleCancel()}
-              style={styles.button}>
+              style={[styles.button, {width: '20%'}]}>
               <Text style={styles.bottonText}>Đóng</Text>
             </TouchableOpacity>
           </View>

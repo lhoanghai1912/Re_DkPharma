@@ -180,18 +180,18 @@ const WareHouseModal: React.FC<ItemWareHouseProp> = ({
             }}>
             <TouchableOpacity
               onPress={() => {
+                onClose();
+              }}
+              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              <Text style={[styles.bottonText]}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 handleConfirm();
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
               <Text style={[styles.bottonText]}>Xác nhận</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                onClose();
-              }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
             </TouchableOpacity>
           </View>
         </View>

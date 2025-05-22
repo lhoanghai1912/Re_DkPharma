@@ -5,11 +5,13 @@ import {Alert} from 'react-native';
 export async function callApi(
   url: string,
   options: RequestInit = {},
+  setIsLoading: (isLoading: boolean) => void,
   onLogout?: () => void, // callback logout truyền từ component
 ) {
   const token = await AsyncStorage.getItem('accessToken');
-  console.log('token111', token);
   try {
+    setIsLoading(true);
+
     const headers = {
       'Content-Type': 'application/json',
       ...(token ? {Authorization: `Bearer ${token}`} : {}),
@@ -28,6 +30,7 @@ export async function callApi(
       console.log(token);
       if (onLogout) onLogout();
       Alert.alert('token hết hạn');
+      setIsLoading(false);
       throw new Error('Token hết hạn, vui lòng đăng nhập lại');
     }
     const data = await response.json();
@@ -42,8 +45,10 @@ export async function callApi(
       Alert.alert(`Lỗi: ${data?.title} `);
       throw new Error(`Lỗi: ${response.status}`);
     }
+    setIsLoading(false);
     return data;
   } catch (error) {
+    setIsLoading(false);
     throw error;
   }
 }

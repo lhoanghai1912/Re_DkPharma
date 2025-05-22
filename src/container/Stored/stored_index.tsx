@@ -16,8 +16,9 @@ import moment from 'moment';
 import CalendarModal from '../Modal/calendar_modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {logout, setUserData} from '../../redux/slice_index';
-import {callApi} from '../../component/apiClient';
+import {callApi} from '../../api/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from '../../component/loading_index';
 
 const StoreScreen = ({route}: {route: any}) => {
   const dataProp = route.params.dataProp;
@@ -26,8 +27,8 @@ const StoreScreen = ({route}: {route: any}) => {
   const [listDatas, setListData] = useState<any>();
   const [isSynced, setIsSynced] = useState(false);
   const dispatch = useDispatch();
-  console.log('docdate', docDate);
   const {userData} = useSelector((state: any) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchItemData = async () => {
     console.log('userdata', userData);
@@ -36,7 +37,7 @@ const StoreScreen = ({route}: {route: any}) => {
       if (!dataProp?.docEntry) return;
       const url = `https://pos.foxai.com.vn:8123/api/Production/getReceiptPO${dataProp.docEntry}?docDate=${docDate}`;
 
-      const data = await callApi(url, {method: 'GET'}, () =>
+      const data = await callApi(url, {method: 'GET'}, setIsLoading, () =>
         dispatch(logout()),
       );
       console.log('data response', data);
@@ -102,7 +103,10 @@ const StoreScreen = ({route}: {route: any}) => {
           },
           body: JSON.stringify(listDatas.items),
         },
-        () => dispatch(logout()),
+        setIsLoading,
+        () => {
+          dispatch(logout);
+        },
       );
       if (dataBack) {
         console.log('API respone', dataBack);
@@ -254,136 +258,159 @@ const StoreScreen = ({route}: {route: any}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.body}>
-        <View style={{flex: 1}}>
-          <View style={styles.headerContent}>
-            <View style={[styles.headerContentCol, {marginStart: 0}]}>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>{`Mã CT: ${
-                  listDatas?.items?.docCode || ''
-                }`}</Text>
-              </View>
-              <View style={[styles.headerContentItem, {flexDirection: 'row'}]}>
-                <Text style={styles.normalText}>{`Ngày nhập kho:`}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalCalendarVisible(true);
-                    console.log('modal press');
-                  }}>
-                  <Text
-                    style={[styles.normalText, {backgroundColor: 'red'}]}>{`${
-                    moment(docDate).format('DD-MM-YYYY') || null
+        {isLoading ? (
+          <LoadingScreen></LoadingScreen>
+        ) : (
+          <View style={{flex: 1}}>
+            <View style={styles.headerContent}>
+              <View style={[styles.headerContentCol, {marginStart: 0}]}>
+                <View style={styles.headerContentItem}>
+                  <Text style={styles.normalText}>{`Mã CT: ${
+                    listDatas?.items?.docCode || ''
                   }`}</Text>
-                </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.headerContentItem,
+                    {flexDirection: 'row', alignItems: 'center'},
+                  ]}>
+                  <Text style={styles.normalText}>{`Ngày nhập kho: `}</Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        width: 'auto',
+                        marginBottom: 0,
+                        padding: 0,
+                        paddingHorizontal: 5,
+                        borderRadius: 5,
+                      },
+                    ]}
+                    onPress={() => {
+                      setModalCalendarVisible(true);
+                      console.log('modal press');
+                    }}>
+                    <Text style={[styles.bottonText]}>{`${
+                      moment(docDate).format('DD-MM-YYYY') || null
+                    }`}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.headerContentItem}>
+                  <Text style={styles.normalText}>
+                    {`Trạng thái: ${listDatas?.items?.status || ''}`}
+                  </Text>
+                </View>
               </View>
-              <View style={styles.headerContentItem}>
-                <Text style={styles.normalText}>
-                  {`Trạng thái: ${listDatas?.items?.status || ''}`}
-                </Text>
+              <View style={[styles.headerContentCol]}>
+                <View
+                  style={[styles.headerContentItem, {alignItems: 'center'}]}>
+                  <Text style={styles.normalText}>{`Lệnh sản xuất: ${
+                    listDatas?.items?.productionCode || ''
+                  }`}</Text>
+                </View>
+                <View
+                  style={[styles.headerContentItem, {alignItems: 'center'}]}>
+                  <Text style={styles.normalText}>
+                    {`Kho nhập: ${listDatas?.items?.whsCode}` || ''}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalCalendarVisible(true);
+                      console.log('modal press');
+                    }}></TouchableOpacity>
+                </View>
+                <View style={styles.headerContentItem}>
+                  <Text></Text>
+                </View>
+              </View>
+              <View style={[styles.headerContentCol, {}]}>
+                <View
+                  style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
+                  <Text style={styles.normalText}>{`Số lô: ${
+                    listDatas?.items?.productionId || ''
+                  }`}</Text>
+                </View>
+                <View
+                  style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
+                  <Text style={styles.normalText}>{`Người nhập: ${
+                    listDatas?.items?.creator || ''
+                  }`}</Text>
+                </View>
+                <View
+                  style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
+                  <Text style={styles.normalText}>Quy cách: proCode</Text>
+                </View>
               </View>
             </View>
-            <View style={[styles.headerContentCol, {}]}>
-              <View style={[styles.headerContentItem, {alignItems: 'center'}]}>
-                <Text style={styles.normalText}>{`Lệnh sản xuất: ${
-                  listDatas?.items?.productionCode || ''
-                }`}</Text>
-              </View>
-              <View style={[styles.headerContentItem, {alignItems: 'center'}]}>
-                <Text style={styles.normalText}>
-                  {`Kho nhập: ${listDatas?.items?.whsCode}` || ''}
+            <View style={styles.mainContent}>
+              <View style={styles.mainContentHeader}>
+                <Text style={[styles.mainContentHeaderText]}>
+                  Mã thành phẩm
                 </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalCalendarVisible(true);
-                    console.log('modal press');
-                  }}></TouchableOpacity>
+                <Text style={[styles.mainContentHeaderText]}>
+                  Tên thành phẩm
+                </Text>
+                <Text style={[styles.mainContentHeaderText]}>Đơn vị</Text>
+                <Text style={[styles.mainContentHeaderText]}>Hạn sử dụng</Text>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Số kiện chẵn
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Số hộp trên kiện
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Số hộp lẻ
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Tổng số hộp
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  SL thống kê
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Đơn vị thống kê
+                </TextInput>
+                <TextInput
+                  multiline={true}
+                  editable={false}
+                  style={[styles.mainContentHeaderText]}>
+                  Ghi chú
+                </TextInput>
               </View>
-              <View style={styles.headerContentItem}>
-                <Text></Text>
-              </View>
-            </View>
-            <View style={[styles.headerContentCol, {}]}>
-              <View
-                style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
-                <Text style={styles.normalText}>{`Số lô: ${
-                  listDatas?.items?.productionId || ''
-                }`}</Text>
-              </View>
-              <View
-                style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
-                <Text style={styles.normalText}>{`Người nhập: ${
-                  listDatas?.items?.creator || ''
-                }`}</Text>
-              </View>
-              <View
-                style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
-                <Text style={styles.normalText}>Quy cách: proCode</Text>
+              <View style={[styles.mainContentBody]}>
+                <FlatList
+                  data={[listDatas?.items?.apP_OIGN_Line || []]}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index.toString()}
+                  style={[
+                    {
+                      flex: 1,
+                      width: '100%',
+                    },
+                  ]}
+                />
               </View>
             </View>
           </View>
-          <View style={styles.mainContent}>
-            <View style={styles.mainContentHeader}>
-              <Text style={[styles.mainContentHeaderText]}>Mã thành phẩm</Text>
-              <Text style={[styles.mainContentHeaderText]}>Tên thành phẩm</Text>
-              <Text style={[styles.mainContentHeaderText]}>Đơn vị</Text>
-              <Text style={[styles.mainContentHeaderText]}>Hạn sử dụng</Text>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Số kiện chẵn
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Số hộp trên kiện
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Số hộp lẻ
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Tổng số hộp
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                SL thống kê
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Đơn vị thống kê
-              </TextInput>
-              <TextInput
-                multiline={true}
-                editable={false}
-                style={[styles.mainContentHeaderText]}>
-                Ghi chú
-              </TextInput>
-            </View>
-            <View style={[styles.mainContentBody]}>
-              <FlatList
-                data={[listDatas?.items?.apP_OIGN_Line || []]}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                style={[
-                  {
-                    flex: 1,
-                    width: '100%',
-                  },
-                ]}
-              />
-            </View>
-          </View>
-        </View>
+        )}
       </View>
       <View style={styles.footer}>
         <View style={styles.footerContent}>

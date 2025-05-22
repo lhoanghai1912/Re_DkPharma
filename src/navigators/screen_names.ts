@@ -10,4 +10,5 @@ export const SCREEN_NAMES = {
     RESTORE_SCREEN: 'RestoreScreen',
     EDITSTOCK_SCREEN: 'EditStockScreen',
     INTERNALTRANSFER_SCREEN:'InternalTransferScreen',
+    LOADING_SCREEN:'LoadingScreen'
 };

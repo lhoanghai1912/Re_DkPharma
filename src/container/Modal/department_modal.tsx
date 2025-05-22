@@ -90,18 +90,18 @@ const DepartmentModal: React.FC<ItemDepartmentProp> = ({
             }}>
             <TouchableOpacity
               onPress={() => {
+                onClose();
+              }}
+              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              <Text style={[styles.bottonText]}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 onSelectedDepartment(selectedDepartment);
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
               <Text style={[styles.bottonText]}>Xác nhận</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                onClose();
-              }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
             </TouchableOpacity>
           </View>
         </View>

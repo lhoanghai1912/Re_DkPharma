@@ -6,36 +6,41 @@ import {useSelector, useDispatch} from 'react-redux';
 import {navigationRef} from './root_navigators';
 import AppStackScreen from './app_stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {logout, setUserData} from '../redux/slice_index';
-import {tokens} from 'react-native-paper/lib/typescript/styles/themes/v3/tokens';
+import LoadingScreen from '../component/loading_index';
 
 const RootNavigator = () => {
   const dispatch = useDispatch();
   const [hasToken, setHasToken] = useState(false);
   const {userData} = useSelector((state: any) => state.user);
-  console.log('expiries', userData?.expiresIn);
-  console.log('token1111123', AsyncStorage.getItem('accessToken'));
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkToken = async () => {
-      console.log('token1111124', await AsyncStorage.getItem('accessToken'));
       const token = await AsyncStorage.getItem('accessToken');
+      console.log('token1111124', await AsyncStorage.getItem('accessToken'));
       if (!token) {
         setHasToken(false);
-      } else {
+      } else if (token) {
         setHasToken(true);
       }
+      setIsLoading(false);
     };
     checkToken();
   }, [userData, dispatch]);
-  console.log('hastoken2', hasToken);
-  // console.log('currentime1', currentTime);
-  // console.log('refreshTokenExpire', refreshTokenExpiry);
 
+  const onNavigationStateChange = () => {
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 500);
+  };
   return (
-    <NavigationContainer ref={navigationRef}>
-      {hasToken ? <AppStackScreen /> : <LoginStack />}
-    </NavigationContainer>
+    <>
+      <NavigationContainer
+        ref={navigationRef}
+        onStateChange={onNavigationStateChange}>
+        {hasToken ? <AppStackScreen /> : <LoginStack />}
+      </NavigationContainer>
+      {isLoading && <LoadingScreen />}
+    </>
   );
 };
 export default RootNavigator;

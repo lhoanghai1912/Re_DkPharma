@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   Image,
@@ -13,7 +13,8 @@ import styles from './login_Style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useDispatch} from 'react-redux';
-import {setUserData} from '../../redux/slice_index';
+import {logout, setUserData} from '../../redux/slice_index';
+import {callApi} from '../../api/apiClient';
 
 type RootStackParamList = {
   Login: undefined;
@@ -26,68 +27,40 @@ type LoginScreenNavigationProp = StackNavigationProp<
 >;
 
 const LoginScreen: React.FC = ({}) => {
-  const [username, setUsername] = React.useState('admin');
-  const [password, setPassword] = React.useState('1234');
-  const [isVisible, setIsVisible] = React.useState(true);
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('1234');
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const isLoginEnabled = username.length > 0 && password.length > 0;
 
   const handleLogin = async () => {
     try {
-      const respone = await fetch(
-        'https://pos.foxai.com.vn:8123/api/Auth/login',
+      const url = 'https://pos.foxai.com.vn:8123/api/Auth/login';
+      const databack = await callApi(
+        url,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
+          body: JSON.stringify({username, password}),
         },
+        setIsLoading,
+        () => dispatch(logout()),
       );
-      const dataLogin = await respone.json();
-      if (respone.ok && dataLogin.accessToken) {
+      if (databack) {
         await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.setItem('accessToken', dataLogin.accessToken);
+        await AsyncStorage.setItem('accessToken', databack.accessToken);
 
-        //dispatch
-        dispatch(setUserData({userData: dataLogin}));
-
-        console.log('login success', dataLogin);
+        dispatch(setUserData({userData: databack}));
+        console.log('login success', databack);
       } else {
         Alert.alert(
-          'Login failed',
-          dataLogin.message || 'Sai tên đăng nhập hoặc mật khẩu',
+          'login failed',
+          databack.message || 'Sai tên đăng nhập hoặc mật khẩu',
         );
       }
-
-      // if (dataLogin?.refreshToken) {
-      //   try {
-      //     await AsyncStorage.removeItem('userToken');
-      //   } catch (e) {
-      //     console.log('Erro:', e);
-      //   }
-      //   try {
-      //     const jsonValue = JSON.stringify(dataLogin);
-      //     await AsyncStorage.setItem('userToken', jsonValue);
-      //   } catch (e) {
-      //     console.log('eeeeeeee.', e);
-      //   }
-      //   try {
-      //     dispatch(
-      //       setUserData({
-      //         userData: dataLogin,
-      //       }),
-      //     ),
-      //       console.log('Login successful:', dataLogin);
-      //   } catch (e) {
-      //     console.log('Error:', e);
-      //   }
-      // } else {
-      //   Alert.alert('Error', dataLogin.message || 'Login failed');
-      // }
     } catch (error) {
       console.error('Error logging in:', error);
       Alert.alert('Error', 'Something went wrong. Please try again late111r.');
