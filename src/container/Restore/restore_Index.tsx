@@ -46,6 +46,8 @@ const RestoreScreen = ({route}: {route: any}) => {
         dispatch(logout()),
       );
       if (data) {
+        data.items.docDate = docDate;
+
         setListDatas(data);
         if (data.items.status === 'ĐỒNG BỘ') {
           setisSynced(true);
@@ -156,7 +158,7 @@ const RestoreScreen = ({route}: {route: any}) => {
       updatedItem[field] = value; // Cập nhật giá trị của trường note
       updatedItems[index] = updatedItem;
 
-      updateData.items.apP_OIGN_R_Line = updatedItems;
+      updateData.items.apP_OIGE_Line = updatedItems;
       setListDatas(updateData);
     } else {
       const validated = validateQuantity(value);

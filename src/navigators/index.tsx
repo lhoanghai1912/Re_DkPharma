@@ -26,7 +26,7 @@ const RootNavigator = () => {
       setIsLoading(false);
     };
     checkToken();
-  }, [userData, dispatch]);
+  }, [userData]);
 
   const onNavigationStateChange = () => {
     setIsLoading(true);

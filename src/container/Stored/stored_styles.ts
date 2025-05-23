@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
         flex:0.7,
         flexDirection:'row',
         alignItems:'center',
-        // backgroundColor:'red',
         paddingHorizontal:10,
         },
     headerContentCol:{
@@ -67,6 +66,7 @@ const styles = StyleSheet.create({
     headerContentItem:{
         width:'100%',
         flex:1,
+        marginTop:0,
     },
     mainContent:{
         flex:2,
@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
         height:'auto',
         alignItems:'center',
         justifyContent:'center',
-        paddingVertical:10,
         marginBottom:'5%',
     },
 

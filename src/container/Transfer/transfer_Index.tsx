@@ -39,7 +39,6 @@ const TransferScreen: React.FC = () => {
   const [isBlocked, setIsBlocked] = useState<string | null>('');
   const [isCameraOn, setIsCameraOn] = useState(false); // State for camera activation
   const {hasPermission, requestPermission} = useCameraPermission();
-  const [qrData, setQrData] = useState<any>();
   const [isSelecting, setIsSelecting] = useState(false);
   const [modalCalendarVisible, setModalCalendarVisible] = useState(false);
   const [modalWeightVisible, setModalWeightVisible] = useState(false);
@@ -51,6 +50,9 @@ const TransferScreen: React.FC = () => {
   const [docDate, setDocDate] = useState(selectedDocDate);
   const [listDatas, setListData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
+  const [scannedItems, setScannedItems] = useState<{[key: string]: boolean}>(
+    {},
+  );
 
   const dispatch = useDispatch();
   if (listDatas?.items) {
@@ -99,20 +101,23 @@ const TransferScreen: React.FC = () => {
 
   const handleQR = async () => {
     requestPermission();
+    console.log('selec', selectedData1);
+    const isScanned = scannedItems[selectedData1?.itemCode] === true;
 
-    if (hasPermission == true) {
+    if (hasPermission) {
       console.log('Request Permission Accecpted');
-      setIsCameraOn(true);
-
-      // setModalWeightVisible(!modalWeightVisible);
-
-      if (device == null) {
-        console.log('device not found');
-        return (
-          <View>
-            <Text>Device not found</Text>
-          </View>
-        );
+      if (!isScanned) {
+        if (device == null) {
+          console.log('device not found');
+          return (
+            <View>
+              <Text>Device not found</Text>
+            </View>
+          );
+        }
+        setIsCameraOn(true);
+      } else {
+        setModalWeightVisible(true);
       }
     } else {
       console.log('request permission denied');
@@ -125,18 +130,23 @@ const TransferScreen: React.FC = () => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (code: any) => {
-      setQrData(code[0]?.value);
-      const formattedValue = `${selectedData1?.itemCode}''${selectedData1?.batchNumber}`;
+      const scannerValue = code[0].value;
+      const formattedValue = `${selectedData1?.itemCode}#${selectedData1?.batchNumber}`;
       console.log('form', formattedValue);
-      console.log('qrdata', qrData);
 
-      if (qrData === formattedValue) {
+      if (scannerValue === formattedValue) {
+        setScannedItems(prev => ({
+          ...prev,
+          [selectedData1?.itemCode]: true,
+        }));
         console.log('QR hợp lệ');
+        Alert.alert('QR hợp lệ');
         setIsCameraOn(false);
-        setModalWeightVisible(!modalWeightVisible);
+        setModalWeightVisible(true);
         setIsBlocked(listDatasSelected?.itemCode);
       } else {
         console.log('QR k hợp lệ');
+        Alert.alert('QR k hợp lệ');
         setIsCameraOn(false);
         setIsBlocked(listDatasSelected?.proCode);
       }
@@ -170,6 +180,21 @@ const TransferScreen: React.FC = () => {
       <Text style={[styles.mainConTentBodyText, {flex: 1}]}>{item}</Text>
     </TouchableOpacity>
   );
+  const onTextChanged = (index: number, field: string, value: string) => {
+    // Cập nhật giá trị của trường note trong mảng items
+    const updatedData = [...listDatas.items.apP_WTQ1];
+    updatedData[index] = {
+      ...updatedData[index],
+      [field]: value, // Cập nhật giá trị của trường 'note'
+    };
+    setListData((prevState: any) => ({
+      ...prevState,
+      items: {
+        ...prevState.items,
+        apP_WTQ1: updatedData, // Cập nhật lại danh sách items
+      },
+    }));
+  };
   const handleConfirm = async (action: 'save' | 'sync') => {
     let apiStatus = '';
     if (action === 'save') {
@@ -223,6 +248,7 @@ const TransferScreen: React.FC = () => {
     }
   };
   const renderItem = ({item, index}: any) => {
+    const isScanned = scannedItems[item.itemCode] === true;
     return (
       <View style={styles.mainContentHeader}>
         <Text style={[styles.mainConTentBodyText, {flex: 0.4}]}>
@@ -242,9 +268,14 @@ const TransferScreen: React.FC = () => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            // dispatch(setDetailsItemSelected(item));
-            setSelectedData1(item);
-            handleQR();
+            if (!isScanned) {
+              // dispatch(setDetailsItemSelected(item));
+              setSelectedData1(item);
+              handleQR();
+            } else {
+              setSelectedData1(item);
+              setModalWeightVisible(true);
+            }
           }}
           style={[
             styles.mainConTentBodyText,
@@ -254,12 +285,14 @@ const TransferScreen: React.FC = () => {
               justifyContent: 'center',
               opacity: isSynced ? 0.5 : 1,
               backgroundColor: isSynced ? 'lightgrey' : 'white',
-              borderWidth: 1,
+              borderWidth: 0,
               borderRightWidth: 0,
             },
           ]}
           disabled={isSynced}>
-          <Image source={images.qr_code} style={styles.icon}></Image>
+          <Image
+            source={isScanned ? images.click : images.qr_code}
+            style={styles.icon}></Image>
         </TouchableOpacity>
         <Text style={[styles.mainConTentBodyText, {flex: 0.8}]}>
           {item.requiredQuantity}
@@ -268,7 +301,6 @@ const TransferScreen: React.FC = () => {
           style={[
             styles.mainConTentBodyText,
             {
-              borderWidth: 1,
               borderRightWidth: 0,
               flex: 0.8,
               backgroundColor:
@@ -287,13 +319,8 @@ const TransferScreen: React.FC = () => {
           {item.uomCode}
         </Text>
         <TextInput
-          editable={
-            isBlocked === item.itemCode || isSynced
-              ? false
-              : true
-              ? false
-              : true
-          }
+          editable={isScanned}
+          onChangeText={text => onTextChanged(index, 'note', text)} // Sử dụng onTextChanged cho trường 'note'
           style={[
             styles.mainConTentBodyText,
             {
@@ -635,6 +662,7 @@ const TransferScreen: React.FC = () => {
           <Text>Back</Text>
         </TouchableOpacity>
       </View>
+
       <CalendarModal
         visible={modalCalendarVisible}
         selectedDate={docDate}

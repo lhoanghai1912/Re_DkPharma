@@ -83,7 +83,6 @@ const StoreScreen = ({route}: {route: any}) => {
     dispatch(logout());
   };
   const handleConfirm = async () => {
-    setIsSynced(!isSynced);
     console.log('Sync Pressed');
     listDatas.items.docDate = docDate;
     console.log('data lên api', listDatas?.items);
@@ -105,10 +104,12 @@ const StoreScreen = ({route}: {route: any}) => {
         },
         setIsLoading,
         () => {
-          dispatch(logout);
+          dispatch(logout());
         },
       );
       if (dataBack) {
+        setIsSynced(!isSynced);
+
         console.log('API respone', dataBack);
         fetchItemData();
       } else {
@@ -176,6 +177,7 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="phone-pad"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
@@ -186,6 +188,7 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="phone-pad"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
@@ -204,6 +207,7 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="phone-pad"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
@@ -214,6 +218,7 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="default"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
@@ -224,6 +229,7 @@ const StoreScreen = ({route}: {route: any}) => {
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
+          keyboardType="ascii-capable"
           style={[
             styles.mainContentBodyText,
             {backgroundColor: isSynced ? 'lightgrey' : 'white'},
@@ -265,7 +271,7 @@ const StoreScreen = ({route}: {route: any}) => {
             <View style={styles.headerContent}>
               <View style={[styles.headerContentCol, {marginStart: 0}]}>
                 <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Mã CT: ${
+                  <Text style={[styles.normalText]}>{`Mã CT: ${
                     listDatas?.items?.docCode || ''
                   }`}</Text>
                 </View>
@@ -304,9 +310,16 @@ const StoreScreen = ({route}: {route: any}) => {
               <View style={[styles.headerContentCol]}>
                 <View
                   style={[styles.headerContentItem, {alignItems: 'center'}]}>
-                  <Text style={styles.normalText}>{`Lệnh sản xuất: ${
-                    listDatas?.items?.productionCode || ''
-                  }`}</Text>
+                  <Text
+                    style={[
+                      styles.normalText,
+                      {textAlign: 'center'},
+                    ]}>{`Lệnh sản xuất: `}</Text>
+                </View>
+                <View style={styles.headerContentItem}>
+                  <Text style={[styles.normalText, {textAlign: 'center'}]}>
+                    {`${listDatas?.items?.productionCode || ''}`}
+                  </Text>
                 </View>
                 <View
                   style={[styles.headerContentItem, {alignItems: 'center'}]}>
@@ -318,9 +331,6 @@ const StoreScreen = ({route}: {route: any}) => {
                       setModalCalendarVisible(true);
                       console.log('modal press');
                     }}></TouchableOpacity>
-                </View>
-                <View style={styles.headerContentItem}>
-                  <Text></Text>
                 </View>
               </View>
               <View style={[styles.headerContentCol, {}]}>

@@ -53,12 +53,20 @@ const EditStockScreen = ({route}: {route: any}) => {
       if (data) {
         data.items.isIn = isIn;
         setListDatas(data);
-        console.log('listdata', listDatas);
+        console.log('listdata', data);
         data.items.docDate = docDate;
         setFilteredItems(data.items.apP_OIGN_R_Line);
         if (data.items.status === 'ĐỒNG BỘ') {
           setisSynced(true);
         } else setisSynced(false);
+      }
+      if (data.items.reason) {
+        setSelectedReason({
+          name: data.items.reason,
+          code: data.items.reasonCode,
+        });
+      } else {
+        setSelectedReason(null);
       }
     } catch (e) {
       console.log('erroItem', e);

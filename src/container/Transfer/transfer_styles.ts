@@ -1,4 +1,6 @@
 import { Button, StyleSheet } from "react-native";
+
+
 const styles = StyleSheet.create({
     container:{
         flex: 1,
@@ -127,7 +129,7 @@ flex:1,
         flex: 1,
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor: 'rgba(52, 52, 52, 0.5)'
+        backgroundColor: 'rgba(52, 52, 52,0.5)'
 
     },
     modalHeader:{
@@ -188,7 +190,7 @@ flex:1,
     },
     bodyHeaderCol:{
         borderLeftWidth:1,
-        // borderBottomWidth:1,
+        borderBottomWidth:1,
         textAlign:'center',
         borderRadius:0,
         textAlignVertical:'center',

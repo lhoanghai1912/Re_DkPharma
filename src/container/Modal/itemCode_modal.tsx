@@ -69,7 +69,13 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
           onPress={() => {
             toggleSelectItem(item.itemCode);
           }}
-          style={isSelected ? styles.buttonOnSelected : styles.buttonOnNormal}>
+          style={[
+            isSelected
+              ? isAllSelected
+                ? styles.buttonOnNormal
+                : styles.buttonOnSelected
+              : styles.buttonOnNormal,
+          ]}>
           <Text style={styles.headerText}>{item.itemCode}</Text>
         </TouchableOpacity>
       </View>
