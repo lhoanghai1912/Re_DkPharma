@@ -218,101 +218,106 @@ const WeightModal: React.FC<WeightModalProps> = ({
       transparent
       visible={visible}
       onRequestClose={onClose}>
-      <View style={styles.wrapModal}>
-        {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> */}
-        <KeyboardAwareScrollView
-          contentContainerStyle={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-            height: '70%',
-
-            padding: 20,
-          }}
-          enableOnAndroid
-          keyboardShouldPersistTaps="handled"
-          extraScrollHeight={100}>
-          <View
-            style={{
-              width: '90%',
+      {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
+        <View style={styles.wrapModal}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={{
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: 'white',
-              borderRadius: 15,
-              alignContent: 'center',
-              height: '70%',
-            }}>
+              flexGrow: 1,
+              padding: 20,
+            }}
+            enableOnAndroid
+            keyboardShouldPersistTaps="handled"
+            extraScrollHeight={Platform.OS === 'ios' ? 20 : 100}>
             <View
-              style={[
-                styles.modalWeightHeader,
-                {backgroundColor: 'tomato', borderBottomWidth: 1},
-              ]}>
-              <TouchableOpacity></TouchableOpacity>
-              <Text style={[styles.headerText]}>Phiếu cân chi tiết</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  handleAddWeight();
-                }}>
-                <Image source={images.add_list} style={styles.icon}></Image>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.wrapWeightModal}>
-              <View style={styles.modal_HeaderBodyContent}>
-                <Text
-                  style={[
-                    styles.bodyHeaderCol,
-                    {flex: 0.2, borderLeftWidth: 0},
-                  ]}>
-                  STT
-                </Text>
-                <Text style={[styles.bodyHeaderCol, {flex: 0.8}]}>Mã NVL</Text>
-                <Text style={[styles.bodyHeaderCol, {flex: 1}]}>Tên NVL</Text>
-                <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Số lô</Text>
-                <TextInput
-                  style={[styles.bodyHeaderCol, {flex: 0.6}]}
-                  editable={false}>
-                  Số lượng cân
-                </TextInput>
-                <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
-                  Đơn vị tính
-                </Text>
-                <TextInput
-                  editable={false}
-                  style={[
-                    styles.bodyHeaderCol,
-                    {flex: 0.6, borderRightWidth: 1},
-                  ]}>
-                  Ghi chú
-                </TextInput>
-              </View>
-              <FlatList
-                data={selectedData[0]?.apP_WTQ1_Sub || []}
-                renderItem={renderWeight}
-                keyExtractor={(item, index) => index.toString()}
-                style={{flex: 1}}
-                scrollEnabled={false}
-              />
-            </View>
-
-            <View style={styles.modalWeightFooter}>
-              <TouchableOpacity
-                onPress={() => handleSave()}
-                disabled={isQuantityZero()}
+              style={{
+                width: '90%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderRadius: 15,
+                alignContent: 'center',
+                maxHeight: '90%',
+                // flexShrink: 1,
+              }}>
+              <View
                 style={[
-                  styles.button,
-                  {opacity: isQuantityZero() ? 0.5 : 1, width: '20%'},
+                  styles.modalWeightHeader,
+                  {backgroundColor: 'tomato', borderBottomWidth: 1},
                 ]}>
-                <Text style={styles.bottonText}>Lưu</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleCancel()}
-                style={[styles.button, {width: '20%', height: 'auto'}]}>
-                <Text style={styles.bottonText}>Đóng</Text>
-              </TouchableOpacity>
+                <TouchableOpacity></TouchableOpacity>
+                <Text style={[styles.headerText]}>Phiếu cân chi tiết</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleAddWeight();
+                  }}>
+                  <Image source={images.add_list} style={styles.icon}></Image>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.wrapWeightModal}>
+                <View style={styles.modal_HeaderBodyContent}>
+                  <Text
+                    style={[
+                      styles.bodyHeaderCol,
+                      {flex: 0.2, borderLeftWidth: 0},
+                    ]}>
+                    STT
+                  </Text>
+                  <Text style={[styles.bodyHeaderCol, {flex: 0.8}]}>
+                    Mã NVL
+                  </Text>
+                  <Text style={[styles.bodyHeaderCol, {flex: 1}]}>Tên NVL</Text>
+                  <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Số lô</Text>
+                  <TextInput
+                    style={[styles.bodyHeaderCol, {flex: 0.6}]}
+                    editable={false}>
+                    Số lượng cân
+                  </TextInput>
+                  <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
+                    Đơn vị tính
+                  </Text>
+                  <TextInput
+                    editable={false}
+                    style={[
+                      styles.bodyHeaderCol,
+                      {flex: 0.6, borderRightWidth: 1},
+                    ]}>
+                    Ghi chú
+                  </TextInput>
+                </View>
+                <FlatList
+                  data={selectedData[0]?.apP_WTQ1_Sub || []}
+                  renderItem={renderWeight}
+                  keyExtractor={(item, index) => index.toString()}
+                  style={{flex: 1, maxHeight: 300}}
+                  scrollEnabled={false}
+                />
+              </View>
+
+              <View style={styles.modalWeightFooter}>
+                <TouchableOpacity
+                  onPress={() => handleCancel()}
+                  style={[styles.button, {width: '20%', height: 'auto'}]}>
+                  <Text style={styles.bottonText}>Đóng</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleSave()}
+                  disabled={isQuantityZero()}
+                  style={[
+                    styles.button,
+                    {opacity: isQuantityZero() ? 0.5 : 1, width: '20%'},
+                  ]}>
+                  <Text style={styles.bottonText}>Lưu</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </KeyboardAwareScrollView>
-      </View>
+          </KeyboardAwareScrollView>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };

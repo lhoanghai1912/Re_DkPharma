@@ -77,6 +77,7 @@ const TransferScreen: React.FC = () => {
         dispatch(logout());
       });
       setListData(data);
+      setScannedItems({});
     } catch (e) {
       console.log('erro: ', e);
     }
@@ -99,15 +100,16 @@ const TransferScreen: React.FC = () => {
     dispatch(logout());
   };
 
-  const handleQR = async () => {
+  const handleQR = async (item: any) => {
     requestPermission();
     console.log('selec', selectedData1);
-    const isScanned = scannedItems[selectedData1?.itemCode] === true;
-
+    const scannedKey = `${item.itemCode}#${item.batchNumber}`;
+    const isScanned = scannedItems[scannedKey] === true;
     if (hasPermission) {
       console.log('Request Permission Accecpted');
       if (!isScanned) {
-        if (device == null) {
+        if (!device) {
+          Alert.alert('Camera not found');
           console.log('device not found');
           return (
             <View>
@@ -115,12 +117,12 @@ const TransferScreen: React.FC = () => {
             </View>
           );
         }
+        setSelectedData1(item);
         setIsCameraOn(true);
       } else {
+        setSelectedData1(item);
         setModalWeightVisible(true);
       }
-    } else {
-      console.log('request permission denied');
     }
   };
   useEffect(() => {
@@ -130,29 +132,31 @@ const TransferScreen: React.FC = () => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (code: any) => {
-      const scannerValue = code[0].value;
+      // const scannerValue = code[0].value;
+      const scannerValue = 'BB01780#';
       const formattedValue = `${selectedData1?.itemCode}#${selectedData1?.batchNumber}`;
       console.log('form', formattedValue);
 
       if (scannerValue === formattedValue) {
         setScannedItems(prev => ({
           ...prev,
-          [selectedData1?.itemCode]: true,
+          [formattedValue]: true,
         }));
         console.log('QR hợp lệ');
         Alert.alert('QR hợp lệ');
         setIsCameraOn(false);
         setModalWeightVisible(true);
-        setIsBlocked(listDatasSelected?.itemCode);
+        // setIsBlocked(listDatasSelected?.itemCode);
       } else {
         console.log('QR k hợp lệ');
         Alert.alert('QR k hợp lệ');
         setIsCameraOn(false);
-        setIsBlocked(listDatasSelected?.proCode);
+        // setIsBlocked(listDatasSelected?.proCode);
       }
     },
   });
   console.log('data day len api', listDatas?.items);
+  console.log('modalWeightVisible', modalWeightVisible);
 
   const handleDateSelect = (date: string) => {
     setDocDate(date);
@@ -248,7 +252,8 @@ const TransferScreen: React.FC = () => {
     }
   };
   const renderItem = ({item, index}: any) => {
-    const isScanned = scannedItems[item.itemCode] === true;
+    const scannedKey = `${item.itemCode}#${item.batchNumber}`;
+    const isScanned = scannedItems[scannedKey] === true;
     return (
       <View style={styles.mainContentHeader}>
         <Text style={[styles.mainConTentBodyText, {flex: 0.4}]}>
@@ -268,15 +273,15 @@ const TransferScreen: React.FC = () => {
         </Text>
         <TouchableOpacity
           onPress={() => {
+            setSelectedData1(item);
             if (!isScanned) {
               // dispatch(setDetailsItemSelected(item));
-              setSelectedData1(item);
-              handleQR();
+              handleQR(item);
             } else {
-              setSelectedData1(item);
               setModalWeightVisible(true);
             }
           }}
+          disabled={isSynced}
           style={[
             styles.mainConTentBodyText,
             {
@@ -288,8 +293,7 @@ const TransferScreen: React.FC = () => {
               borderWidth: 0,
               borderRightWidth: 0,
             },
-          ]}
-          disabled={isSynced}>
+          ]}>
           <Image
             source={isScanned ? images.click : images.qr_code}
             style={styles.icon}></Image>
@@ -635,7 +639,7 @@ const TransferScreen: React.FC = () => {
         style={[
           {display: isCameraOn ? 'flex' : 'none', flex: isCameraOn ? 1 : 0},
         ]}>
-        <View style={{flex: 1}}>
+        <View style={{height: '30%', width: '30%'}}>
           {device && (
             <Camera
               style={[

@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../component/loading_index';
 
 const RootNavigator = () => {
-  const dispatch = useDispatch();
   const [hasToken, setHasToken] = useState(false);
   const {userData} = useSelector((state: any) => state.user);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +25,7 @@ const RootNavigator = () => {
       setIsLoading(false);
     };
     checkToken();
-  }, [userData]);
+  }, [AsyncStorage.getItem('accessToken')]);
 
   const onNavigationStateChange = () => {
     setIsLoading(true);
