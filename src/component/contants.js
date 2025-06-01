@@ -16,5 +16,7 @@ const images = {
     up_white: require('../assets/up_white.png'),
     view: require('../assets/view.png'),
     add_list: require('../assets/add_list.png'),
+    male: require('../assets/avt_male.jpg'),
+    female: require('../assets/avt_female.jpg'),
     };
 export default images;

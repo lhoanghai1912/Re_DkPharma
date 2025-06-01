@@ -235,11 +235,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
             extraScrollHeight={Platform.OS === 'ios' ? 20 : 100}>
             <View
               style={{
+                borderRadius: 15,
+
                 width: '90%',
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: 'white',
-                borderRadius: 15,
                 alignContent: 'center',
                 maxHeight: '90%',
                 // flexShrink: 1,
@@ -247,7 +248,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
               <View
                 style={[
                   styles.modalWeightHeader,
-                  {backgroundColor: 'tomato', borderBottomWidth: 1},
+                  {
+                    backgroundColor: 'tomato',
+                    borderBottomWidth: 1,
+                    borderTopStartRadius: 15,
+                    borderTopEndRadius: 15,
+                  },
                 ]}>
                 <TouchableOpacity></TouchableOpacity>
                 <Text style={[styles.headerText]}>Phiếu cân chi tiết</Text>

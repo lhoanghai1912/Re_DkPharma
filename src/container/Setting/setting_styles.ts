@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   mainContent:{
     flex:1.5,
     padding:10,
-    // justifyContent:'center',
+    justifyContent:'center',
   },
   updateInfo:{
     flex:1,
@@ -88,6 +88,8 @@ const styles = StyleSheet.create({
   passwordField:{
     justifyContent:'center',
     alignContent:'center',
+    width:'80%',
+    marginBottom:50,
   },
 
   inputWrapper: {
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
   eyeIcon: {
     position: 'absolute',
     right: 10,
-    top: '25%',
+    bottom: 0,
     transform: [{ translateY: -12 }], // Căn giữa biểu tượng mắt
     zIndex: 1,
   },  
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
   },
   footer:{
     flexDirection:'row',
-    flex:0.5,
+    flex:0.2,
     alignItems:'center',
     justifyContent:'space-around',
     alignContent:"center",
@@ -132,8 +134,8 @@ const styles = StyleSheet.create({
     width:'auto',
     backgroundColor:'white',
     paddingBottom:10,
+    
     fontSize:20,
-    marginBottom:50,
   },
   buttonText:{
     fontSize:26,
@@ -146,7 +148,6 @@ const styles = StyleSheet.create({
     width:'auto',
     paddingBottom:10,
     fontSize:20,
-    marginBottom:50,
     backgroundColor:'lightgrey',
   },
 });

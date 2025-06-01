@@ -1,12 +1,13 @@
 import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
+        paddingTop: 20,
         flex: 1,
         backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginHorizontal:50,
+        marginHorizontal:10,
     },
     //dùng chung
     content:{

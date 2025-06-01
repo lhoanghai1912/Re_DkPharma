@@ -49,6 +49,7 @@ const userSlice = createSlice({
     },
     setUserData(state, action: PayloadAction<any>) {
       state.userData = action.payload.userData;
+      state.isAuthenticated = true;
     },
     setUserDataInformation(state, action: PayloadAction<any>) {
       state.userData = action.payload.user;

@@ -10,22 +10,25 @@ import LoadingScreen from '../component/loading_index';
 
 const RootNavigator = () => {
   const [hasToken, setHasToken] = useState(false);
-  const {userData} = useSelector((state: any) => state.user);
+  const {userData, isAuthenticated} = useSelector((state: any) => state.user);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem('accessToken');
-      console.log('token1111124', await AsyncStorage.getItem('accessToken'));
-      if (!token) {
+      // console.log('token1111124', await AsyncStorage.getItem('accessToken'));
+      if (!token || isAuthenticated == false) {
         setHasToken(false);
-      } else if (token) {
+        console.log('No token found, redirecting to login');
+      } else if (token && isAuthenticated == true) {
+        console.log('token', token);
+
         setHasToken(true);
       }
       setIsLoading(false);
     };
     checkToken();
-  }, [AsyncStorage.getItem('accessToken')]);
+  }, [userData]);
 
   const onNavigationStateChange = () => {
     setIsLoading(true);

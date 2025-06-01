@@ -340,12 +340,7 @@ const TransferScreen: React.FC = () => {
   };
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          // {backgroundColor: 'red', display: 'none'},
-          {display: isCameraOn ? 'none' : 'flex', flex: isCameraOn ? 0 : 1},
-          // {display: isWeighOn ? 'none' : 'flex', flex: isWeighOn ? 0 : 1},
-        ]}>
+      <View style={[{flex: 1}]}>
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => {
@@ -637,34 +632,52 @@ const TransferScreen: React.FC = () => {
       {/* Camera */}
       <View
         style={[
-          {display: isCameraOn ? 'flex' : 'none', flex: isCameraOn ? 1 : 0},
+          {
+            display: isCameraOn ? 'flex' : 'none',
+            position: 'absolute',
+            top: '35%', // bạn chỉnh vị trí và kích thước camera tùy ý
+            left: '35%',
+            width: '30%',
+            height: '30%',
+            // flex: isCameraOn ? 1 : 0,
+            zIndex: 2,
+            alignContent: 'center',
+            // justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            opacity: 0.5,
+          },
         ]}>
-        <View style={{height: '30%', width: '30%'}}>
-          {device && (
-            <Camera
-              style={[
-                StyleSheet.absoluteFill,
-                {display: isCameraOn ? 'flex' : 'none', flex: 1},
-              ]}
-              device={device}
-              isActive={isCameraOn}
-              codeScanner={codeScanner}
-            />
-          )}
-        </View>
+        {/* <View style={{height: '100%', width: '100%'}}> */}
+        {device && (
+          <Camera
+            style={[
+              StyleSheet.absoluteFill,
+              {display: isCameraOn ? 'flex' : 'none', flex: 1},
+            ]}
+            device={device}
+            isActive={isCameraOn}
+            codeScanner={codeScanner}
+          />
+        )}
         <TouchableOpacity
           style={[
             styles.button,
-            // {zIndex: 1},
             {
               display: isCameraOn ? 'flex' : 'none',
-              width: 'auto',
-              alignItems: 'center',
+              position: 'absolute',
+              bottom: 0, // cách đáy 10px
+              right: 0, // cách phải 10px
+              width: 50,
+              borderRadius: 50,
+              height: 50,
+              marginBottom: 0,
             },
           ]}
           onPress={handleGoBack}>
-          <Text>Back</Text>
+          <Text style={styles.bottonText}>X</Text>
         </TouchableOpacity>
+        {/* </View> */}
       </View>
 
       <CalendarModal

@@ -10,14 +10,8 @@ import {
 import styles from './setting_styles';
 import {RadioButton} from 'react-native-paper';
 import images from '../../component/contants';
-import {navigate} from '../../navigators/root_navigators';
-import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  logout,
-  setUserData,
-  setUserDataInformation,
-} from '../../redux/slice_index';
+import {logout, setUserDataInformation} from '../../redux/slice_index';
 import {callApi} from '../../api/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../../component/loading_index';
@@ -25,7 +19,7 @@ import LoadingScreen from '../../component/loading_index';
 const SettingScreen: React.FC = ({navigation}: any) => {
   const [checked, setChecked] = useState('first');
   const {userData} = useSelector((state: any) => state.user);
-  const [userInfo, setUserInfo] = useState(userData.user);
+  const [userInfo, setUserInfo] = useState(userData?.user);
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [newPasswordRef, setNewPasswordRef] = useState<string>('');
@@ -198,39 +192,72 @@ const SettingScreen: React.FC = ({navigation}: any) => {
             <View
               style={[
                 styles.updateInfo,
-                {display: checked === 'first' ? 'flex' : 'none'},
+                {
+                  paddingHorizontal: 10,
+                  display: checked === 'first' ? 'flex' : 'none',
+                },
               ]}>
-              <View style={styles.mainContent}>
-                <Text style={styles.lableStyle}>UserName</Text>
-                <TextInput
-                  value={userInfo?.username}
-                  editable={false}
-                  placeholder="Username"
-                  style={styles.readonly}
-                />
-                <Text style={styles.lableStyle}>Center</Text>
-                <TextInput
-                  value={userInfo?.center}
-                  placeholder="Center"
-                  style={styles.textInput}
-                  onChangeText={text => handleInputChange(text, 'center')}
-                />
+              <View
+                style={
+                  // styles.mainContent
+                  {
+                    borderWidth: 0,
+                    flex: 0.5,
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    // backgroundColor: 'red',
+                  }
+                }>
+                <Image
+                  source={images.male}
+                  style={{
+                    height: '95%',
+                    width: '95%',
+                    borderRadius: 200,
+                  }}></Image>
               </View>
-              <View style={styles.mainContent}>
-                <Text style={styles.lableStyle}>Full Name</Text>
-                <TextInput
-                  value={userInfo?.fullName}
-                  placeholder="Full Name"
-                  style={styles.textInput}
-                  onChangeText={text => handleInputChange(text, 'fullName')}
-                />
-                <Text style={styles.lableStyle}>Department</Text>
-                <TextInput
-                  value={userInfo?.department}
-                  placeholder="Department"
-                  style={styles.textInput}
-                  onChangeText={text => handleInputChange(text, 'department')}
-                />
+              <View style={{flex: 1, backgroundColor: ''}}>
+                <View
+                  style={[
+                    styles.mainContent,
+                    {backgroundColor: '', borderWidth: 1, marginBottom: 5},
+                  ]}>
+                  <Text style={styles.lableStyle}>UserName</Text>
+                  <TextInput
+                    value={userInfo?.username}
+                    editable={false}
+                    placeholder="Username"
+                    style={styles.readonly}
+                  />
+                  <Text style={styles.lableStyle}>Full Name</Text>
+                  <TextInput
+                    value={userInfo?.fullName}
+                    placeholder="Full Name"
+                    style={styles.textInput}
+                    onChangeText={text => handleInputChange(text, 'fullName')}
+                  />
+                </View>
+                <View
+                  style={[
+                    styles.mainContent,
+                    {backgroundColor: '', borderWidth: 1, marginTop: 5},
+                  ]}>
+                  <Text style={styles.lableStyle}>Center</Text>
+                  <TextInput
+                    value={userInfo?.center}
+                    placeholder="Center"
+                    style={styles.textInput}
+                    onChangeText={text => handleInputChange(text, 'center')}
+                  />
+                  <Text style={styles.lableStyle}>Department</Text>
+                  <TextInput
+                    value={userInfo?.department}
+                    placeholder="Department"
+                    style={styles.textInput}
+                    onChangeText={text => handleInputChange(text, 'department')}
+                  />
+                </View>
               </View>
             </View>
           )}
@@ -239,13 +266,16 @@ const SettingScreen: React.FC = ({navigation}: any) => {
               styles.changePassword,
               {display: checked == 'second' ? 'flex' : 'none'},
             ]}>
-            <View style={styles.mainContent}>
+            <View style={[styles.mainContent, {alignItems: 'center'}]}>
               <View style={styles.passwordField}>
                 <Text style={styles.lableStyle}>Old Password</Text>
                 <View style={styles.inputWrapper}>
                   <TextInput
                     placeholder="Old Password"
-                    style={styles.textInput}
+                    style={[
+                      styles.textInput,
+                      {borderRadius: 10, backgroundColor: '#f0f0f0'},
+                    ]}
                     onChangeText={setOldPassword}
                     secureTextEntry={!isOldPasswordVisible}
                   />
@@ -262,14 +292,15 @@ const SettingScreen: React.FC = ({navigation}: any) => {
                   </TouchableOpacity>
                 </View>
               </View>
-            </View>
-            <View style={styles.mainContent}>
               <View style={styles.passwordField}>
                 <Text style={styles.lableStyle}>New Password</Text>
                 <View style={styles.inputWrapper}>
                   <TextInput
                     placeholder="New Password"
-                    style={styles.textInput}
+                    style={[
+                      styles.textInput,
+                      {borderRadius: 10, backgroundColor: '#f0f0f0'},
+                    ]}
                     onChangeText={setNewPassword}
                     secureTextEntry={!isNewPasswordVisible}
                   />
@@ -291,7 +322,10 @@ const SettingScreen: React.FC = ({navigation}: any) => {
                 <View style={styles.inputWrapper}>
                   <TextInput
                     placeholder="Confirm Password"
-                    style={styles.textInput}
+                    style={[
+                      styles.textInput,
+                      {borderRadius: 10, backgroundColor: '#f0f0f0'},
+                    ]}
                     onChangeText={setNewPasswordRef}
                     secureTextEntry={!isNewPasswordRefVisible}
                   />
