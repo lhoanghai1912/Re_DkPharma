@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginHorizontal:10,    
         textAlign: 'center',
+        fontFamily: '',
     },
     line: {
         height: 2,

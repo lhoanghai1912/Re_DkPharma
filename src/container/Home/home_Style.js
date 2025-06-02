@@ -7,20 +7,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
+        // marginVertical:20,
     },
     //dùng chung
 
     //header
     header:{
-        flex: 0.15,
+        flex: 0.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
         height:'auto%',
         width:'auto%',
-        backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
+        borderWidth:1,
+        borderColor:'white',
+        borderRadius:20,
     },
 
     headerButtons: {
@@ -31,62 +33,73 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
     },
     headerText:{
-        fontSize: 30,
+        fontSize: 38,
         color: 'white',
         fontWeight: 'bold',
         marginLeft: 10,
     },
     icon:{
-        width: 40,
-        height: 40,
+        width: 60,
+        height: 60,
         resizeMode: 'contain',
 
     },
 
     body:{
         flex: 1.5,
+        // backgroundColor:'white'
     },
     welcomeText:{
         textAlign: 'left', 
         fontSize: 24, 
         fontWeight: 'bold', 
-        margin: 20},
+        margin: 20,
+        marginTop:50,
+    },
     bodyContent:
     {
         flex:1,
-        paddingTop:'5%',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-
+    logo:{
+        flex:1,
+        width: '90%',
+        height: '90%',
+        // right:'40%',
+        resizeMode: 'contain',
+        position: 'absolute',
+    },
     pickerBox:{
         flex:1,        
-        justifyContent:'flex-start',
-        alignItems:'center',
-        
+        justifyContent:'center',
+        alignContent:'center',
     }, 
     pickerHeader:{
         paddingHorizontal:5,
-        width:'50%',
+        width:'80%',
         flexDirection:'row',
-        backgroundColor:'orange',
+        backgroundColor:'lightgray',
         justifyContent:'space-between',
         alignItems:'center',
         borderWidth: 1,
-        borderRadius:5,
+        borderRadius:20,
         height:'15%',
     },
 
     pickerBody:{
         borderWidth: 1,
         flex:1,
-        width:'50%',
         marginBottom:10,
-        borderRadius:5,
+        borderRadius:20,
     },
-    
+
     bodyItem:{
         flex:1,
         width:'100%',
         alignItems:'center',
+        justifyContent:'center',
         
     },
     footer:{
@@ -124,7 +137,7 @@ const styles = StyleSheet.create({
 
     itemBox:{
         borderWidth:1,
-        borderRadius:5,
+        borderRadius:20,
         flex:1,
         alignItems:'center',
         margin:5,

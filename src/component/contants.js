@@ -2,7 +2,7 @@
 const images = {
     account: require('../assets/account.png'),
     add: require('../assets/add.png'),
-    back_white: require('../assets/back_white.png'),
+    back_white: require('../assets/back-button.png'),
     check: require('../assets/check.png'),
     click: require('../assets/click.png'),
     close: require('../assets/close.png'),

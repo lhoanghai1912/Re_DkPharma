@@ -69,7 +69,7 @@ const LoginScreen: React.FC = ({}) => {
 
   return (
     <LinearGradient
-      colors={['#0C8B43', '#A8D5BA']}
+      colors={['#3B82F6', '#BFDBFE']}
       start={{x: 1, y: 0}}
       end={{x: 0, y: 1}}
       style={styles.container}>
@@ -118,7 +118,7 @@ const LoginScreen: React.FC = ({}) => {
           </View>
         </View>
         <LinearGradient
-          colors={['#d9f8df', '#FFFFFF']}
+          colors={['#5fabf0', '#e8f4ff']}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
           style={styles.mainContent} // giữ nguyên style

@@ -15,6 +15,7 @@ import {navigate} from '../../navigators/root_navigators';
 import {SCREEN_NAMES} from '../../navigators/screen_names';
 import {callApi} from '../../api/apiClient';
 import LoadingScreen from '../../component/loading_index';
+import LinearGradient from 'react-native-linear-gradient';
 
 type ItemType = {
   proCode: string;
@@ -94,7 +95,13 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#3B82F6', '#BFDBFE']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.container} // giữ nguyên style
+    >
+      {/* <View style={styles.container}> */}
       <View style={styles.header}>
         <TouchableOpacity
           style={[styles.headerButtons, styles.icon]}></TouchableOpacity>
@@ -115,72 +122,114 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.welcomeText}>
               {`hello: ${userData?.user?.fullName}`}
             </Text>
-            <View style={styles.bodyContent}>
-              <View style={styles.pickerBox}>
-                <TouchableOpacity
-                  style={[
-                    styles.pickerHeader,
-                    {marginBottom: isSelecting ? 0 : 50},
-                  ]}
-                  onPress={() => SetIsSelecting(!isSelecting)}>
-                  <TouchableOpacity></TouchableOpacity>
-                  <Text style={styles.normalText}>
-                    {selectedItem?.proCode || 'Chọn mã lệnh'}
-                  </Text>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={[styles.bodyContent]}>
+                <View style={[styles.pickerBox]}>
                   <TouchableOpacity
+                    style={[
+                      styles.pickerHeader,
+                      {
+                        marginBottom: isSelecting ? 0 : 50,
+                        display: showItem ? 'none' : 'flex',
+                      },
+                    ]}
                     onPress={() => SetIsSelecting(!isSelecting)}>
-                    <Image
-                      source={isSelecting ? images.up_white : images.down_white}
-                      style={styles.icon as ImageStyle}
-                    />
+                    <TouchableOpacity></TouchableOpacity>
+                    <Text style={styles.normalText}>
+                      {selectedItem?.proCode || 'Chọn mã lệnh'}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => SetIsSelecting(!isSelecting)}>
+                      <Image
+                        source={
+                          isSelecting ? images.up_white : images.down_white
+                        }
+                        style={styles.icon as ImageStyle}
+                      />
+                    </TouchableOpacity>
                   </TouchableOpacity>
-                </TouchableOpacity>
-                <View
-                  style={[
-                    styles.pickerBody,
-                    {display: isSelecting ? 'flex' : 'none'},
-                  ]}>
-                  <FlatList
-                    data={itemData}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.proCode}
-                    style={{
-                      flex: 1,
-                    }}
-                  />
-                </View>
-                <View
-                  style={[
-                    styles.bodyItem,
-                    {display: showItem ? 'flex' : 'none'},
-                  ]}>
                   <View
                     style={[
-                      styles.pickerHeader,
-                      {marginBottom: isSelecting ? 0 : 50},
+                      styles.pickerBody,
+                      {display: isSelecting ? 'flex' : 'none'},
                     ]}>
-                    <TouchableOpacity></TouchableOpacity>
-                    <Text
+                    <FlatList
+                      data={itemData}
+                      renderItem={renderItem}
+                      keyExtractor={item => item.proCode}
+                      style={{
+                        flex: 1,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={[
+                      styles.bodyItem,
+                      {display: showItem ? 'flex' : 'none'},
+                    ]}>
+                    <TouchableOpacity
                       style={[
-                        styles.normalText,
-                        {justifyContent: 'center', alignItems: 'center'},
-                      ]}>{`Mã sản phẩm: ${selectedItem?.itemCode}`}</Text>
-                    <TouchableOpacity></TouchableOpacity>
-                  </View>
-                  <View
-                    style={[
-                      styles.pickerHeader,
-                      {marginBottom: isSelecting ? 0 : 50},
-                    ]}>
-                    <TouchableOpacity></TouchableOpacity>
+                        styles.pickerHeader,
+                        {
+                          marginBottom: isSelecting ? 0 : 50,
+                        },
+                      ]}
+                      onPress={() => SetIsSelecting(!isSelecting)}>
+                      <TouchableOpacity></TouchableOpacity>
+                      <Text style={styles.normalText}>
+                        {selectedItem?.proCode || 'Chọn mã lệnh'}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => SetIsSelecting(!isSelecting)}>
+                        <Image
+                          source={
+                            isSelecting ? images.up_white : images.down_white
+                          }
+                          style={styles.icon as ImageStyle}
+                        />
+                      </TouchableOpacity>
+                    </TouchableOpacity>
+                    <View
+                      style={[
+                        styles.pickerHeader,
+                        {
+                          marginBottom: isSelecting ? 0 : 50,
+                        },
+                      ]}>
+                      <TouchableOpacity></TouchableOpacity>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          {justifyContent: 'center', alignItems: 'center'},
+                        ]}>{`Mã sản phẩm: ${selectedItem?.itemCode}`}</Text>
+                      <TouchableOpacity></TouchableOpacity>
+                    </View>
+                    <View
+                      style={[
+                        styles.pickerHeader,
+                        {marginBottom: isSelecting ? 0 : 50},
+                      ]}>
+                      <TouchableOpacity></TouchableOpacity>
 
-                    <Text
-                      style={
-                        styles.normalText
-                      }>{`Tên sản phẩm: ${selectedItem?.itemName}`}</Text>
-                    <TouchableOpacity></TouchableOpacity>
+                      <Text
+                        style={
+                          styles.normalText
+                        }>{`Tên sản phẩm: ${selectedItem?.itemName}`}</Text>
+                      <TouchableOpacity></TouchableOpacity>
+                    </View>
                   </View>
                 </View>
+              </View>
+              <View
+                style={{
+                  flex: 0.8,
+                  backgroundColor: '',
+                  // justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={images.dk_pharma}
+                  style={styles.logo as ImageStyle}></Image>
               </View>
             </View>
           </View>
@@ -208,7 +257,8 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+      {/* </View> */}
+    </LinearGradient>
   );
 };
 

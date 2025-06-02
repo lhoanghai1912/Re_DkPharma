@@ -2,11 +2,11 @@ import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
+        // marginVertical:20,
     },
     //dùng chung
 
@@ -17,7 +17,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         height:'auto%',
         width:'auto%',
-        backgroundColor: '#87cefa',
+        borderWidth:1,
+        borderRadius:20,
+        borderColor:'white',
+        // backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
     },
