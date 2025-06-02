@@ -13,9 +13,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     height:'auto',
     width:'auto',
-    backgroundColor: 'green',
+    backgroundColor: '#87cefa',
     alignContent:'center',
     alignItems: 'center',
+    borderWidth:1,
   },
 
   headerButtons: {
@@ -36,11 +37,11 @@ const styles = StyleSheet.create({
       height: 40,
       resizeMode: 'contain',
   },
-    body: {
-      flex:1,
-      height: '100%',
-      borderTopWidth:1,
-    },
+  body: {
+    flex:1,
+    height: '100%',
+    borderTopWidth:1,
+  },
   mainBody:{
     flex:1.5,
     justifyContent:'space-around',

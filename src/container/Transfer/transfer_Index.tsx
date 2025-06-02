@@ -541,7 +541,7 @@ const TransferScreen: React.FC = () => {
                 <View
                   style={[
                     styles.mainContentHeader,
-                    {backgroundColor: 'green'},
+                    {backgroundColor: '#87cefa'},
                   ]}>
                   <Text style={[styles.mainConTentHeaderText, {flex: 0.4}]}>
                     STT

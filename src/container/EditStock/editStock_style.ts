@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         height:'auto',
         width:'auto',
-        backgroundColor: 'green',
+        backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
     },
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         borderRightWidth:0,   
         textAlign:'center',
         textAlignVertical:'center',
-        backgroundColor:'green',
+        backgroundColor:'#87cefa',
         color:'white',
         height:'auto',
         fontWeight:'500',
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     modalWeightHeader:{
         width:'100%',
         flexDirection:'row',
-        backgroundColor:'green',
+        backgroundColor:'#87cefa',
         justifyContent:'space-between',
         alignItems:'center',
 

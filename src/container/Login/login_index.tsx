@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {
   Alert,
   Image,
-  ScrollView,
+  Linking,
   Text,
   TextInput,
   TouchableOpacity,
@@ -15,6 +15,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useDispatch} from 'react-redux';
 import {logout, setUserData} from '../../redux/slice_index';
 import {callApi} from '../../api/apiClient';
+import LinearGradient from 'react-native-linear-gradient';
 
 type RootStackParamList = {
   Login: undefined;
@@ -33,7 +34,6 @@ const LoginScreen: React.FC = ({}) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const isLoginEnabled = username.length > 0 && password.length > 0;
-
   const handleLogin = async () => {
     try {
       const url = 'https://pos.foxai.com.vn:8123/api/Auth/login';
@@ -68,74 +68,156 @@ const LoginScreen: React.FC = ({}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.content}>
-          <Image source={images.dk_pharma} style={styles.image}></Image>
-        </View>
-      </View>
-      <View style={styles.body}>
-        <View style={styles.content}>
-          <View style={styles.inputGroup}>
-            <View style={styles.inputItem}>
-              <TextInput
-                placeholder="Tên Đăng nhập"
-                style={styles.textInput}
-                value={username}
-                onChangeText={setUsername}
-              />
-              <TouchableOpacity onPress={() => setUsername('')}>
+    <LinearGradient
+      colors={['#0C8B43', '#A8D5BA']}
+      start={{x: 1, y: 0}}
+      end={{x: 0, y: 1}}
+      style={styles.container}>
+      {/* <View style={styles.container}> */}
+      <View style={styles.wrapContent}>
+        <View
+          style={[styles.mainContent, {flex: 0.7, backgroundColor: 'white'}]}>
+          <Image source={images.company} style={styles.logo}></Image>
+          <View style={styles.info}>
+            <Text style={styles.textInfo}> About Us </Text>
+            <View style={styles.line}></View>
+            <View style={styles.iconBar}>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://www.facebook.com/fox.ai.vn/');
+                }}>
                 <Image
-                  source={images.close}
-                  style={[
-                    styles.icon,
-                    {display: username.length == 0 ? 'none' : 'flex'},
-                  ]}></Image>
+                  source={images.facebook}
+                  style={[styles.iconItem, {top: '30%'}]}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://fox.ai.vn/');
+                }}>
+                <Image
+                  source={images.web}
+                  style={[styles.iconItem, {top: '30%'}]}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://www.linkedin.com/in/foxaivn/');
+                }}>
+                <Image
+                  source={images.linkedin}
+                  style={[styles.iconItem, {top: '30%'}]}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL('https://www.youtube.com/@FOXAI-technology');
+                }}>
+                <Image
+                  source={images.youtube}
+                  style={[styles.iconItem, {top: '30%'}]}></Image>
               </TouchableOpacity>
             </View>
-            <View style={styles.inputItem}>
-              <TextInput
-                placeholder="Mật khẩu"
-                style={styles.textInput}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={isVisible}
-              />
-              <View style={styles.iconGroup}>
-                <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+          </View>
+        </View>
+        <LinearGradient
+          colors={['#d9f8df', '#FFFFFF']}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          style={styles.mainContent} // giữ nguyên style
+        >
+          <View style={[styles.header, {backgroundColor: ''}]}>
+            <View style={styles.content}>
+              <Image source={images.dk_pharma} style={styles.image}></Image>
+            </View>
+          </View>
+          <View style={[styles.body, {backgroundColor: ''}]}>
+            <View style={styles.content}>
+              <View style={styles.inputGroup}>
+                <View style={[styles.inputItem, {marginTop: 20}]}>
+                  <TextInput
+                    placeholder="Tên Đăng nhập"
+                    style={styles.textInput}
+                    value={username}
+                    onChangeText={setUsername}
+                  />
                   <Image
-                    source={isVisible ? images.hide : images.view}
+                    source={images.user}
                     style={[
-                      styles.iconItem,
-                      {display: password.length == 0 ? 'none' : 'flex'},
-                    ]}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setPassword('')}>
+                      {
+                        width: 30,
+                        height: 30,
+                        left: 0,
+                        top: '30%',
+                        position: 'absolute',
+                      },
+                    ]}
+                  />
+                  <TouchableOpacity onPress={() => setUsername('')}>
+                    <Image
+                      source={images.close}
+                      style={[
+                        styles.icon,
+                        {display: username.length == 0 ? 'none' : 'flex'},
+                      ]}></Image>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.inputItem}>
+                  <TextInput
+                    placeholder="Mật khẩu"
+                    style={styles.textInput}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={isVisible}
+                  />
                   <Image
-                    source={images.close}
+                    source={images.password}
                     style={[
-                      styles.iconItem,
-                      {display: password.length == 0 ? 'none' : 'flex'},
-                    ]}></Image>
-                </TouchableOpacity>
+                      {
+                        width: 30,
+                        height: 30,
+                        left: 0,
+                        top: '30%',
+                        position: 'absolute',
+                      },
+                    ]}
+                  />
+                  <View style={styles.iconGroup}>
+                    <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+                      <Image
+                        source={isVisible ? images.hide : images.view}
+                        style={[
+                          styles.iconLoginItem,
+                          {display: password.length == 0 ? 'none' : 'flex'},
+                        ]}></Image>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setPassword('')}>
+                      <Image
+                        source={images.close}
+                        style={[
+                          styles.iconLoginItem,
+                          {display: password.length == 0 ? 'none' : 'flex'},
+                        ]}></Image>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             </View>
           </View>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {backgroundColor: isLoginEnabled ? '#007BFF' : '#CCCCCC'},
-            ]}
-            onPress={() => handleLogin()}
-            disabled={!isLoginEnabled}>
-            <Text style={styles.buttonText}>Đăng nhập</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={[styles.footer, {backgroundColor: ''}]}>
+            <View style={styles.content}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {backgroundColor: isLoginEnabled ? '#007BFF' : '#CCCCCC'},
+                ]}
+                onPress={() => handleLogin()}
+                disabled={!isLoginEnabled}>
+                <Text style={styles.buttonText}>Đăng nhập</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </LinearGradient>
       </View>
-      <View style={styles.footer}>
-        <View style={styles.content}></View>
-      </View>
-    </View>
+      {/* </View> */}
+    </LinearGradient>
   );
 };
 

@@ -394,7 +394,10 @@ const RestoreScreen = ({route}: {route: any}) => {
             </View>
             <View style={styles.mainContent}>
               <View
-                style={[styles.mainContentHeader, {backgroundColor: 'green'}]}>
+                style={[
+                  styles.mainContentHeader,
+                  {backgroundColor: '#87cefa'},
+                ]}>
                 <Text style={[styles.mainContentHeaderText, {flex: 0.5}]}>
                   STT
                 </Text>

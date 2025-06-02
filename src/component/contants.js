@@ -1,3 +1,4 @@
+
 const images = {
     account: require('../assets/account.png'),
     add: require('../assets/add.png'),
@@ -5,7 +6,7 @@ const images = {
     check: require('../assets/check.png'),
     click: require('../assets/click.png'),
     close: require('../assets/close.png'),
-    dk_pharma: require('../assets/dk_pharma.png'),
+    dk_pharma: require('../assets/logo-dkpharma.png'),
     down_white: require('../assets/down_white.png'),
     hide: require('../assets/hide.png'),
     qr_code: require('../assets/qr_code.png'),
@@ -18,5 +19,13 @@ const images = {
     add_list: require('../assets/add_list.png'),
     male: require('../assets/avt_male.jpg'),
     female: require('../assets/avt_female.jpg'),
+    user: require('../assets/user-icon.png'),
+    password: require('../assets/password-icon.png'),
+    company: require('../assets/company-logo.png'),
+    facebook: require('../assets/facebook.png'),
+    web: require('../assets/web.png'),
+    linkedin: require('../assets/linkedin.png'),
+    youtube: require('../assets/youtube.png'),
+
     };
 export default images;
