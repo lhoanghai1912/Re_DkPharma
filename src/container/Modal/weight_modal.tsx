@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import styles from '../Transfer/transfer_styles'; // Đảm bảo rằng các style tương ứng được import
 import images from '../../component/contants';
-import {useSelector} from 'react-redux';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 interface SubItem {
@@ -143,6 +142,17 @@ const WeightModal: React.FC<WeightModalProps> = ({
     return regex.test(text);
   };
   const renderWeight = ({item, index}: any) => {
+    const changeQuantity = (delta: number) => {
+      const newQty = Math.max(0, (item.quantity || 0) + delta);
+      // Cập nhật quantity trong selectedData
+      const updateData = {...selectedData[0]};
+      if (!updateData.apP_WTQ1_Sub) updateData.apP_WTQ1_Sub = [];
+      updateData.apP_WTQ1_Sub[index] = {
+        ...updateData.apP_WTQ1_Sub[index],
+        quantity: newQty,
+      };
+      setDataList(updateData);
+    };
     return (
       <View style={styles.modalWeightBody}>
         <View
@@ -160,32 +170,62 @@ const WeightModal: React.FC<WeightModalProps> = ({
             {item?.itemName}
           </Text>
           <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
-            {item?.batchNumber || 'null'}
+            {item?.batchNumber || ''}
           </Text>
-          <TextInput
+          <View
             style={[
               styles.bodyHeaderCol,
               {
                 flex: 0.6,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               },
-            ]}
-            value={String(item?.quantity)}
-            onChangeText={text => {
-              if (validateQuantity(text)) {
-                const updateData = {...selectedData[0]};
-                if (!updateData.apP_WTQ1_Sub) {
-                  updateData.apP_WTQ1_Sub = []; // Khởi tạo apP_WTQ1_Sub nếu chưa có
-                }
-                const subItem = updateData.apP_WTQ1_Sub[index];
+            ]}>
+            <TouchableOpacity
+              onPress={() => changeQuantity(-1)}
+              style={{
+                marginLeft: 5,
+                paddingHorizontal: 8,
+                paddingVertical: 1,
+                backgroundColor: '#ddd',
+                borderRadius: 20,
+                marginRight: 5,
+              }}>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>-</Text>
+            </TouchableOpacity>
+            <TextInput
+              style={{fontSize: 18}}
+              value={String(item?.quantity)}
+              onChangeText={text => {
+                if (validateQuantity(text)) {
+                  const updateData = {...selectedData[0]};
+                  if (!updateData.apP_WTQ1_Sub) {
+                    updateData.apP_WTQ1_Sub = []; // Khởi tạo apP_WTQ1_Sub nếu chưa có
+                  }
+                  const subItem = updateData.apP_WTQ1_Sub[index];
 
-                if (subItem) {
-                  subItem.quantity = parseFloat(text) || 0;
+                  if (subItem) {
+                    subItem.quantity = parseFloat(text) || 0;
+                  }
+                  setDataList(updateData);
                 }
-                setDataList(updateData);
-              }
-            }}
-            keyboardType="numeric"
-          />
+              }}
+              keyboardType="numeric"
+            />
+            <TouchableOpacity
+              onPress={() => changeQuantity(1)}
+              style={{
+                marginRight: 5,
+                paddingHorizontal: 8,
+                paddingVertical: 1,
+                backgroundColor: '#ddd',
+                borderRadius: 20,
+                marginLeft: 5,
+              }}>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>+</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
             {item?.uomCode}
           </Text>
@@ -218,7 +258,6 @@ const WeightModal: React.FC<WeightModalProps> = ({
       transparent
       visible={visible}
       onRequestClose={onClose}>
-      {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
@@ -236,14 +275,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
             <View
               style={{
                 borderRadius: 15,
-
                 width: '90%',
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: 'white',
                 alignContent: 'center',
                 maxHeight: '90%',
-                // flexShrink: 1,
               }}>
               <View
                 style={[
@@ -261,7 +298,9 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   onPress={() => {
                     handleAddWeight();
                   }}>
-                  <Image source={images.add_list} style={styles.icon}></Image>
+                  <Image
+                    source={images.add_list}
+                    style={[styles.icon, {marginRight: 5}]}></Image>
                 </TouchableOpacity>
               </View>
               <View style={styles.wrapWeightModal}>
@@ -278,11 +317,15 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   </Text>
                   <Text style={[styles.bodyHeaderCol, {flex: 1}]}>Tên NVL</Text>
                   <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>Số lô</Text>
-                  <TextInput
-                    style={[styles.bodyHeaderCol, {flex: 0.6}]}
-                    editable={false}>
-                    Số lượng cân
-                  </TextInput>
+                  <View style={[styles.bodyHeaderCol, {flex: 0.6}]}>
+                    <Text
+                      style={[
+                        styles.bodyHeaderCol,
+                        {flex: 1, borderLeftWidth: 0, borderBottomWidth: 0},
+                      ]}>
+                      Số lượng cân
+                    </Text>
+                  </View>
                   <Text style={[styles.bodyHeaderCol, {flex: 0.4}]}>
                     Đơn vị tính
                   </Text>
@@ -307,7 +350,15 @@ const WeightModal: React.FC<WeightModalProps> = ({
               <View style={styles.modalWeightFooter}>
                 <TouchableOpacity
                   onPress={() => handleCancel()}
-                  style={[styles.button, {width: '20%', height: 'auto'}]}>
+                  style={[
+                    styles.button,
+                    {
+                      width: '20%',
+                      height: 'auto',
+                      backgroundColor: 'blue',
+                      marginTop: 10,
+                    },
+                  ]}>
                   <Text style={styles.bottonText}>Đóng</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -315,7 +366,12 @@ const WeightModal: React.FC<WeightModalProps> = ({
                   disabled={isQuantityZero()}
                   style={[
                     styles.button,
-                    {opacity: isQuantityZero() ? 0.5 : 1, width: '20%'},
+                    {
+                      opacity: isQuantityZero() ? 0.5 : 1,
+                      width: '20%',
+                      backgroundColor: 'blue',
+                      marginTop: 10,
+                    },
                   ]}>
                   <Text style={styles.bottonText}>Lưu</Text>
                 </TouchableOpacity>

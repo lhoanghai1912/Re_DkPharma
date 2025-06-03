@@ -4,24 +4,24 @@ import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
     },
     //dùng chung
 
     //header
     header:{
-        flex: 0.15,
+        flex: 0.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
         height:'auto',
         width:'auto',
-        backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
+        borderWidth:1,
+        borderColor: 'white',
+        borderRadius:20,
     },
 
     headerButtons: {
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         // backgroundColor:'red',
     },
     headerContent:{
-        flex:0.7,
+        flex:0.6,
         flexDirection:'row',
         alignContent:'center',
         paddingHorizontal:10,
@@ -84,9 +84,10 @@ const styles = StyleSheet.create({
         justifyContent:'center',
     },    
     mainConTentHeaderText:{
-        fontSize:20,
+        fontSize:18,
         borderLeftWidth:1,
-        borderBottomWidth:1,    
+        borderBottomWidth:1,  
+        borderColor:'white',  
         backgroundColor:'#87cefa',
         color:'white',
         fontWeight:'500',
@@ -94,10 +95,11 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
     },
         mainConTentBodyText:{
-        fontSize:20,
-        borderLeftWidth:1,
-        borderBottomWidth:1,    
+        fontSize:18,
+        borderWidth:1,
+        borderColor:'white',  
         textAlign:'center',
+        color:'white',
         textAlignVertical:'center',
     },
     mainContentBody:{
@@ -108,7 +110,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flex:1,
         width:'50%',
-        marginBottom:10,
         borderRadius:5,
     },
     wrapWeightModal:{
@@ -224,22 +225,23 @@ flex:1,
         textAlignVertical:'center',
     },
     normalText:{
-        fontSize: 20,
-        color: 'black',
+        fontSize: 18,
+        color: 'white',
         fontWeight: 'bold',
     },
     modalWeightRender:{
         flexDirection:'column',
     },
     button:{
-        backgroundColor:'blue',
+        // backgroundColor:'blue',
         width:'10%',
         height:'auto',
         alignItems:'center',
         justifyContent:'center',
         paddingVertical:10,
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth:1,
+        borderColor:'white',
         marginBottom:10,
     },
     buttonOnNormal:{

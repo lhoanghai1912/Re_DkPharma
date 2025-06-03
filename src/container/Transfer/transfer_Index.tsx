@@ -28,6 +28,7 @@ import CalendarModal from '../Modal/calendar_modal';
 import {callApi} from '../../api/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../../component/loading_index';
+import LinearGradient from 'react-native-linear-gradient';
 
 const TransferScreen: React.FC = () => {
   const [selectedDocDate] = useState(moment().format('YYYY-MM-DD'));
@@ -50,6 +51,7 @@ const TransferScreen: React.FC = () => {
   const [docDate, setDocDate] = useState(selectedDocDate);
   const [listDatas, setListData] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
+  const [scanned, setScanned] = React.useState(false);
   const [scannedItems, setScannedItems] = useState<{[key: string]: boolean}>(
     {},
   );
@@ -72,11 +74,12 @@ const TransferScreen: React.FC = () => {
   const fetchItemData = async () => {
     try {
       const url = `https://pos.foxai.com.vn:8123/api/Production/getTranferRequest${selectedTranferId}?DocEntry=${getSelectedItem.docEntry}&docDate=${docDate}`;
-
       const data = await callApi(url, {method: 'GET'}, setIsLoading, () => {
         dispatch(logout());
       });
       setListData(data);
+      console.log('dataaaaaaaaaaaaaaa123', data);
+
       setScannedItems({});
     } catch (e) {
       console.log('erro: ', e);
@@ -119,6 +122,7 @@ const TransferScreen: React.FC = () => {
         }
         setSelectedData1(item);
         setIsCameraOn(true);
+        setScanned(false); // reset scanned state when opening camera
       } else {
         setSelectedData1(item);
         setModalWeightVisible(true);
@@ -132,31 +136,30 @@ const TransferScreen: React.FC = () => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (code: any) => {
-      // const scannerValue = code[0].value;
-      const scannerValue = 'BB01780#';
+      if (scanned) return; // nếu đã quét rồi thì bỏ qua, không xử lý nữa
+
+      const scannerValue = code[0].value;
       const formattedValue = `${selectedData1?.itemCode}#${selectedData1?.batchNumber}`;
       console.log('form', formattedValue);
 
       if (scannerValue === formattedValue) {
+        setScanned(true); // đánh dấu đã quét rồi
         setScannedItems(prev => ({
           ...prev,
           [formattedValue]: true,
         }));
-        console.log('QR hợp lệ');
-        Alert.alert('QR hợp lệ');
         setIsCameraOn(false);
         setModalWeightVisible(true);
-        // setIsBlocked(listDatasSelected?.itemCode);
       } else {
+        setScanned(true); // đánh dấu đã quét rồi
+        setIsCameraOn(false);
         console.log('QR k hợp lệ');
         Alert.alert('QR k hợp lệ');
-        setIsCameraOn(false);
-        // setIsBlocked(listDatasSelected?.proCode);
+        return;
       }
+      return;
     },
   });
-  console.log('data day len api', listDatas?.items);
-  console.log('modalWeightVisible', modalWeightVisible);
 
   const handleDateSelect = (date: string) => {
     setDocDate(date);
@@ -176,12 +179,22 @@ const TransferScreen: React.FC = () => {
   };
   const renderTranferId = ({item}: any) => (
     <TouchableOpacity
-      style={styles.mainContentHeader}
+      style={[styles.mainContentHeader, {justifyContent: 'flex-end'}]}
       onPress={() => {
         setSelectedTranferId(item);
         setIsSelecting(!isSelecting);
       }}>
-      <Text style={[styles.mainConTentBodyText, {flex: 1}]}>{item}</Text>
+      <Text
+        style={[
+          styles.mainConTentBodyText,
+          {
+            flex: 0.2,
+            marginBottom: 2,
+            borderRadius: 20,
+          },
+        ]}>
+        {item}
+      </Text>
     </TouchableOpacity>
   );
   const onTextChanged = (index: number, field: string, value: string) => {
@@ -289,9 +302,7 @@ const TransferScreen: React.FC = () => {
               alignItems: 'center',
               justifyContent: 'center',
               opacity: isSynced ? 0.5 : 1,
-              backgroundColor: isSynced ? 'lightgrey' : 'white',
-              borderWidth: 0,
-              borderRightWidth: 0,
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
             },
           ]}>
           <Image
@@ -308,7 +319,7 @@ const TransferScreen: React.FC = () => {
               borderRightWidth: 0,
               flex: 0.8,
               backgroundColor:
-                isBlocked === item.itemCode ? '#CCCCCC' : 'white',
+                isBlocked === item.itemCode ? 'lightgrey' : 'none',
             },
           ]}>
           {item.quantity}
@@ -330,7 +341,7 @@ const TransferScreen: React.FC = () => {
             {
               flex: 1,
               backgroundColor:
-                isSynced || isBlocked === item.itemCode ? '#CCCCCC' : 'white',
+                isSynced || isBlocked === item.itemCode ? '#CCCCCC' : 'none',
             },
           ]}>
           {item.note}
@@ -339,361 +350,381 @@ const TransferScreen: React.FC = () => {
     );
   };
   return (
-    <View style={styles.container}>
-      <View style={[{flex: 1}]}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => {
-              handleBack();
-            }}
-            style={[styles.headerButtons, styles.icon]}>
-            <Image style={styles.icon} source={images.back_white}></Image>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Xuất kho sản xuất</Text>
-          <TouchableOpacity
-            style={styles.headerButtons}
-            onPress={() => {
-              handleSetting();
-            }}>
-            <Image source={images.account} style={styles.icon as ImageStyle} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.body}>
-          {isLoading ? (
-            <LoadingScreen></LoadingScreen>
-          ) : (
-            <View style={{flex: 1}}>
-              <View style={styles.headerContent}>
-                <View style={styles.headerContentCol}>
-                  <View style={styles.headerContentItem}>
-                    <Text style={styles.normalText}>{`Mã CT: ${
-                      listDatas?.items?.docCode || null
-                    }`}</Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.headerContentItem,
-                      {
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                      },
-                    ]}>
-                    <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
-                    <TouchableOpacity
-                      style={[
-                        styles.button,
-                        {
-                          width: 'auto',
-                          paddingVertical: 0,
-                          paddingHorizontal: 5,
-                          alignItems: 'center',
-                          marginBottom: 0,
-                        },
-                      ]}
-                      onPress={() => {
-                        setModalCalendarVisible(true);
-                        console.log('modal press');
-                        console.log('modal visible: ', modalWeightVisible);
-                      }}>
-                      <Text style={[styles.bottonText, {fontSize: 20}]}>{`${
-                        moment(docDate).format('DD-MM-YYYY') || null
+    <LinearGradient
+      colors={['#3B82F6', '#BFDBFE']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.container} // giữ nguyên style
+    >
+      <View style={styles.container}>
+        <View style={[{flex: 1}]}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => {
+                handleBack();
+              }}
+              style={[styles.headerButtons, styles.icon]}>
+              <Image style={styles.icon} source={images.back_white}></Image>
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Xuất kho sản xuất</Text>
+            <TouchableOpacity
+              style={styles.headerButtons}
+              onPress={() => {
+                handleSetting();
+              }}>
+              <Image
+                source={images.account}
+                style={[
+                  styles.icon as ImageStyle,
+                  {width: 60, height: 60, marginRight: -10},
+                ]}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.body}>
+            {isLoading ? (
+              <LoadingScreen></LoadingScreen>
+            ) : (
+              <View style={{flex: 1}}>
+                <View
+                  style={[
+                    styles.headerContent,
+                    {flex: isSelecting ? 1.2 : 0.6},
+                  ]}>
+                  <View style={styles.headerContentCol}>
+                    <View style={styles.headerContentItem}>
+                      <Text style={styles.normalText}>{`Mã CT: ${
+                        listDatas?.items?.docCode || ''
                       }`}</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.headerContentItem}>
-                    <Text style={styles.normalText}>{`Trạng thái: ${
-                      listDatas?.items?.status || null
-                    }`}</Text>
-                  </View>
-                </View>
-                <View
-                  style={[
-                    styles.headerContentCol,
-                    {flex: 1.2, alignItems: 'center'},
-                  ]}>
-                  <View style={styles.headerContentItem}>
-                    <Text
-                      style={[
-                        styles.normalText,
-                        {textAlign: 'center'},
-                      ]}>{`Lệnh sản xuất: ${
-                      listDatas?.items?.productionCode || null
-                    }`}</Text>
-                  </View>
-                  <View style={styles.headerContentItem}>
-                    <Text
-                      style={[
-                        styles.normalText,
-                        {textAlign: 'center'},
-                      ]}>{`Tên thành phẩm: ${
-                      listDatas?.items?.itemName || null
-                    }`}</Text>
-                  </View>
-                  <View style={styles.headerContentItem}>
-                    <Text
-                      style={[
-                        styles.normalText,
-                        {textAlign: 'center'},
-                      ]}>{`Kho xuất: ${
-                      listDatas?.items?.whsCode || null
-                    }`}</Text>
-                  </View>
-                </View>
-                <View
-                  style={[
-                    styles.headerContentCol,
-                    {
-                      flexDirection: 'row',
-                      padding: 5,
-                    },
-                  ]}>
-                  <View
-                    style={{
-                      flex: 1,
-                      height: '100%',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}>
+                    </View>
                     <View
                       style={[
                         styles.headerContentItem,
                         {
                           flexDirection: 'row',
-                          justifyContent: 'flex-end',
+                          alignContent: 'center',
+                          alignItems: 'center',
                         },
                       ]}>
-                      <Text
-                        style={[
-                          styles.normalText,
-                          {textAlign: 'right'},
-                        ]}>{`Mã yêu cầu ck: `}</Text>
+                      <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
                       <TouchableOpacity
                         style={[
                           styles.button,
                           {
-                            flexDirection: 'row',
                             width: 'auto',
-                            paddingHorizontal: 5,
                             paddingVertical: 0,
+                            paddingHorizontal: 5,
                             alignItems: 'center',
                             marginBottom: 0,
                           },
                         ]}
                         onPress={() => {
-                          setIsSelecting(!isSelecting);
-                          // renderTranferId();
+                          setModalCalendarVisible(true);
+                          console.log('modal press');
+                          console.log('modal visible: ', modalWeightVisible);
                         }}>
-                        <Text style={[styles.bottonText, {fontSize: 20}]}>
-                          {`${selectedTranferId || null}`}
-                        </Text>
-                        <Image
-                          source={
-                            isSelecting ? images.up_white : images.down_white
-                          }
-                          style={[styles.iconArrow, {marginLeft: 5}]}
-                        />
+                        <Text style={[styles.bottonText, {fontSize: 18}]}>{`${
+                          moment(docDate).format('DD-MM-YYYY') || ''
+                        }`}</Text>
                       </TouchableOpacity>
                     </View>
-
-                    <View
-                      style={[
-                        styles.headerContentItem,
-                        {alignItems: 'flex-end'},
-                      ]}>
-                      <Text style={styles.normalText}>{`Mã thành phẩm: ${
-                        listDatas?.items?.itemCode || null
-                      }`}</Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.headerContentItem,
-                        {alignItems: 'flex-end'},
-                      ]}>
-                      <Text style={styles.normalText}>{`Người nhập: ${
-                        listDatas?.items?.creator || null
+                    <View style={styles.headerContentItem}>
+                      <Text style={styles.normalText}>{`Trạng thái: ${
+                        listDatas?.items?.status || ''
                       }`}</Text>
                     </View>
                   </View>
-
                   <View
                     style={[
-                      // styles.pickerBody,
+                      styles.headerContentCol,
+                      {flex: 1.4, alignItems: 'center'},
+                    ]}>
+                    <View style={styles.headerContentItem}>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          {textAlign: 'center'},
+                        ]}>{`Tên thành phẩm: ${
+                        listDatas?.items?.itemName || ''
+                      }`}</Text>
+                    </View>
+                    <View style={styles.headerContentItem}>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          {textAlign: 'center'},
+                        ]}>{`Lệnh sản xuất: ${
+                        listDatas?.items?.productionCode || ''
+                      }`}</Text>
+                    </View>
+                    <View style={styles.headerContentItem}>
+                      <Text
+                        style={[
+                          styles.normalText,
+                          {textAlign: 'center'},
+                        ]}>{`Kho xuất: ${
+                        listDatas?.items?.whsCode || ''
+                      }`}</Text>
+                    </View>
+                  </View>
+                  <View
+                    style={[
+                      styles.headerContentCol,
                       {
-                        flex: 0.2,
-                        flexDirection: 'column',
-                        display: isSelecting ? 'flex' : 'none',
+                        flexDirection: 'row',
+                        padding: 5,
                       },
                     ]}>
-                    <FlatList
-                      data={listDatas?.items?.tranferId}
-                      renderItem={renderTranferId}
-                      keyExtractor={item => item.proCode}
+                    <View
                       style={{
                         flex: 1,
-                      }}
+                        height: '100%',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View
+                        style={[
+                          styles.headerContentItem,
+                          {alignItems: 'flex-end'},
+                        ]}>
+                        <Text style={styles.normalText}>{`Mã thành phẩm: ${
+                          listDatas?.items?.itemCode || null
+                        }`}</Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.headerContentItem,
+                          {alignItems: 'flex-end'},
+                        ]}>
+                        <Text style={styles.normalText}>{`Người nhập: ${
+                          listDatas?.items?.creator || ''
+                        }`}</Text>
+                      </View>
+                      <View
+                        style={[
+                          styles.headerContentItem,
+                          {
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                          },
+                        ]}>
+                        <Text
+                          style={[
+                            styles.normalText,
+                            {textAlign: 'right'},
+                          ]}>{`Mã yêu cầu ck: `}</Text>
+                        <TouchableOpacity
+                          style={[
+                            styles.button,
+                            {
+                              flexDirection: 'row',
+                              width: 'auto',
+                              paddingHorizontal: 5,
+                              paddingVertical: 0,
+                              alignItems: 'center',
+                              marginBottom: 0,
+                            },
+                          ]}
+                          onPress={() => {
+                            setIsSelecting(!isSelecting);
+                            // renderTranferId();
+                          }}>
+                          <Text style={[styles.bottonText, {fontSize: 18}]}>
+                            {`${selectedTranferId || ''}`}
+                          </Text>
+                          <Image
+                            source={
+                              isSelecting ? images.up_white : images.down_white
+                            }
+                            style={[styles.iconArrow, {marginLeft: 5}]}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View
+                        style={[
+                          // styles.pickerBody,
+                          {
+                            // position: 'absolute',
+                            zIndex: 999,
+                            flex: 1,
+                            marginTop: 5,
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end',
+                            alignContent: 'flex-end',
+                            width: '100%',
+                            display:
+                              isSelecting &&
+                              getSelectedItem?.tranferId?.length > 1
+                                ? 'flex'
+                                : 'none',
+                          },
+                        ]}>
+                        <FlatList
+                          data={getSelectedItem?.tranferId}
+                          renderItem={renderTranferId}
+                          keyExtractor={item => item.tranferId}
+                          style={{
+                            flex: 1,
+                          }}
+                        />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={[styles.mainContent]}>
+                  <View
+                    style={[
+                      styles.mainContentHeader,
+                      {backgroundColor: '#87cefa'},
+                    ]}>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.4}]}>
+                      STT
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                      Mã NVL
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                      Tên NVL
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.6}]}>
+                      Số lô
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 1.2}]}>
+                      Hạn sử dụng
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                      Check QR
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                      Yêu cầu
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                      Thực tế
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                      Lũy kế
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                      Còn lại
+                    </Text>
+                    <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
+                      ĐVT
+                    </Text>
+                    <TextInput
+                      editable={false}
+                      style={[styles.mainConTentHeaderText, {flex: 1}]}>
+                      Ghi chú
+                    </TextInput>
+                  </View>
+                  <View style={styles.mainContentBody}>
+                    <FlatList
+                      data={listDatas?.items?.apP_WTQ1 || []}
+                      renderItem={renderItem}
+                      keyExtractor={item => item.itemCode}
+                      style={[
+                        {
+                          flex: 1,
+                          width: '100%',
+                        },
+                        // {display:modalVisible ? 'none' : 'flex'},
+                      ]}
                     />
                   </View>
                 </View>
               </View>
-
-              <View style={[styles.mainContent]}>
-                <View
-                  style={[
-                    styles.mainContentHeader,
-                    {backgroundColor: '#87cefa'},
-                  ]}>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.4}]}>
-                    STT
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
-                    Mã NVL
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
-                    Tên NVL
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.6}]}>
-                    Số lô
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 1.2}]}>
-                    Hạn sử dụng
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 1}]}>
-                    Kiểm tra QR
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
-                    SL theo yc
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
-                    SL xuất tt
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
-                    Sl lũy kế
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
-                    SL còn lại
-                  </Text>
-                  <Text style={[styles.mainConTentHeaderText, {flex: 0.8}]}>
-                    ĐVT
-                  </Text>
-                  <TextInput
-                    editable={false}
-                    style={[styles.mainConTentHeaderText, {flex: 1}]}>
-                    Ghi chú
-                  </TextInput>
-                </View>
-                <View style={styles.mainContentBody}>
-                  <FlatList
-                    data={listDatas?.items?.apP_WTQ1 || []}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.itemCode}
-                    style={[
-                      {
-                        flex: 1,
-                        width: '100%',
-                      },
-                      // {display:modalVisible ? 'none' : 'flex'},
-                    ]}
-                  />
-                </View>
-              </View>
+            )}
+          </View>
+          <View style={styles.footer}>
+            <View style={styles.footerContent}>
+              <TouchableOpacity
+                style={styles.footerButton}
+                onPress={() => {
+                  handleLogout();
+                }}>
+                <Text style={styles.bottonText}>Đăng xuất</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+                disabled={isSynced}
+                onPress={() => {
+                  handleConfirm('save');
+                }}>
+                <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+                disabled={isSynced}
+                onPress={() => {
+                  handleConfirm('sync');
+                }}>
+                <Text style={[styles.bottonText]}>Đồng bộ</Text>
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
-        <View style={styles.footer}>
-          <View style={styles.footerContent}>
-            <TouchableOpacity
-              style={styles.footerButton}
-              onPress={() => {
-                handleLogout();
-              }}>
-              <Text style={styles.bottonText}>Đăng xuất</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-              disabled={isSynced}
-              onPress={() => {
-                handleConfirm('save');
-              }}>
-              <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-              disabled={isSynced}
-              onPress={() => {
-                handleConfirm('sync');
-              }}>
-              <Text style={[styles.bottonText]}>Đồng bộ</Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </View>
 
-      {/* Camera */}
-      <View
-        style={[
-          {
-            display: isCameraOn ? 'flex' : 'none',
-            position: 'absolute',
-            top: '35%', // bạn chỉnh vị trí và kích thước camera tùy ý
-            left: '35%',
-            width: '30%',
-            height: '30%',
-            // flex: isCameraOn ? 1 : 0,
-            zIndex: 2,
-            alignContent: 'center',
-            // justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            opacity: 0.5,
-          },
-        ]}>
-        {/* <View style={{height: '100%', width: '100%'}}> */}
-        {device && (
-          <Camera
-            style={[
-              StyleSheet.absoluteFill,
-              {display: isCameraOn ? 'flex' : 'none', flex: 1},
-            ]}
-            device={device}
-            isActive={isCameraOn}
-            codeScanner={codeScanner}
-          />
-        )}
-        <TouchableOpacity
+        {/* Camera */}
+        <View
           style={[
-            styles.button,
             {
               display: isCameraOn ? 'flex' : 'none',
               position: 'absolute',
-              bottom: 0, // cách đáy 10px
-              right: 0, // cách phải 10px
-              width: 50,
-              borderRadius: 50,
-              height: 50,
-              marginBottom: 0,
+              top: '35%',
+              left: '35%',
+              width: '30%',
+              height: '30%',
+              zIndex: 2,
+              alignContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              opacity: 0.5,
             },
-          ]}
-          onPress={handleGoBack}>
-          <Text style={styles.bottonText}>X</Text>
-        </TouchableOpacity>
-        {/* </View> */}
+          ]}>
+          {device && (
+            <Camera
+              style={[
+                StyleSheet.absoluteFill,
+                {display: isCameraOn ? 'flex' : 'none', flex: 1},
+              ]}
+              device={device}
+              isActive={isCameraOn}
+              codeScanner={codeScanner}
+            />
+          )}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                display: isCameraOn ? 'flex' : 'none',
+                position: 'absolute',
+                bottom: 0, // cách đáy 10px
+                right: 0, // cách phải 10px
+                width: 50,
+                borderRadius: 50,
+                height: 50,
+                marginBottom: 0,
+              },
+            ]}
+            onPress={handleGoBack}>
+            <Text style={styles.bottonText}>X</Text>
+          </TouchableOpacity>
+        </View>
+        <CalendarModal
+          visible={modalCalendarVisible}
+          selectedDate={docDate}
+          onDateSelect={handleDateSelect}
+          onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
+        />
+        <WeightModal
+          visible={modalWeightVisible}
+          selectedData={[selectedData1]}
+          onClose={() => setModalWeightVisible(!modalWeightVisible)}
+          listDatas={listDatas}
+          onSave={handleSaveData}
+        />
       </View>
-
-      <CalendarModal
-        visible={modalCalendarVisible}
-        selectedDate={docDate}
-        onDateSelect={handleDateSelect}
-        onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
-      />
-      <WeightModal
-        visible={modalWeightVisible}
-        selectedData={[selectedData1]}
-        onClose={() => setModalWeightVisible(!modalWeightVisible)}
-        listDatas={listDatas}
-        onSave={handleSaveData}
-      />
-    </View>
+    </LinearGradient>
   );
 };
 
