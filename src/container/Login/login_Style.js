@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
         borderLeftWidth:0,
         borderRightWidth:0,
         paddingLeft:20,
+        height: '120%',
         textAlign: 'center',
     },
     button:{
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         width:80,
         right: '0%',
-        top: '25%',
+        top: '10%',
         // backgroundColor: 'blue',
     },
     icon:{

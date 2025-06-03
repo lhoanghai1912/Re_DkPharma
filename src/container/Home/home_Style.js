@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         fontSize: 24, 
         fontWeight: 'bold', 
         margin: 20,
-        marginTop:50,
+        marginVertical:20,
     },
     bodyContent:
     {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         borderWidth: 1,
         borderRadius:20,
-        height:'15%',
+        height:'20%',
     },
 
     pickerBody:{
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: 'black',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 
 

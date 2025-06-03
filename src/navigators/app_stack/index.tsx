@@ -23,7 +23,7 @@ const AppStackScreen = () => {
       <Stack.Screen name={SCREEN_NAMES.HOME_SCREEN} component={HomeScreen} />
       <Stack.Screen name={SCREEN_NAMES.MENU_SCREEN} component={MenuScreen} />
       <Stack.Screen
-        name={SCREEN_NAMES.TRANSFER_CREEN}
+        name={SCREEN_NAMES.TRANSFER_SCREEN}
         component={TransferScreen}
       />
       <Stack.Screen

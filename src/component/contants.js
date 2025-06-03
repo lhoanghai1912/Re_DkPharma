@@ -1,6 +1,6 @@
 
 const images = {
-    account: require('../assets/account.png'),
+    account: require('../assets/person.png'),
     add: require('../assets/add.png'),
     back_white: require('../assets/back-button.png'),
     check: require('../assets/check.png'),

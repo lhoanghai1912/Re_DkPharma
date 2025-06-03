@@ -26,7 +26,7 @@ const userSlice = createSlice({
   initialState: initialUserState,
   reducers: {
     login(
-      state,
+      state: UserState,
       action: PayloadAction<{
         accessToken: string;
         refreshToken: string;
@@ -38,7 +38,7 @@ const userSlice = createSlice({
       state.refreshTokenExpiry = Date.now() + action.payload.expiry * 1000;
       state.isAuthenticated = true;
     },
-    logout(state) {
+    logout(state: UserState) {
       state.accessToken = null;
       state.refreshToken = null;
       state.refreshTokenExpiry = null;
@@ -47,14 +47,14 @@ const userSlice = createSlice({
       state.itemData = [];
       AsyncStorage.removeItem('accessToken');
     },
-    setUserData(state, action: PayloadAction<any>) {
+    setUserData(state: UserState, action: PayloadAction<any>) {
       state.userData = action.payload.userData;
       state.isAuthenticated = true;
     },
-    setUserDataInformation(state, action: PayloadAction<any>) {
+    setUserDataInformation(state: UserState, action: PayloadAction<any>) {
       state.userData = action.payload.user;
     },
-    setItemData(state, action: PayloadAction<any>) {
+    setItemData(state: UserState, action: PayloadAction<any>) {
       state.itemData = action.payload;
     },
   },
@@ -87,13 +87,13 @@ const itemSlice = createSlice({
   name: 'item_Slice',
   initialState: initialItemState,
   reducers: {
-    setInfoItem(state, action: PayloadAction<any>) {
+    setInfoItem(state: ItemState, action: PayloadAction<any>) {
       state.getSelectedItem = action.payload;
     },
-    setDetailsItem(state, action: PayloadAction<any>) {
+    setDetailsItem(state: ItemState, action: PayloadAction<any>) {
       state.getDetailsItem = action.payload.items;
     },
-    setDetailsItemSelected(state, action: PayloadAction<any>) {
+    setDetailsItemSelected(state: ItemState, action: PayloadAction<any>) {
       state.getDetailsItemSelected = action.payload;
     },
   },

@@ -84,10 +84,19 @@ const MenuScreen: React.FC = () => {
               console.log('Go to setting screen');
               navigate(SCREEN_NAMES.SETTING_SCREEN);
             }}>
-            <Image source={images.account} style={styles.icon as ImageStyle} />
+            <Image
+              source={images.account}
+              style={[
+                styles.icon as ImageStyle,
+                {width: 60, height: 60, marginRight: -10},
+              ]}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
+          {/* <Image
+            style={styles.logo as ImageStyle}
+            source={images.dk_pharma}></Image> */}
           <View style={{flexDirection: 'row', flex: 1}}>
             <View
               style={{
@@ -97,10 +106,11 @@ const MenuScreen: React.FC = () => {
                 flex: 1,
               }}>
               <TouchableOpacity
-                style={styles.button}
+                style={[styles.button, {flexDirection: 'row'}]}
                 onPress={() => {
-                  navigate(SCREEN_NAMES.TRANSFER_CREEN);
+                  navigate(SCREEN_NAMES.TRANSFER_SCREEN);
                 }}>
+                <Text style={styles.iconText}>🚚</Text>
                 <Text style={styles.bottonText}>Xuất kho sản xuất</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -109,14 +119,16 @@ const MenuScreen: React.FC = () => {
                 }}
                 style={[
                   styles.button,
-                  {backgroundColor: isTP ? 'blue' : '#CCCCCC'},
+                  {backgroundColor: isTP ? '' : '#CCCCCC'},
                 ]}
                 disabled={isTP ? false : true}>
+                <Text style={styles.iconText}>📦</Text>
                 <Text style={styles.bottonText}>Nhập kho thành phẩm</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleGoInternalTransfer()}
                 style={styles.button}>
+                <Text style={styles.iconText}>🔄</Text>
                 <Text style={styles.bottonText}>Chuyển kho nội bộ</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -124,6 +136,7 @@ const MenuScreen: React.FC = () => {
                 onPress={() => {
                   handleGoEdit('Xuat');
                 }}>
+                <Text style={styles.iconText}>✏️</Text>
                 <Text style={styles.bottonText}>Xuất kho điều chỉnh</Text>
               </TouchableOpacity>
             </View>
@@ -140,14 +153,16 @@ const MenuScreen: React.FC = () => {
                 }}
                 style={[
                   styles.button,
-                  {backgroundColor: isTP ? '#CCCCCC' : 'blue'},
+                  {backgroundColor: isTP ? '#CCCCCC' : ''},
                 ]}
                 disabled={isTP ? true : false}>
+                <Text style={styles.iconText}>📦</Text>
                 <Text style={styles.bottonText}>Nhập kho bán thành phẩm</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleGoRestore()}
                 style={styles.button}>
+                <Text style={styles.iconText}>↩️</Text>
                 <Text style={styles.bottonText}>Trả lại NVL thừa</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -155,10 +170,13 @@ const MenuScreen: React.FC = () => {
                   handleGoEdit('Nhap');
                 }}
                 style={styles.button}>
+                <Text style={styles.iconText}>✏️</Text>
                 <Text style={styles.bottonText}>Nhập kho điều chỉnh</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.button]} disabled={true}>
-                <Text style={styles.bottonText}>Nhập kho điều chỉnh</Text>
+              <TouchableOpacity
+                style={[styles.button, {borderWidth: 0, backgroundColor: ''}]}
+                disabled={true}>
+                <Text style={styles.bottonText}></Text>
               </TouchableOpacity>
             </View>
           </View>
