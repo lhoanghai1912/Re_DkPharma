@@ -359,7 +359,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                       marginTop: 10,
                     },
                   ]}>
-                  <Text style={styles.bottonText}>Đóng</Text>
+                  <Text style={styles.buttonText}>Đóng</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleSave()}
@@ -373,7 +373,7 @@ const WeightModal: React.FC<WeightModalProps> = ({
                       marginTop: 10,
                     },
                   ]}>
-                  <Text style={styles.bottonText}>Lưu</Text>
+                  <Text style={styles.buttonText}>Lưu</Text>
                 </TouchableOpacity>
               </View>
             </View>

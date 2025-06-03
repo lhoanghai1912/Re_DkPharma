@@ -56,7 +56,7 @@ const TypeModal: React.FC<ItemTypeProps> = ({
               toggleSelectItem('All');
             }}
             style={[getButtonStyle('All'), {width: '60%'}]}>
-            <Text style={styles.bottonText}>Tất cả</Text>
+            <Text style={styles.buttonText}>Tất cả</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -64,7 +64,7 @@ const TypeModal: React.FC<ItemTypeProps> = ({
               toggleSelectItem('Nvl');
             }}
             style={[getButtonStyle('Nvl'), {width: '60%'}]}>
-            <Text style={styles.bottonText}>NVL</Text>
+            <Text style={styles.buttonText}>NVL</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -72,7 +72,7 @@ const TypeModal: React.FC<ItemTypeProps> = ({
               toggleSelectItem('TP/BTP');
             }}
             style={[getButtonStyle('TP/BTP'), {width: '60%', marginBottom: 0}]}>
-            <Text style={styles.bottonText}>TP/BTP</Text>
+            <Text style={styles.buttonText}>TP/BTP</Text>
           </TouchableOpacity>
           <View
             style={{
@@ -88,7 +88,7 @@ const TypeModal: React.FC<ItemTypeProps> = ({
                 onClose();
               }}
               style={[styles.button, {width: '30%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
+              <Text style={[styles.buttonText]}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -96,7 +96,7 @@ const TypeModal: React.FC<ItemTypeProps> = ({
                 onClose();
               }}
               style={[styles.button, {width: '30%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Xác nhận</Text>
+              <Text style={[styles.buttonText]}>Xác nhận</Text>
             </TouchableOpacity>
           </View>
         </View>

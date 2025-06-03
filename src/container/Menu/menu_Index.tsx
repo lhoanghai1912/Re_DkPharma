@@ -110,7 +110,7 @@ const MenuScreen: React.FC = () => {
                 navigate(SCREEN_NAMES.TRANSFER_SCREEN);
               }}>
               <Text style={styles.iconText}>🚚</Text>
-              <Text style={styles.bottonText}>Xuất kho sản xuất</Text>
+              <Text style={styles.buttonText}>Xuất kho sản xuất</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -119,13 +119,13 @@ const MenuScreen: React.FC = () => {
               style={[styles.button, {backgroundColor: isTP ? '' : '#CCCCCC'}]}
               disabled={isTP ? false : true}>
               <Text style={styles.iconText}>📦</Text>
-              <Text style={styles.bottonText}>Nhập kho thành phẩm</Text>
+              <Text style={styles.buttonText}>Nhập kho thành phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleGoInternalTransfer()}
               style={styles.button}>
               <Text style={styles.iconText}>🔄</Text>
-              <Text style={styles.bottonText}>Chuyển kho nội bộ</Text>
+              <Text style={styles.buttonText}>Chuyển kho nội bộ</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
@@ -133,7 +133,7 @@ const MenuScreen: React.FC = () => {
                 handleGoEdit('Xuat');
               }}>
               <Text style={styles.iconText}>✏️</Text>
-              <Text style={styles.bottonText}>Xuất kho điều chỉnh</Text>
+              <Text style={styles.buttonText}>Xuất kho điều chỉnh</Text>
             </TouchableOpacity>
           </View>
           <View
@@ -150,13 +150,13 @@ const MenuScreen: React.FC = () => {
               style={[styles.button, {backgroundColor: isTP ? '#CCCCCC' : ''}]}
               disabled={isTP ? true : false}>
               <Text style={styles.iconText}>📦</Text>
-              <Text style={styles.bottonText}>Nhập kho bán thành phẩm</Text>
+              <Text style={styles.buttonText}>Nhập kho bán thành phẩm</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleGoRestore()}
               style={styles.button}>
               <Text style={styles.iconText}>↩️</Text>
-              <Text style={styles.bottonText}>Trả lại NVL thừa</Text>
+              <Text style={styles.buttonText}>Trả lại NVL thừa</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -164,12 +164,12 @@ const MenuScreen: React.FC = () => {
               }}
               style={styles.button}>
               <Text style={styles.iconText}>✏️</Text>
-              <Text style={styles.bottonText}>Nhập kho điều chỉnh</Text>
+              <Text style={styles.buttonText}>Nhập kho điều chỉnh</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, {borderWidth: 0, backgroundColor: ''}]}
               disabled={true}>
-              <Text style={styles.bottonText}></Text>
+              <Text style={styles.buttonText}></Text>
             </TouchableOpacity>
           </View>
         </View>

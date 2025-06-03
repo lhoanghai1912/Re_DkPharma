@@ -362,7 +362,7 @@ const InternalTransferScreen = ({route}: {route: any}) => {
             onPress={() => {
               handleLogout();
             }}>
-            <Text style={styles.bottonText}>Đăng xuất</Text>
+            <Text style={styles.buttonText}>Đăng xuất</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.footerButton, {opacity: 0.5}]}
@@ -370,7 +370,7 @@ const InternalTransferScreen = ({route}: {route: any}) => {
             onPress={() => {
               //   handleConfirm();
             }}>
-            <Text style={[styles.bottonText]}>Đồng bộ</Text>
+            <Text style={[styles.buttonText]}>Đồng bộ</Text>
           </TouchableOpacity>
         </View>
       </View>

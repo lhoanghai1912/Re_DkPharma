@@ -136,7 +136,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Hủy</Text>
+              <Text style={[styles.buttonText]}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -144,7 +144,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
                 onClose();
               }}
               style={[styles.button, {width: '20%', marginBottom: 0}]}>
-              <Text style={[styles.bottonText]}>Xác nhận</Text>
+              <Text style={[styles.buttonText]}>Xác nhận</Text>
             </TouchableOpacity>
           </View>
         </View>

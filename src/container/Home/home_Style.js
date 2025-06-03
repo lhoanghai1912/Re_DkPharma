@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     },
 
 
-    bottonText:{
+    buttonText:{
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold',

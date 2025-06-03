@@ -2,22 +2,21 @@ import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
     },
     //dùng chung
 
     //header
     header:{
-        flex: 0.15,
+        flex: 0.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        height:'auto',
-        width:'auto',
-        backgroundColor: '#87cefa',
+
+        borderWidth:1,
+        borderRadius:20,
+        borderColor:'white',
         alignContent:'center',
         alignItems: 'center',
     },
@@ -80,23 +79,28 @@ const styles = StyleSheet.create({
     },    
     mainContentHeaderText:{
         flex:1,
-        fontSize:20,
+        fontSize:18,
         borderWidth:1,
+        color:'white',
         borderRightWidth:0,   
+        borderColor:'white',
         textAlign:'center',
         textAlignVertical:'center',
         backgroundColor:'#87cefa',
-        color:'white',
         height:'auto',
         fontWeight:'500',
     },
     mainContentBodyText:{
         flex:1,
-        fontSize:20,
-        borderWidth:1,   
+        fontSize:18,
+        borderWidth:1,
+        color:'white',
         borderRightWidth:0,   
+        borderColor:'white',
         textAlign:'center',
         textAlignVertical:'center',
+        height:'auto',
+        fontWeight:'500',
     },
     mainContentBody:{
         flex:1,
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
         height:'auto',
         width:500,
         justifyContent:'center',
-        fontSize:20,
+        fontSize:18,
       },
     wrapModal:{
         flex: 1,
@@ -158,10 +162,12 @@ const styles = StyleSheet.create({
     },
 
     footerButton:{
-        backgroundColor:'blue',
-        borderRadius:5,
+        borderRadius:20,
+        borderColor:'white',
+        borderWidth:1,
         paddingVertical:10,
         paddingHorizontal:20,
+        
     },
     weightModal:{
         // flex:1,
@@ -221,24 +227,26 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
     },
     normalText:{
-        fontSize: 20,
-        color: 'black',
+        fontSize:18,
+        color: 'white',
         fontWeight: 'bold',
     },
     modalWeightRender:{
         flexDirection:'column',
     },
     button:{
-        backgroundColor:'blue',
         width:'10%',
         height:'auto',
         alignItems:'center',
         justifyContent:'center',
+        borderRadius:20,
+        borderWidth:1,
+        borderColor:'white',
         marginBottom:'5%',
     },
 
-    bottonText:{
-        fontSize: 20,
+    buttonText:{
+        fontSize:18,
         color: 'white',
         fontWeight: 'bold',
     },

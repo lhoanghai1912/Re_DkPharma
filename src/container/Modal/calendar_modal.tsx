@@ -44,7 +44,10 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
           },
         ]}>
         <Calendar
-          style={[styles.calendar, {borderWidth: 1, marginTop: '7%'}]}
+          style={[
+            styles.calendar,
+            {borderWidth: 1, marginTop: '7%', backgroundColor: 'none'},
+          ]}
           onDayPress={day => {
             setTempSelectedDate(day.dateString);
           }}
@@ -61,7 +64,8 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
             alignContent: 'center',
             justifyContent: 'space-around',
             width: '40%',
-            marginTop: 15,
+            marginTop: -20,
+            marginBottom: 15,
             alignItems: 'center',
           }}>
           <TouchableOpacity
@@ -69,14 +73,14 @@ const CalendarModal: React.FC<CalendarModalProps> = ({
             onPress={() => {
               handleCancel();
             }}>
-            <Text style={styles.bottonText}>Hủy bỏ</Text>
+            <Text style={styles.buttonText}>Hủy bỏ</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.footerButton}
             onPress={() => {
               handleConfirm();
             }}>
-            <Text style={styles.bottonText}>Xác nhận</Text>
+            <Text style={styles.buttonText}>Xác nhận</Text>
           </TouchableOpacity>
         </View>
       </View>

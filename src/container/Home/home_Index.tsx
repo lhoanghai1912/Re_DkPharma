@@ -242,7 +242,7 @@ const HomeScreen: React.FC = () => {
             onPress={() => {
               handleLogout();
             }}>
-            <Text style={styles.bottonText}>Đăng xuất</Text>
+            <Text style={styles.buttonText}>Đăng xuất</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -253,7 +253,7 @@ const HomeScreen: React.FC = () => {
             onPress={() => {
               handleConfirm();
             }}>
-            <Text style={styles.bottonText}>Xác nhận</Text>
+            <Text style={styles.buttonText}>Xác nhận</Text>
           </TouchableOpacity>
         </View>
       </View>

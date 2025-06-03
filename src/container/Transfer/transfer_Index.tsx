@@ -423,7 +423,7 @@ const TransferScreen: React.FC = () => {
                           console.log('modal press');
                           console.log('modal visible: ', modalWeightVisible);
                         }}>
-                        <Text style={[styles.bottonText, {fontSize: 18}]}>{`${
+                        <Text style={[styles.buttonText, {fontSize: 18}]}>{`${
                           moment(docDate).format('DD-MM-YYYY') || ''
                         }`}</Text>
                       </TouchableOpacity>
@@ -529,7 +529,7 @@ const TransferScreen: React.FC = () => {
                             setIsSelecting(!isSelecting);
                             // renderTranferId();
                           }}>
-                          <Text style={[styles.bottonText, {fontSize: 18}]}>
+                          <Text style={[styles.buttonText, {fontSize: 18}]}>
                             {`${selectedTranferId || ''}`}
                           </Text>
                           <Image
@@ -642,7 +642,7 @@ const TransferScreen: React.FC = () => {
                 onPress={() => {
                   handleLogout();
                 }}>
-                <Text style={styles.bottonText}>Đăng xuất</Text>
+                <Text style={styles.buttonText}>Đăng xuất</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
@@ -650,7 +650,7 @@ const TransferScreen: React.FC = () => {
                 onPress={() => {
                   handleConfirm('save');
                 }}>
-                <Text style={[styles.bottonText]}>Lưu Phiếu</Text>
+                <Text style={[styles.buttonText]}>Lưu Phiếu</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
@@ -658,7 +658,7 @@ const TransferScreen: React.FC = () => {
                 onPress={() => {
                   handleConfirm('sync');
                 }}>
-                <Text style={[styles.bottonText]}>Đồng bộ</Text>
+                <Text style={[styles.buttonText]}>Đồng bộ</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -707,7 +707,7 @@ const TransferScreen: React.FC = () => {
               },
             ]}
             onPress={handleGoBack}>
-            <Text style={styles.bottonText}>X</Text>
+            <Text style={styles.buttonText}>X</Text>
           </TouchableOpacity>
         </View>
         <CalendarModal

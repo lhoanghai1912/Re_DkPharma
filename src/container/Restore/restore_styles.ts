@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         padding:5,
     },
 
-    bottonText:{
+    buttonText:{
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold',

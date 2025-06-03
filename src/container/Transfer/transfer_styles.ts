@@ -121,17 +121,17 @@ flex:1,
     calendar:{
         // flex:1,
         // backgroundColor:'red',
-        height:'auto',
+        height:'75%',
         width:500,
         justifyContent:'center',
         fontSize:20,
+        borderRadius:20,
       },
     wrapModal:{
         flex: 1,
         justifyContent:'center',
         alignItems:'center',
         backgroundColor: 'rgba(52, 52, 52,0.5)'
-
     },
     modalHeader:{
         flex:0.4,
@@ -163,7 +163,7 @@ flex:1,
 
     footerButton:{
         backgroundColor:'blue',
-        borderRadius:5,
+        borderRadius:20,
         paddingVertical:10,
         paddingHorizontal:20,
     },
@@ -269,7 +269,7 @@ flex:1,
         borderWidth:1,
 
     },
-    bottonText:{
+    buttonText:{
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold',

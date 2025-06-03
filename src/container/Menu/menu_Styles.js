@@ -73,7 +73,7 @@ iconText:{
     left:'5%',
     top:'30%',
 },
-    bottonText:{
+    buttonText:{
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold',

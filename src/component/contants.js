@@ -26,6 +26,7 @@ const images = {
     web: require('../assets/web.png'),
     linkedin: require('../assets/linkedin.png'),
     youtube: require('../assets/youtube.png'),
-
+    up: require('../assets/up-arrow.png'),
+    down: require('../assets/down-arrow.png'),
     };
 export default images;
