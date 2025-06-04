@@ -21,7 +21,6 @@ export async function callApi(
       ...options,
       headers,
     });
-    console.log('resres========>', response);
 
     if (response.status === 401) {
       await AsyncStorage.removeItem('accessToken');

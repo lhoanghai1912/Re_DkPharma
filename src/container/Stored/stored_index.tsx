@@ -84,9 +84,7 @@ const StoreScreen = ({route}: {route: any}) => {
     dispatch(logout());
   };
   const handleConfirm = async () => {
-    console.log('Sync Pressed');
     listDatas.items.docDate = docDate;
-    console.log('data lên api', listDatas?.items);
 
     try {
       const url = `https://pos.foxai.com.vn:8123/api/Production/addReceiptForPO`;
@@ -110,7 +108,6 @@ const StoreScreen = ({route}: {route: any}) => {
       );
       if (dataBack) {
         setIsSynced(!isSynced);
-
         console.log('API respone', dataBack);
         fetchItemData();
       } else {
@@ -138,7 +135,7 @@ const StoreScreen = ({route}: {route: any}) => {
   };
 
   const onChangedText = (field: string, value: string) => {
-    if (field === 'note' || 'uomStatistic') {
+    if (field === 'note' || field === 'uomStatistic') {
       const updateData = {...listDatas};
       updateData.items.apP_OIGN_Line[field] = value;
       setListData(updateData);
@@ -149,14 +146,27 @@ const StoreScreen = ({route}: {route: any}) => {
       }
       if (validated !== undefined) {
         const updateData = {...listDatas};
-        updateData.items.apP_OIGN_Line[field] = value;
+
+        const cleanedValue = value.replace(/^0+/, '') || '0'; // Nếu rỗng thì gán lại là '0'
+
+        updateData.items.apP_OIGN_Line[field] = cleanedValue;
         setListData(updateData);
         console.log(listDatas);
       }
     }
   };
-  const changeQuantity = (field: string, value: number) => {
+  const changeQuantity = (field: string, increment: number) => {
     const updateData = {...listDatas};
+    const currentValue = parseFloat(updateData.items.apP_OIGN_Line[field]) || 0;
+
+    const newValue = currentValue + increment;
+
+    if (newValue >= 0) {
+      updateData.items.apP_OIGN_Line[field] = newValue.toString();
+    }
+
+    setListData(updateData); // Cập nhật lại state
+    console.log('Updated data:', updateData);
   };
   const renderItem = ({item, index}: any) => {
     return (
@@ -171,6 +181,7 @@ const StoreScreen = ({route}: {route: any}) => {
           style={[
             styles.mainContentBodyText,
             {
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
               flexDirection: 'column',
               alignContent: 'center',
               alignItems: 'center',
@@ -178,7 +189,8 @@ const StoreScreen = ({route}: {route: any}) => {
             },
           ]}>
           <TouchableOpacity
-            onPress={() => changeQuantity('evenPackage', -1)}
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('evenPackage', 1)}
             style={{
               justifyContent: 'center',
             }}>
@@ -198,35 +210,96 @@ const StoreScreen = ({route}: {route: any}) => {
             onChangeText={text => onChangedText('evenPackage', text)} // Gọi hàm onChangedText
           />
           <TouchableOpacity
-            onPress={() => changeQuantity('evenPackage', 1)}
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('evenPackage', -1)}
             style={{
               justifyContent: 'center',
             }}>
             <Image source={images.down} style={{width: 30, height: 30}} />
           </TouchableOpacity>
         </View>
-        <TextInput
-          editable={isSynced ? false : true}
-          multiline={true}
-          keyboardType="phone-pad"
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgrey' : 'none'},
-          ]}
-          value={`${item.boxPerCase}`}
-          onChangeText={text => onChangedText('boxPerCase', text)} // Gọi hàm onChangedText
-        />
-        <TextInput
-          editable={isSynced ? false : true}
-          multiline={true}
-          keyboardType="phone-pad"
+            {
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+            },
+          ]}>
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('boxPerCase', 1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            editable={isSynced ? false : true}
+            multiline={true}
+            keyboardType="phone-pad"
+            style={[
+              styles.normalText,
+              {
+                textAlign: 'center',
+              },
+            ]}
+            value={`${item.boxPerCase?.toString() || '0'}`}
+            onChangeText={text => onChangedText('boxPerCase', text)} // Gọi hàm onChangedText
+          />
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('boxPerCase', -1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgrey' : 'none'},
-          ]}
-          value={`${item.oddBox}`}
-          onChangeText={text => onChangedText('oddBox', text)} // Gọi hàm onChangedText
-        />
+            {
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+            },
+          ]}>
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('oddBox', 1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            editable={isSynced ? false : true}
+            multiline={true}
+            keyboardType="phone-pad"
+            style={[
+              styles.normalText,
+              {
+                textAlign: 'center',
+              },
+            ]}
+            value={`${item.oddBox?.toString() || '0'}`}
+            onChangeText={text => onChangedText('oddBox', text)} // Gọi hàm onChangedText
+          />
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('oddBox', -1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
         <TextInput
           multiline={true}
           editable={false}
@@ -235,17 +308,47 @@ const StoreScreen = ({route}: {route: any}) => {
             (parseFloat(item.boxPerCase) || 0) +
             (parseFloat(item.oddBox) || 0)}
         </TextInput>
-        <TextInput
-          editable={isSynced ? false : true}
-          multiline={true}
-          keyboardType="phone-pad"
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgrey' : 'none'},
-          ]}
-          value={`${item.qtyStatistic}`}
-          onChangeText={text => onChangedText('qtyStatistic', text)} // Gọi hàm onChangedText
-        />
+            {
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+            },
+          ]}>
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('qtyStatistic', 1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            editable={isSynced ? false : true}
+            multiline={true}
+            keyboardType="phone-pad"
+            style={[
+              styles.normalText,
+              {
+                textAlign: 'center',
+              },
+            ]}
+            value={`${item.qtyStatistic?.toString() || '0'}`}
+            onChangeText={text => onChangedText('qtyStatistic', text)} // Gọi hàm onChangedText
+          />
+          <TouchableOpacity
+            disabled={isSynced ? true : false}
+            onPress={() => changeQuantity('qtyStatistic', -1)}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
         <TextInput
           editable={isSynced ? false : true}
           multiline={true}
@@ -421,30 +524,30 @@ const StoreScreen = ({route}: {route: any}) => {
                       Số kiện chẵn
                     </Text>
                   </View>
-                  <TextInput
-                    multiline={true}
-                    editable={false}
-                    style={[styles.mainContentHeaderText]}>
-                    Số hộp trên kiện
-                  </TextInput>
-                  <TextInput
-                    multiline={true}
-                    editable={false}
-                    style={[styles.mainContentHeaderText]}>
-                    Số hộp lẻ
-                  </TextInput>
+                  <View style={[styles.mainContentHeaderText]}>
+                    <Text
+                      style={[styles.mainContentHeaderText, {borderWidth: 0}]}>
+                      Số hộp trên kiện
+                    </Text>
+                  </View>
+                  <View style={[styles.mainContentHeaderText]}>
+                    <Text
+                      style={[styles.mainContentHeaderText, {borderWidth: 0}]}>
+                      {`Số hộp \nlẻ`}
+                    </Text>
+                  </View>
                   <TextInput
                     multiline={true}
                     editable={false}
                     style={[styles.mainContentHeaderText]}>
                     Tổng số hộp
                   </TextInput>
-                  <TextInput
-                    multiline={true}
-                    editable={false}
-                    style={[styles.mainContentHeaderText]}>
-                    SL thống kê
-                  </TextInput>
+                  <View style={[styles.mainContentHeaderText]}>
+                    <Text
+                      style={[styles.mainContentHeaderText, {borderWidth: 0}]}>
+                      Số lượng thống kê
+                    </Text>
+                  </View>
                   <TextInput
                     multiline={true}
                     editable={false}
