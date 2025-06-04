@@ -228,6 +228,7 @@ flex:1,
         fontSize: 18,
         color: 'white',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     modalWeightRender:{
         flexDirection:'column',

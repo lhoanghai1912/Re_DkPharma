@@ -41,6 +41,12 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
     },
+    iconSetting:{
+        width: 60,
+        height: 60,
+        resizeMode: 'contain',
+        marginRight:-10,
+    },
     iconArrow:{
         width:20,
         height:20,

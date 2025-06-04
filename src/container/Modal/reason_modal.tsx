@@ -67,7 +67,7 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
             backgroundColor: 'white',
             borderRadius: 15,
             alignContent: 'center',
-            height: '70%',
+            height: '80%',
           }}>
           <FlatList
             data={listReason?.items}
@@ -93,7 +93,10 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
               onPress={() => {
                 onClose();
               }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              style={[
+                styles.button,
+                {width: '40%', marginBottom: 0, backgroundColor: 'blue'},
+              ]}>
               <Text style={[styles.buttonText]}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -101,7 +104,10 @@ const ReasonModal: React.FC<ItemReasonProp> = ({
                 onSelectedReason(selectedReason);
                 onClose();
               }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              style={[
+                styles.button,
+                {width: '40%', marginBottom: 0, backgroundColor: 'blue'},
+              ]}>
               <Text style={[styles.buttonText]}>Xác nhận</Text>
             </TouchableOpacity>
           </View>

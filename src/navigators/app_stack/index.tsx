@@ -6,7 +6,6 @@ import TransferScreen from '../../container/Transfer/transfer_Index';
 import SettingScreen from '../../container/Setting/setting_index';
 import StoreScreen from '../../container/Stored/stored_index';
 import RestoreScreen from '../../container/Restore/restore_Index';
-import StockScreen from '../../container/EditStock/editStock_Index';
 import EditStockScreen from '../../container/EditStock/editStock_Index';
 import InternalTransferScreen from '../../container/chuyenkho/InternalTransfer';
 import LoadingScreen from '../../component/loading_index';

@@ -527,7 +527,6 @@ const TransferScreen: React.FC = () => {
                           ]}
                           onPress={() => {
                             setIsSelecting(!isSelecting);
-                            // renderTranferId();
                           }}>
                           <Text style={[styles.buttonText, {fontSize: 18}]}>
                             {`${selectedTranferId || ''}`}

@@ -2,24 +2,26 @@ import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
+
     },
+
     //dùng chung
 
     //header
     header:{
-        flex: 0.15,
+        flex: 0.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
         height:'auto',
         width:'auto',
-        backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
+        borderWidth:1,
+        borderColor: 'white',
+        borderRadius:20,
     },
 
     headerButtons: {
@@ -40,6 +42,12 @@ const styles = StyleSheet.create({
         height: 40,
         resizeMode: 'contain',
     },
+    iconSetting:{
+        width: 60,
+        height: 60,
+        resizeMode: 'contain',
+        marginRight:-10,
+    },
     iconArrow:{
         width:20,
         height:20,
@@ -49,13 +57,11 @@ const styles = StyleSheet.create({
     body:{
         flex:1.5,
         marginVertical:10,
-        // backgroundColor:'blue',
     },
     headerContent:{
-        flex:0.7,
+        flex:1,
         flexDirection:'row',
         alignItems:'center',
-        // backgroundColor:'red',
         paddingHorizontal:10,
         },
     headerContentCol:{
@@ -70,7 +76,6 @@ const styles = StyleSheet.create({
     },
     mainContent:{
         flex:2,
-        // borderTopWidth:1,
     },
 
     mainContentHeader:{
@@ -80,8 +85,9 @@ const styles = StyleSheet.create({
     },    
     mainContentHeaderText:{
         flex:1,
-        fontSize:20,
+        fontSize:18,
         borderWidth:1,
+        borderColor: 'white',
         borderRightWidth:0,   
         textAlign:'center',
         textAlignVertical:'center',
@@ -92,8 +98,10 @@ const styles = StyleSheet.create({
     },
     mainContentBodyText:{
         flex:1,
-        fontSize:20,
+        fontSize:18,
         borderWidth:1,   
+        borderColor: 'white',
+        color:'white',
         borderRightWidth:0,   
         textAlign:'center',
         textAlignVertical:'center',
@@ -105,6 +113,7 @@ const styles = StyleSheet.create({
     pickerBody:{
         borderWidth: 1,
         flex:1,
+        
         width:'50%',
         marginBottom:10,
         borderRadius:5,
@@ -115,12 +124,10 @@ const styles = StyleSheet.create({
     },
 
     calendar:{
-        // flex:1,
-        // backgroundColor:'red',
         height:'auto',
         width:500,
         justifyContent:'center',
-        fontSize:20,
+        fontSize:18,
       },
     wrapModal:{
         flex: 1,
@@ -222,8 +229,9 @@ const styles = StyleSheet.create({
     },
     normalText:{
         fontSize: 20,
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
+        textAlign:'center',
     },
     modalWeightRender:{
         flexDirection:'column',
@@ -242,6 +250,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'white',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 
 })

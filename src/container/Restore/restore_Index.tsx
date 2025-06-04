@@ -424,7 +424,10 @@ const RestoreScreen = ({route}: {route: any}) => {
             onPress={() => {
               handleSetting();
             }}>
-            <Image source={images.account} style={styles.icon as ImageStyle} />
+            <Image
+              source={images.account}
+              style={[styles.iconSetting as ImageStyle]}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
