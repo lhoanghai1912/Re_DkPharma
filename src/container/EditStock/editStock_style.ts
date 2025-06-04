@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     },
     mainContent:{
         flex:2,
+        borderBottomColor: 'white',
+        borderBottomWidth: 1,
     },
 
     mainContentHeader:{

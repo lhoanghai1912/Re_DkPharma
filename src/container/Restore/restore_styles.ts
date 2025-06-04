@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     },
     mainContent:{
         flex:2,
+        borderColor: 'white',
+        borderWidth: 1,
     },
 
     mainContentHeader:{
@@ -87,7 +89,8 @@ const styles = StyleSheet.create({
         fontSize:16,
         borderWidth:1,
         borderColor:'white',
-        borderRightWidth:0,   
+        borderRightWidth:0,  
+        borderTopWidth:0, 
         textAlign:'center',
         textAlignVertical:'center',
         fontWeight:'500',

@@ -76,18 +76,19 @@ const TypeModal: React.FC<ItemTypeProps> = ({
           </TouchableOpacity>
           <View
             style={{
-              marginTop: 50,
+              marginTop: 20,
               flexDirection: 'row',
               justifyContent: 'space-between',
               width: '100%',
-              //   backgroundColor: 'red',
-              // width: '100%',
             }}>
             <TouchableOpacity
               onPress={() => {
                 onClose();
               }}
-              style={[styles.button, {width: '30%', marginBottom: 0}]}>
+              style={[
+                styles.button,
+                {width: '30%', marginBottom: 0, backgroundColor: 'blue'},
+              ]}>
               <Text style={[styles.buttonText]}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -95,7 +96,10 @@ const TypeModal: React.FC<ItemTypeProps> = ({
                 onConfirm();
                 onClose();
               }}
-              style={[styles.button, {width: '30%', marginBottom: 0}]}>
+              style={[
+                styles.button,
+                {width: '30%', marginBottom: 0, backgroundColor: 'blue'},
+              ]}>
               <Text style={[styles.buttonText]}>Xác nhận</Text>
             </TouchableOpacity>
           </View>

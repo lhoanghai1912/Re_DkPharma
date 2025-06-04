@@ -19,6 +19,7 @@ import DepartmentModal from '../Modal/department_modal';
 import WareHouseModal from '../Modal/wareHouse_modal';
 import {callApi} from '../../api/apiClient';
 import LoadingScreen from '../../component/loading_index';
+import LinearGradient from 'react-native-linear-gradient';
 
 const InternalTransferScreen = ({route}: {route: any}) => {
   const dataProp = route.params.dataProp;
@@ -149,251 +150,269 @@ const InternalTransferScreen = ({route}: {route: any}) => {
     setModalWareHouseVisible(false);
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            handleBack();
-          }}
-          style={[styles.headerButtons, styles.icon]}>
-          <Image style={styles.icon} source={images.back_white}></Image>
-        </TouchableOpacity>
-        <Text style={styles.headerText}>{'Trả lại NVL thừa'}</Text>
-        <TouchableOpacity
-          style={styles.headerButtons}
-          onPress={() => {
-            handleSetting();
-          }}>
-          <Image source={images.account} style={styles.icon as ImageStyle} />
-        </TouchableOpacity>
-      </View>
-      <View style={[styles.body, {marginVertical: 0}]}>
-        {isLoading ? (
-          <LoadingScreen></LoadingScreen>
-        ) : (
-          <View style={{flex: 1}}>
-            <View style={styles.headerContent}>
-              <View
-                style={[
-                  styles.headerContentCol,
-                  {
-                    flex: 0.8,
-                    marginStart: 0,
-                  },
-                ]}>
+    <LinearGradient
+      colors={['#3B82F6', '#BFDBFE']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.container} // giữ nguyên style
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => {
+              handleBack();
+            }}
+            style={[styles.headerButtons, styles.icon]}>
+            <Image style={styles.icon} source={images.back_white}></Image>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>{'Trả lại NVL thừa'}</Text>
+          <TouchableOpacity
+            style={styles.headerButtons}
+            onPress={() => {
+              handleSetting();
+            }}>
+            <Image
+              source={images.account}
+              style={styles.iconSetting as ImageStyle}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.body, {marginVertical: 0}]}>
+          {isLoading ? (
+            <LoadingScreen></LoadingScreen>
+          ) : (
+            <View style={{flex: 1}}>
+              <View style={styles.headerContent}>
                 <View
                   style={[
-                    styles.headerContentItem,
+                    styles.headerContentCol,
                     {
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
+                      flex: 0.8,
+                      marginStart: 0,
                     },
                   ]}>
-                  <TouchableOpacity
+                  <View
                     style={[
-                      styles.button,
+                      styles.headerContentItem,
                       {
-                        width: selectedReason.name ? '90%' : 'auto',
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                       },
-                    ]}
-                    onPress={() => {
-                      setIsSelectingReason(!isSelectingReason);
-                      setModalReasonVisible(true);
-                    }}>
-                    <Text
-                      style={[styles.buttonText, {width: 'auto'}]}
-                      numberOfLines={1}
-                      ellipsizeMode="tail">{`Lý do xuất: ${
-                      selectedReason?.name || ''
-                    }`}</Text>
-                    <Image
-                      source={
-                        isSelectingReason ? images.down_white : images.up_white
-                      }
+                    ]}>
+                    <TouchableOpacity
                       style={[
-                        styles.iconArrow,
-                        {display: selectedReason?.name ? 'none' : 'flex'},
-                      ]}></Image>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={[
-                    styles.headerContentItem,
-                    {
-                      alignItems: 'flex-start',
-                      justifyContent: 'center',
-                      paddingLeft: 5,
-                    },
-                  ]}>
-                  <Text
-                    style={
-                      styles.normalText
-                    }>{`Lệnh sản xuất: ${dataProp?.proCode}`}</Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.headerContentCol,
-                  {
-                    alignItems: 'center',
-                    flex: 1.2,
-                  },
-                ]}>
-                <View
-                  style={[
-                    styles.headerContentItem,
-                    {
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      alignContent: 'center',
-                      width: '100%',
-                    },
-                  ]}>
-                  <TouchableOpacity
-                    style={[
-                      styles.button,
-                      {
-                        width: selectedDepartment?.name ? '95%' : 'auto',
-                        flexDirection: 'row',
-                        margin: 0,
-                      },
-                    ]}
-                    onPress={() => {
-                      setIsSelectingDepartment(!isSelectingDepartment);
-                      setModalDepartmentVisible(true);
-                    }}>
-                    <Text
-                      ellipsizeMode="tail"
-                      style={[
-                        styles.buttonText,
+                        styles.button,
                         {
+                          width: selectedReason.name ? '90%' : 'auto',
+                          flexDirection: 'row',
                           alignItems: 'center',
-                          width: 'auto',
-                          textAlign: 'center',
+                          justifyContent: 'flex-start',
                         },
-                      ]}>{`Bộ phận bán hàng: ${
-                      selectedDepartment.code
-                        ? `\n${selectedDepartment?.name}`
-                        : ``
-                    }`}</Text>
-                    <Image
-                      source={
-                        isSelectingDepartment
-                          ? images.down_white
-                          : images.up_white
-                      }
-                      style={[
-                        styles.iconArrow,
-                        {display: selectedDepartment?.name ? 'none' : 'flex'},
-                      ]}></Image>
-                  </TouchableOpacity>
+                      ]}
+                      onPress={() => {
+                        setIsSelectingReason(!isSelectingReason);
+                        setModalReasonVisible(true);
+                      }}>
+                      <Text
+                        style={[styles.buttonText, {width: 'auto'}]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail">{`Lý do xuất: ${
+                        selectedReason?.name || ''
+                      }`}</Text>
+                      <Image
+                        source={
+                          isSelectingReason
+                            ? images.down_white
+                            : images.up_white
+                        }
+                        style={[
+                          styles.iconArrow,
+                          {display: selectedReason?.name ? 'none' : 'flex'},
+                        ]}></Image>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                        paddingLeft: 5,
+                      },
+                    ]}>
+                    <Text
+                      style={
+                        styles.normalText
+                      }>{`Lệnh sản xuất: ${dataProp?.proCode}`}</Text>
+                  </View>
                 </View>
-              </View>
-              <View
-                style={[
-                  styles.headerContentCol,
-                  {
-                    flex: 0.8,
-                  },
-                ]}>
                 <View
                   style={[
-                    styles.headerContentItem,
+                    styles.headerContentCol,
                     {
-                      flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'flex-end',
+                      flex: 1.2,
                     },
                   ]}>
-                  <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
-                  <TouchableOpacity
-                    style={[styles.button, {marginBottom: 0, width: 'auto'}]}>
-                    <Text style={styles.buttonText}>{`${moment().format(
-                      'YYYY-MM-DD',
-                    )}`}</Text>
-                  </TouchableOpacity>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        width: '100%',
+                      },
+                    ]}>
+                    <TouchableOpacity
+                      style={[
+                        styles.button,
+                        {
+                          width: selectedDepartment?.name ? '95%' : 'auto',
+                          flexDirection: 'row',
+                          margin: 0,
+                        },
+                      ]}
+                      onPress={() => {
+                        setIsSelectingDepartment(!isSelectingDepartment);
+                        setModalDepartmentVisible(true);
+                      }}>
+                      <Text
+                        ellipsizeMode="tail"
+                        style={[
+                          styles.buttonText,
+                          {
+                            alignItems: 'center',
+                            width: 'auto',
+                            textAlign: 'center',
+                          },
+                        ]}>{`Bộ phận bán hàng: ${
+                        selectedDepartment.code
+                          ? `\n${selectedDepartment?.name}`
+                          : ``
+                      }`}</Text>
+                      <Image
+                        source={
+                          isSelectingDepartment
+                            ? images.down_white
+                            : images.up_white
+                        }
+                        style={[
+                          styles.iconArrow,
+                          {display: selectedDepartment?.name ? 'none' : 'flex'},
+                        ]}></Image>
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View
                   style={[
-                    styles.headerContentItem,
-                    {alignItems: 'flex-end', flex: 1, justifyContent: 'center'},
+                    styles.headerContentCol,
+                    {
+                      flex: 0.8,
+                    },
                   ]}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModalWareHouseVisible(true);
-                    }}
-                    style={[styles.button, {width: 'auto', marginBottom: 0}]}>
-                    <Text style={styles.buttonText}>Quét QR</Text>
-                  </TouchableOpacity>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                      },
+                    ]}>
+                    <Text style={styles.normalText}>{`Ngày xuất kho: `}</Text>
+                    <TouchableOpacity
+                      style={[styles.button, {marginBottom: 0, width: 'auto'}]}>
+                      <Text style={styles.buttonText}>{`${moment().format(
+                        'YYYY-MM-DD',
+                      )}`}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        alignItems: 'flex-end',
+                        flex: 1,
+                        justifyContent: 'center',
+                      },
+                    ]}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalWareHouseVisible(true);
+                      }}
+                      style={[styles.button, {width: 'auto', marginBottom: 0}]}>
+                      <Text style={styles.buttonText}>Quét QR</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.mainContent}>
+                <View style={styles.mainContentHeader}>
+                  <Text style={[styles.mainContentHeaderText, {flex: 0.5}]}>
+                    STT
+                  </Text>
+                  <Text style={[styles.mainContentHeaderText]}>Mã hàng</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Tên hàng</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Số lô</Text>
+                  <Text style={[styles.mainContentHeaderText]}>
+                    Hạn sử dụng
+                  </Text>
+                  <TextInput style={[styles.mainContentHeaderText]}>
+                    Số lượng
+                  </TextInput>
+                  <Text style={[styles.mainContentHeaderText]}>Đơn vị</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Từ kho</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Đến kho</Text>
+                  <TextInput style={[styles.mainContentHeaderText]}>
+                    Ghi chú
+                  </TextInput>
                 </View>
               </View>
             </View>
-            <View style={styles.mainContent}>
-              <View style={styles.mainContentHeader}>
-                <Text style={[styles.mainContentHeaderText, {flex: 0.5}]}>
-                  STT
-                </Text>
-                <Text style={[styles.mainContentHeaderText]}>Mã hàng</Text>
-                <Text style={[styles.mainContentHeaderText]}>Tên hàng</Text>
-                <Text style={[styles.mainContentHeaderText]}>Số lô</Text>
-                <Text style={[styles.mainContentHeaderText]}>Hạn sử dụng</Text>
-                <TextInput style={[styles.mainContentHeaderText]}>
-                  Số lượng
-                </TextInput>
-                <Text style={[styles.mainContentHeaderText]}>Đơn vị</Text>
-                <Text style={[styles.mainContentHeaderText]}>Từ kho</Text>
-                <Text style={[styles.mainContentHeaderText]}>Đến kho</Text>
-                <TextInput style={[styles.mainContentHeaderText]}>
-                  Ghi chú
-                </TextInput>
-              </View>
-            </View>
-          </View>
-        )}
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.footerContent}>
-          <TouchableOpacity
-            style={styles.footerButton}
-            onPress={() => {
-              handleLogout();
-            }}>
-            <Text style={styles.buttonText}>Đăng xuất</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.footerButton, {opacity: 0.5}]}
-            disabled={true} // disabled={isSynced}
-            onPress={() => {
-              //   handleConfirm();
-            }}>
-            <Text style={[styles.buttonText]}>Đồng bộ</Text>
-          </TouchableOpacity>
+          )}
         </View>
+        <View style={styles.footer}>
+          <View style={styles.footerContent}>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => {
+                handleLogout();
+              }}>
+              <Text style={styles.buttonText}>Đăng xuất</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.footerButton, {opacity: 0.5}]}
+              disabled={true} // disabled={isSynced}
+              onPress={() => {
+                //   handleConfirm();
+              }}>
+              <Text style={[styles.buttonText]}>Đồng bộ</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <ReasonModal
+          visible={modalReasonVisible}
+          onClose={() => setModalReasonVisible(false)}
+          onSelectedReason={handleSelectedReason}
+          listReason={listReason}
+        />
+        <DepartmentModal
+          visible={modalDepartmentVisible}
+          onClose={() => setModalDepartmentVisible(false)}
+          onSelectedDepartment={handleSelectedDepartment}
+          listDepartment={listDepartment}
+        />
+        <WareHouseModal
+          visible={modalWareHouseVisible}
+          onClose={() => setModalWareHouseVisible(false)}
+          onSelectedWareHouseIn={handleSelectedWareHouseIn}
+          onSelectedWareHouseOut={handleSelectedWareHouseOut}
+          listWareHouse={listWareHouse}
+        />
       </View>
-      <ReasonModal
-        visible={modalReasonVisible}
-        onClose={() => setModalReasonVisible(false)}
-        onSelectedReason={handleSelectedReason}
-        listReason={listReason}
-      />
-      <DepartmentModal
-        visible={modalDepartmentVisible}
-        onClose={() => setModalDepartmentVisible(false)}
-        onSelectedDepartment={handleSelectedDepartment}
-        listDepartment={listDepartment}
-      />
-      <WareHouseModal
-        visible={modalWareHouseVisible}
-        onClose={() => setModalWareHouseVisible(false)}
-        onSelectedWareHouseIn={handleSelectedWareHouseIn}
-        onSelectedWareHouseOut={handleSelectedWareHouseOut}
-        listWareHouse={listWareHouse}
-      />
-    </View>
+    </LinearGradient>
   );
 };
 

@@ -311,6 +311,7 @@ const EditStockScreen = ({route}: {route: any}) => {
             <Image source={images.up} style={{width: 30, height: 30}} />
           </TouchableOpacity>
           <TextInput
+            editable={!isSynced} // Chỉ cho phép chỉnh sửa nếu chưa đồng bộ
             value={`${item.requireQty}`}
             keyboardType="numeric"
             onChangeText={text => onChangedText(index, 'requireQty', text)} // Gọi hàm onChangedText
@@ -329,6 +330,7 @@ const EditStockScreen = ({route}: {route: any}) => {
         </View>
         <Text style={[styles.mainContentBodyText, {}]}>{item.uomCode}</Text>
         <TextInput
+          editable={!isSynced} // Chỉ cho phép chỉnh sửa nếu chưa đồng bộ
           onChangeText={text => onChangedText(index, 'note', text)} // Gọi hàm onChangedText
           value={`${item.note || ''}`}
           style={[
@@ -401,11 +403,9 @@ const EditStockScreen = ({route}: {route: any}) => {
                         setIsSelectingType(!isSelectingType);
                         setModalTypeCodeVisible(true);
                       }}>
-                      <Text
-                        style={[
-                          styles.buttonText,
-                          {paddingRight: 5},
-                        ]}>{`Loại hàng:  ${goodType}`}</Text>
+                      <Text style={[styles.buttonText, {paddingRight: 5}]}>
+                        {`Loại hàng:  ${goodType}` || 'Tất cả'}
+                      </Text>
                       <TouchableOpacity
                         style={[
                           {
@@ -573,7 +573,7 @@ const EditStockScreen = ({route}: {route: any}) => {
                     <Text
                       style={{
                         flex: 1,
-                        fontSize: 20,
+                        fontSize: 18,
                         textAlign: 'center',
                         textAlignVertical: 'center',
                         color: 'white',

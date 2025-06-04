@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
         flex:2,
         borderTopWidth:1,
         marginTop:10,
+
         // backgroundColor:'blue'
     },
 
