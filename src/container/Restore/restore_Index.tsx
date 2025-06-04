@@ -20,6 +20,7 @@ import {logout} from '../../redux/slice_index';
 import {callApi} from '../../api/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../../component/loading_index';
+import LinearGradient from 'react-native-linear-gradient';
 
 // import { Container } from './styles';
 
@@ -179,76 +180,214 @@ const RestoreScreen = ({route}: {route: any}) => {
       }
     }
   };
-  console.log('listdata', listDatas);
+
+  const changeQuantity = (index: number, field: string, increment: number) => {
+    const updateData = {...listDatas}; // Tạo bản sao của listDatas để tránh thay đổi trực tiếp
+    const updatedItems = [...updateData.items.apP_OIGE_Line]; // Lấy bản sao của các item
+    const currentItem = {...updatedItems[index]}; // Lấy item cần sửa
+
+    // Kiểm tra và cập nhật giá trị của trường cần thay đổi
+    const currentValue = parseFloat(currentItem[field]) || 0; // Lấy giá trị hiện tại, nếu không có thì mặc định là 0
+    const newValue = currentValue + increment; // Tính giá trị mới
+
+    // Đảm bảo giá trị không âm
+    if (newValue >= 0) {
+      currentItem[field] = newValue.toString(); // Cập nhật giá trị mới cho trường
+    }
+
+    // Cập nhật lại item trong mảng
+    updatedItems[index] = currentItem;
+
+    // Cập nhật lại state với dữ liệu mới
+    updateData.items.apP_OIGE_Line = updatedItems;
+    setListDatas(updateData); // Cập nhật lại state với bản sao mới của listDatas
+
+    console.log('Updated data:', updateData);
+  };
 
   const renderItem = ({item, index}: any) => {
     return (
       <View style={[styles.mainContentHeader]}>
-        <Text
-          style={[
-            styles.mainContentBodyText,
-            {flex: 0.5, backgroundColor: 'lightgray'},
-          ]}>
+        <Text style={[styles.mainContentBodyText, {flex: 0.5}]}>
           {index + 1}
         </Text>
-        <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
-          {item.itemCode}
-        </Text>
-        <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
-          {item.itemName}
-        </Text>
-        <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
+        <Text style={[styles.mainContentBodyText, {}]}>{item.itemCode}</Text>
+        <Text style={[styles.mainContentBodyText, {}]}>{item.itemName}</Text>
+        <Text style={[styles.mainContentBodyText, {}]}>
           {item.batchNum || ''}
         </Text>
-        <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
+        <Text style={[styles.mainContentBodyText, {}]}>
           {item.expDate ? moment(item.expDate).format('DD-MM-YYYY') : ''}
         </Text>
-        <TextInput
-          keyboardType="numeric"
-          editable={!isSynced}
-          onChangeText={text => onChangedText(index, 'scrapQty', text)} // Gọi hàm onChangedText
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgray' : 'white'},
-          ]}
-          value={`${item.scrapQty}`}></TextInput>
-        <TextInput
-          keyboardType="numeric"
-          editable={!isSynced}
-          onChangeText={text => onChangedText(index, 'scrapPO', text)} // Gọi hàm onChangedText
+            {
+              flex: 0.8,
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            },
+          ]}>
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'scrapQty', 1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            keyboardType="numeric"
+            editable={!isSynced}
+            onChangeText={text => onChangedText(index, 'scrapQty', text)} // Gọi hàm onChangedText
+            style={[
+              styles.mainContentHeaderTextContent,
+              {backgroundColor: isSynced ? 'lightgray' : 'none', flex: 0.8},
+            ]}
+            value={`${item.scrapQty}`}
+          />
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'scrapQty', -1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgray' : 'white'},
-          ]}
-          value={`${item.scrapPO}`}></TextInput>
-        <TextInput
-          keyboardType="numeric"
-          editable={!isSynced}
-          onChangeText={text => onChangedText(index, 'savingQty', text)} // Gọi hàm onChangedText
+            {
+              flex: 0.8,
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            },
+          ]}>
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'scrapPO', 1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            keyboardType="numeric"
+            editable={!isSynced}
+            onChangeText={text => onChangedText(index, 'scrapPO', text)} // Gọi hàm onChangedText
+            style={[
+              styles.mainContentHeaderTextContent,
+              {backgroundColor: isSynced ? 'lightgray' : 'none', flex: 0.8},
+            ]}
+            value={`${item.scrapPO}`}
+          />
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'scrapPO', -1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgray' : 'white'},
-          ]}
-          value={`${item.savingQty}`}></TextInput>
-        <TextInput
-          keyboardType="numeric"
-          editable={!isSynced}
-          onChangeText={text => onChangedText(index, 'backupQty', text)} // Gọi hàm onChangedText
+            {
+              flex: 0.8,
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            },
+          ]}>
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'savingQty', 1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            keyboardType="numeric"
+            editable={!isSynced}
+            onChangeText={text => onChangedText(index, 'savingQty', text)} // Gọi hàm onChangedText
+            style={[
+              styles.mainContentHeaderTextContent,
+              {backgroundColor: isSynced ? 'lightgray' : 'none', flex: 0.8},
+            ]}
+            value={`${item.savingQty}`}
+          />
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'savingQty', -1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
+        <View
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgray' : 'white'},
-          ]}
-          value={`${item.backupQty}`}></TextInput>
+            {
+              flex: 0.8,
+              backgroundColor: isSynced ? 'lightgrey' : 'none',
+              flexDirection: 'column',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            },
+          ]}>
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'backupQty', 1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.up} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+          <TextInput
+            keyboardType="numeric"
+            editable={!isSynced}
+            onChangeText={text => onChangedText(index, 'backupQty', text)} // Gọi hàm onChangedText
+            style={[
+              styles.mainContentHeaderTextContent,
+              {backgroundColor: isSynced ? 'lightgray' : 'none', flex: 0.8},
+            ]}
+            value={`${item.backupQty}`}
+          />
+          <TouchableOpacity
+            onPress={() => changeQuantity(index, 'backupQty', -1)}
+            style={{
+              justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
+            }}>
+            <Image source={images.down} style={{width: 30, height: 30}} />
+          </TouchableOpacity>
+        </View>
         <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
-          {(parseFloat(item.scrapQty) || 0) + (parseFloat(item.savingQty) || 0)}
+          style={[
+            styles.mainContentBodyText,
+            {backgroundColor: 'lightgray', flex: 0.8},
+          ]}>
+          {(parseFloat(item.backupQty) || 0) +
+            (parseFloat(item.savingQty) || 0)}
         </Text>
         <Text
-          style={[styles.mainContentBodyText, {backgroundColor: 'lightgray'}]}>
+          style={[
+            styles.mainContentBodyText,
+            {backgroundColor: 'lightgray', flex: 0.7},
+          ]}>
           {item.uomCode}
         </Text>
         <TextInput
@@ -256,7 +395,7 @@ const RestoreScreen = ({route}: {route: any}) => {
           onChangeText={text => onChangedText(index, 'note', text)} // Gọi hàm onChangedText
           style={[
             styles.mainContentBodyText,
-            {backgroundColor: isSynced ? 'lightgray' : 'white'},
+            {backgroundColor: isSynced ? 'lightgray' : 'none', flex: 0.8},
           ]}>
           {item.note || ''}
         </TextInput>
@@ -264,66 +403,55 @@ const RestoreScreen = ({route}: {route: any}) => {
     );
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            handleBack();
-          }}
-          style={[styles.headerButtons, styles.icon]}>
-          <Image style={styles.icon} source={images.back_white}></Image>
-        </TouchableOpacity>
-        <Text style={styles.headerText}>{'Trả lại NVL thừa'}</Text>
-        <TouchableOpacity
-          style={styles.headerButtons}
-          onPress={() => {
-            handleSetting();
-          }}>
-          <Image source={images.account} style={styles.icon as ImageStyle} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.body}>
-        {isLoading ? (
-          <LoadingScreen></LoadingScreen>
-        ) : (
-          <View style={{flex: 1}}>
-            <View style={[styles.headerContent, {}]}>
-              <View style={[styles.headerContentCol, {marginStart: 0}]}>
-                <View style={styles.headerContentItem}>
-                  <Text style={styles.normalText}>{`Mã CT: ${
-                    listDatas?.items?.docCode || ''
-                  }`}</Text>
-                </View>
-                <View style={[styles.headerContentItem]}>
-                  <Text style={styles.normalText}>
-                    {`Kho nhập: ${dataProp?.whsCode}` || ''}
-                  </Text>
-                </View>
-                <View style={[styles.headerContentItem]}>
-                  <TouchableOpacity
-                    style={[
-                      styles.button,
-                      {
-                        flexDirection: 'row',
-                        width: 'auto',
-                        alignSelf: 'flex-start',
-                      },
-                    ]}
-                    onPress={() => {
-                      setIsSelecting(!isSelecting);
-                      setModalItemCodeVisible(true);
-                    }}>
-                    <Text
-                      style={[
-                        styles.buttonText,
-                        {paddingRight: 5},
-                      ]}>{`Mã NVL: `}</Text>
+    <LinearGradient
+      colors={['#3B82F6', '#BFDBFE']}
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      style={styles.container} // giữ nguyên style
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => {
+              handleBack();
+            }}
+            style={[styles.headerButtons, styles.icon]}>
+            <Image style={styles.icon} source={images.back_white}></Image>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>{'Trả lại NVL thừa'}</Text>
+          <TouchableOpacity
+            style={styles.headerButtons}
+            onPress={() => {
+              handleSetting();
+            }}>
+            <Image source={images.account} style={styles.icon as ImageStyle} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.body}>
+          {isLoading ? (
+            <LoadingScreen></LoadingScreen>
+          ) : (
+            <View style={{flex: 1}}>
+              <View style={[styles.headerContent, {}]}>
+                <View style={[styles.headerContentCol, {marginStart: 0}]}>
+                  <View style={styles.headerContentItem}>
+                    <Text style={styles.normalText}>{`Mã CT: ${
+                      listDatas?.items?.docCode || ''
+                    }`}</Text>
+                  </View>
+                  <View style={[styles.headerContentItem]}>
+                    <Text style={styles.normalText}>
+                      {`Kho nhập: ${dataProp?.whsCode}` || ''}
+                    </Text>
+                  </View>
+                  <View style={[styles.headerContentItem]}>
                     <TouchableOpacity
                       style={[
+                        styles.button,
                         {
-                          height: 'auto',
                           flexDirection: 'row',
-                          alignItems: 'center',
+                          width: 'auto',
+                          alignSelf: 'flex-start',
                         },
                       ]}
                       onPress={() => {
@@ -331,166 +459,195 @@ const RestoreScreen = ({route}: {route: any}) => {
                         setModalItemCodeVisible(true);
                       }}>
                       <Text
-                        style={styles.buttonText}>{`${selecteditemCode}`}</Text>
-                      <Image
-                        source={
-                          isSelecting ? images.up_white : images.down_white
-                        }
-                        style={[styles.iconArrow, {marginLeft: 5}]}></Image>
+                        style={[
+                          styles.buttonText,
+                          {paddingRight: 5},
+                        ]}>{`Mã NVL: `}</Text>
+                      <TouchableOpacity
+                        style={[
+                          {
+                            height: 'auto',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          },
+                        ]}
+                        onPress={() => {
+                          setIsSelecting(!isSelecting);
+                          setModalItemCodeVisible(true);
+                        }}>
+                        <Text
+                          style={
+                            styles.buttonText
+                          }>{`${selecteditemCode}`}</Text>
+                        <Image
+                          source={
+                            isSelecting ? images.up_white : images.down_white
+                          }
+                          style={[styles.iconArrow, {marginLeft: 5}]}></Image>
+                      </TouchableOpacity>
                     </TouchableOpacity>
-                  </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-              <View style={[styles.headerContentCol, {}]}>
-                <View
-                  style={[
-                    styles.headerContentItem,
-                    {alignItems: 'center', justifyContent: 'center'},
-                  ]}>
-                  <Text
+                <View style={[styles.headerContentCol, {}]}>
+                  <View
                     style={[
-                      styles.normalText,
-                      {textAlign: 'center'},
-                    ]}>{`Lệnh sản xuất: \n${
-                    listDatas?.items?.productionCode || ''
-                  }`}</Text>
+                      styles.headerContentItem,
+                      {alignItems: 'center', justifyContent: 'center'},
+                    ]}>
+                    <Text
+                      style={[
+                        styles.normalText,
+                        {textAlign: 'center'},
+                      ]}>{`Lệnh sản xuất: \n${
+                      listDatas?.items?.productionCode || ''
+                    }`}</Text>
+                  </View>
+                </View>
+                <View style={[styles.headerContentCol, {}]}>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {
+                        justifyContent: 'flex-end',
+                        flexDirection: 'row',
+                        alignContent: 'center',
+                        alignItems: 'center',
+                      },
+                    ]}>
+                    <Text style={styles.normalText}>{`Ngày nhập kho:`}</Text>
+                    <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() => {
+                        setModalCalendarVisible(true);
+                      }}>
+                      <Text style={[styles.buttonText]}>{`${
+                        moment(docDate).format('DD-MM-YYYY') || null
+                      }`}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {alignItems: 'flex-end'},
+                    ]}>
+                    <Text style={styles.normalText}>{`Người nhập: ${
+                      listDatas?.items?.creator || ''
+                    }`}</Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.headerContentItem,
+                      {alignItems: 'flex-end'},
+                    ]}>
+                    <Text style={styles.normalText}>
+                      {`Trạng thái: ${
+                        listDatas?.items?.status || 'Nhập bản ghi'
+                      }`}
+                    </Text>
+                  </View>
                 </View>
               </View>
-              <View style={[styles.headerContentCol, {}]}>
+              <View style={styles.mainContent}>
                 <View
                   style={[
-                    styles.headerContentItem,
-                    {
-                      justifyContent: 'flex-end',
-                      flexDirection: 'row',
-                      alignContent: 'center',
-                      alignItems: 'center',
-                    },
+                    styles.mainContentHeader,
+                    {backgroundColor: '#87cefa'},
                   ]}>
-                  <Text style={styles.normalText}>{`Ngày nhập kho:`}</Text>
-                  <TouchableOpacity
-                    style={[styles.button]}
-                    onPress={() => {
-                      setModalCalendarVisible(true);
-                    }}>
-                    <Text style={[styles.buttonText]}>{`${
-                      moment(docDate).format('DD-MM-YYYY') || null
-                    }`}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
-                  <Text style={styles.normalText}>{`Người nhập: ${
-                    listDatas?.items?.creator || ''
-                  }`}</Text>
-                </View>
-                <View
-                  style={[styles.headerContentItem, {alignItems: 'flex-end'}]}>
-                  <Text style={styles.normalText}>
-                    {`Trạng thái: ${listDatas?.items?.status || ''}`}
+                  <Text style={[styles.mainContentHeaderText, {flex: 0.5}]}>
+                    STT
                   </Text>
+                  <Text style={[styles.mainContentHeaderText]}>Mã NVL</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Tên NVL</Text>
+                  <Text style={[styles.mainContentHeaderText]}>Số lô</Text>
+                  <Text style={[styles.mainContentHeaderText]}>
+                    {'Hạn sử \ndụng'}
+                  </Text>
+                  <View style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    <Text style={[styles.mainContentHeaderTextContent]}>
+                      Phế phẩm NCC
+                    </Text>
+                  </View>
+                  <View style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    <Text style={[styles.mainContentHeaderTextContent]}>
+                      Phế phẩm sản xuất
+                    </Text>
+                  </View>
+                  <View style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    <Text style={[styles.mainContentHeaderTextContent]}>
+                      Số mẫu lưu
+                    </Text>
+                  </View>
+                  <View style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    <Text style={[styles.mainContentHeaderTextContent]}>
+                      Dư phẩm
+                    </Text>
+                  </View>
+                  <Text style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    Tổng số lượng
+                  </Text>
+                  <Text style={[styles.mainContentHeaderText, {flex: 0.7}]}>
+                    Đơn vị
+                  </Text>
+                  <TextInput
+                    multiline={true}
+                    editable={false}
+                    style={[styles.mainContentHeaderText, {flex: 0.8}]}>
+                    Ghi chú
+                  </TextInput>
+                </View>
+                <View style={[styles.mainContentBody]}>
+                  <FlatList
+                    data={filteredItems}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) =>
+                      item.itemCode + index.toString()
+                    }
+                    style={{
+                      flex: 1,
+                      width: '100%',
+                    }}
+                  />
                 </View>
               </View>
             </View>
-            <View style={styles.mainContent}>
-              <View
-                style={[
-                  styles.mainContentHeader,
-                  {backgroundColor: '#87cefa'},
-                ]}>
-                <Text style={[styles.mainContentHeaderText, {flex: 0.5}]}>
-                  STT
-                </Text>
-                <Text style={[styles.mainContentHeaderText]}>Mã NVL</Text>
-                <Text style={[styles.mainContentHeaderText]}>Tên NVL</Text>
-                <Text style={[styles.mainContentHeaderText]}>Số lô</Text>
-                <Text style={[styles.mainContentHeaderText]}>Hạn sử dụng</Text>
-                <TextInput
-                  multiline={true}
-                  editable={false}
-                  style={[styles.mainContentHeaderText]}>
-                  Phế phẩm NCC
-                </TextInput>
-                <TextInput
-                  multiline={true}
-                  editable={false}
-                  style={[styles.mainContentHeaderText]}>
-                  Phế phẩm sản xuất
-                </TextInput>
-                <TextInput
-                  multiline={true}
-                  editable={false}
-                  style={[styles.mainContentHeaderText]}>
-                  Số mẫu lưu
-                </TextInput>
-                <TextInput
-                  multiline={true}
-                  editable={false}
-                  style={[styles.mainContentHeaderText]}>
-                  Dư phẩm
-                </TextInput>
-                <Text style={[styles.mainContentHeaderText]}>
-                  Tổng số lượng
-                </Text>
-                <Text style={[styles.mainContentHeaderText]}>Đơn vị</Text>
-                <TextInput
-                  multiline={true}
-                  editable={false}
-                  style={[styles.mainContentHeaderText]}>
-                  Ghi chú
-                </TextInput>
-              </View>
-              <View style={[styles.mainContentBody]}>
-                <FlatList
-                  data={filteredItems}
-                  renderItem={renderItem}
-                  keyExtractor={(item, index) =>
-                    item.itemCode + index.toString()
-                  }
-                  style={{
-                    flex: 1,
-                    width: '100%',
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        )}
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.footerContent}>
-          <TouchableOpacity
-            style={styles.footerButton}
-            onPress={() => {
-              handleLogout();
-            }}>
-            <Text style={styles.buttonText}>Đăng xuất</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
-            disabled={isSynced}
-            onPress={() => {
-              handleConfirm();
-            }}>
-            <Text style={[styles.buttonText]}>Đồng bộ</Text>
-          </TouchableOpacity>
+          )}
         </View>
+        <View style={styles.footer}>
+          <View style={styles.footerContent}>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => {
+                handleLogout();
+              }}>
+              <Text style={styles.buttonText}>Đăng xuất</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.footerButton, {opacity: isSynced ? 0.5 : 1}]}
+              disabled={isSynced}
+              onPress={() => {
+                handleConfirm();
+              }}>
+              <Text style={[styles.buttonText]}>Đồng bộ</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <CalendarModal
+          visible={modalCalendarVisible}
+          selectedDate={docDate}
+          onDateSelect={handleDateSelect}
+          onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
+        />
+        <ItemCodeModal
+          visible={modalItemCodeVisible}
+          listDatas={listDatas}
+          onSelectedItemsChange={handleSelectedItemCode}
+          onClose={() => {
+            setModalItemCodeVisible(!ItemCodeModal),
+              setIsSelecting(!isSelecting);
+          }}
+        />
       </View>
-      <CalendarModal
-        visible={modalCalendarVisible}
-        selectedDate={docDate}
-        onDateSelect={handleDateSelect}
-        onClose={() => setModalCalendarVisible(!modalCalendarVisible)}
-      />
-      <ItemCodeModal
-        visible={modalItemCodeVisible}
-        listDatas={listDatas}
-        onSelectedItemsChange={handleSelectedItemCode}
-        onClose={() => {
-          setModalItemCodeVisible(!ItemCodeModal), setIsSelecting(!isSelecting);
-        }}
-      />
-    </View>
+    </LinearGradient>
   );
 };
 export default RestoreScreen;

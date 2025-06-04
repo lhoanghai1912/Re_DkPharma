@@ -2,24 +2,25 @@ import { Button, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'column',
-        marginVertical:20,
+
     },
     //dùng chung
 
     //header
     header:{
-        flex: 0.15,
+        flex: 0.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
         height:'auto',
         width:'auto',
-        backgroundColor: '#87cefa',
         alignContent:'center',
         alignItems: 'center',
+        borderWidth:1,
+        borderColor:'white',
+        borderRadius:20,
     },
 
     headerButtons: {
@@ -77,11 +78,20 @@ const styles = StyleSheet.create({
     },    
     mainContentHeaderText:{
         flex:1,
-        fontSize:20,
+        fontSize:16,
         borderWidth:1,
+        borderColor:'white',
         borderRightWidth:0,   
         textAlign:'center',
-        backgroundColor:'#87cefa',
+        textAlignVertical:'center',
+        fontWeight:'500',
+        color:'white',
+    },
+    mainContentHeaderTextContent:{
+        flex:1,
+        fontSize:16,
+        borderColor:'white',
+        textAlign:'center',
         textAlignVertical:'center',
         fontWeight:'500',
         color:'white',
@@ -90,9 +100,11 @@ const styles = StyleSheet.create({
         flex:1,
         fontSize:20,
         borderWidth:1,  
+        borderColor:'white',
         borderRightWidth:0, 
         textAlign:'center',
         textAlignVertical:'center',
+        color:'white',
     },
     mainContentBody:{
         flex:1,
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
 
     calendar:{
         // flex:1,
-        // backgroundColor:'red',
         height:'auto',
         width:500,
         justifyContent:'center',
@@ -217,13 +228,13 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
     },
     normalText:{
-        fontSize: 20,
-        color: 'black',
+        fontSize: 18,
+        color: 'white',
         fontWeight: 'bold',
     },
     buttonText:
     {
-        fontSize:20,
+        fontSize:18,
         color:'white',
         fontWeight:'bold',
     },
@@ -235,16 +246,9 @@ const styles = StyleSheet.create({
         height:'auto',
         alignItems:'center',
         justifyContent:'center',
-        borderRadius:5,
-        padding:5,
+        borderRadius:20,
+        paddingHorizontal:5,
     },
-
-    buttonText:{
-        fontSize: 22,
-        color: 'white',
-        fontWeight: 'bold',
-    },
-
 })
 
 export default styles;

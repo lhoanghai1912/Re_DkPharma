@@ -273,6 +273,7 @@ flex:1,
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 
 })

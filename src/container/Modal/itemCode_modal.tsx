@@ -97,7 +97,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
             backgroundColor: 'white',
             borderRadius: 15,
             alignContent: 'center',
-            height: '55%',
+            height: '70%',
           }}>
           <FlatList
             data={uniqueItemCodes}
@@ -135,7 +135,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
               onPress={() => {
                 onClose();
               }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              style={[styles.footerButton, {width: '40%', marginBottom: 0}]}>
               <Text style={[styles.buttonText]}>Hủy</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -143,7 +143,7 @@ const ItemCodeModal: React.FC<ItemCodeProps> = ({
                 onSelectedItemsChange(selectedItem);
                 onClose();
               }}
-              style={[styles.button, {width: '20%', marginBottom: 0}]}>
+              style={[styles.footerButton, {width: '40%', marginBottom: 0}]}>
               <Text style={[styles.buttonText]}>Xác nhận</Text>
             </TouchableOpacity>
           </View>

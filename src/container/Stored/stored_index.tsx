@@ -189,10 +189,10 @@ const StoreScreen = ({route}: {route: any}) => {
             },
           ]}>
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('evenPackage', 1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.up} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -210,10 +210,10 @@ const StoreScreen = ({route}: {route: any}) => {
             onChangeText={text => onChangedText('evenPackage', text)} // Gọi hàm onChangedText
           />
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('evenPackage', -1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.down} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -230,10 +230,10 @@ const StoreScreen = ({route}: {route: any}) => {
             },
           ]}>
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('boxPerCase', 1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.up} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -251,10 +251,10 @@ const StoreScreen = ({route}: {route: any}) => {
             onChangeText={text => onChangedText('boxPerCase', text)} // Gọi hàm onChangedText
           />
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('boxPerCase', -1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.down} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -271,10 +271,10 @@ const StoreScreen = ({route}: {route: any}) => {
             },
           ]}>
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('oddBox', 1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.up} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -292,10 +292,10 @@ const StoreScreen = ({route}: {route: any}) => {
             onChangeText={text => onChangedText('oddBox', text)} // Gọi hàm onChangedText
           />
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('oddBox', -1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.down} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -320,10 +320,10 @@ const StoreScreen = ({route}: {route: any}) => {
             },
           ]}>
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('qtyStatistic', 1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.up} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -341,10 +341,10 @@ const StoreScreen = ({route}: {route: any}) => {
             onChangeText={text => onChangedText('qtyStatistic', text)} // Gọi hàm onChangedText
           />
           <TouchableOpacity
-            disabled={isSynced ? true : false}
             onPress={() => changeQuantity('qtyStatistic', -1)}
             style={{
               justifyContent: 'center',
+              display: isSynced ? 'none' : 'flex',
             }}>
             <Image source={images.down} style={{width: 30, height: 30}} />
           </TouchableOpacity>
@@ -448,7 +448,9 @@ const StoreScreen = ({route}: {route: any}) => {
                   </View>
                   <View style={styles.headerContentItem}>
                     <Text style={styles.normalText}>
-                      {`Trạng thái: ${listDatas?.items?.status || ''}`}
+                      {`Trạng thái: ${
+                        listDatas?.items?.status || 'Nhập bản ghi'
+                      }`}
                     </Text>
                   </View>
                 </View>
