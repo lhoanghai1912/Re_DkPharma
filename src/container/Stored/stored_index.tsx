@@ -155,39 +155,10 @@ const StoreScreen = ({route}: {route: any}) => {
       }
     }
   };
-
+  const changeQuantity = (field: string, value: number) => {
+    const updateData = {...listDatas};
+  };
   const renderItem = ({item, index}: any) => {
-    const changeQuantity = (field: string, delta: number) => {
-      if (isSynced) return;
-      const updatedData = {...listDatas};
-      if (!Array.isArray(updatedData.items.apP_OIGN_Line)) return;
-      const line = {...updatedData.items.apP_OIGN_Line[index]};
-      let currentValue = parseInt(line[field], 10);
-      if (isNaN(currentValue)) currentValue = 0;
-      let newValue = currentValue + delta;
-      if (newValue < 0) newValue = 0;
-      line[field] = newValue.toString();
-      updatedData.items.apP_OIGN_Line[index] = line;
-      setListData(updatedData);
-    };
-    const onChangedText = (field: string, value: string) => {
-      if (field === 'note' || 'uomStatistic') {
-        const updateData = {...listDatas};
-        updateData.items.apP_OIGN_Line[field] = value;
-        setListData(updateData);
-      } else {
-        const validated = validateQuantity(value);
-        if (value === '') {
-          return '0';
-        }
-        if (validated !== undefined) {
-          const updateData = {...listDatas};
-          updateData.items.apP_OIGN_Line[field] = value;
-          setListData(updateData);
-          console.log(listDatas);
-        }
-      }
-    };
     return (
       <View style={styles.mainContentHeader}>
         <Text style={[styles.mainContentBodyText]}>{item.itemCode}</Text>
